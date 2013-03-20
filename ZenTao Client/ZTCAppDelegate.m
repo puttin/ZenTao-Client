@@ -8,13 +8,25 @@
 
 #import "ZTCAppDelegate.h"
 
+#import "ZTCAPIClient.h"
+#import "AFNetworkActivityIndicatorManager.h"
+#import "ZTCTaskListViewController.h"
 @implementation ZTCAppDelegate
+
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
+    [ZTCAPIClient login];
+    
+    
+    UITableViewController *viewController = [[ZTCTaskListViewController alloc] initWithStyle:UITableViewStylePlain];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
+    self.window.rootViewController = nav;
     [self.window makeKeyAndVisible];
     return YES;
 }

@@ -1,0 +1,33 @@
+/* 
+  Localizable.strings
+  ZenTao Client
+
+  Created by Puttin Wong on 3/20/13.
+  Copyright (c) 2013 Puttin Wong. All rights reserved.
+*/
+
+"task" = "Task";
+
+"task basic info" = "Basic info";
+"task project" = "Project";
+"task module" = "Module";
+"task story" = "Story";
+"task assignedto" = "Assign";
+"task assignedto at" = "at";
+"task type" = "Type";
+"task type design"  = "Design";
+"task type devel"   = "Devel";
+"task type test"    = "Test";
+"task type study"   = "Study";
+"task type discuss" = "Discuss";
+"task type ui"      = "UI";
+"task type affair"  = "Affair";
+"task type misc"    = "Misc";
+"task status" = "Status";
+"task status wait"  = "Pending";
+"task status doing"  = "Doing";
+"task status done"  = "Done";
+"task status cancel"  = "Canceled";
+"task status closed"  = "Closed";
+"task pri" = "Pri";
+"task mailto" = "Mailto";

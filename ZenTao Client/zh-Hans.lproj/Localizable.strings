@@ -1,0 +1,33 @@
+/* 
+  Localizable.strings
+  ZenTao Client
+
+  Created by Puttin Wong on 3/20/13.
+  Copyright (c) 2013 Puttin Wong. All rights reserved.
+*/
+
+"task" = "任务";
+
+"task basic info" = "基本信息";
+"task project" = "项目";
+"task module" = "模块";
+"task story" = "需求";
+"task assignedto" = "指派给";
+"task assignedto at" = "在";
+"task type" = "类型";
+"task type design"  = "设计";
+"task type devel"   = "开发";
+"task type test"    = "测试";
+"task type study"   = "研究";
+"task type discuss" = "讨论";
+"task type ui"      = "界面";
+"task type affair"  = "事务";
+"task type misc"    = "其他";
+"task status" = "状态";
+"task status wait"  = "未开始";
+"task status doing"  = "进行中";
+"task status done"  = "已完成";
+"task status cancel"  = "已取消";
+"task status closed"  = "已关闭";
+"task pri" = "优先级";
+"task mailto" = "抄送给";

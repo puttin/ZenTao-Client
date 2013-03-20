@@ -12,3 +12,14 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
 #endif
+
+
+
+#ifndef NS_BLOCK_ASSERTIONS
+#define _DEBUG
+#endif
+#ifdef _DEBUG
+#define DLog( s, ... ) NSLog( @"<%p %@:(%d)> %@", self, [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__] )
+#else
+#define DLog( s, ... ) /* */
+#endif
