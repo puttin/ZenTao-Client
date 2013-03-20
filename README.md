@@ -22,7 +22,7 @@ You hava only ONE way now:
 ZenTaoPMS is also a scrum tool. The main management theory of zentao is scrum, such as story, backlog, burn down chart and so on.
 
 ### Authors and Contributors
-In 2013, Puttin Wong(@puttin) founded ZenTao-Client.
+In 2013, Puttin Wong([@puttin](https://github.com/puttin)) founded ZenTao-Client.
 
 ### Support or Contact
 Having trouble with this project? Create a new issue.
