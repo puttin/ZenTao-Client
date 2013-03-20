@@ -1,8 +1,8 @@
 ZenTao-Client
 =============
 
-an iOS Client connect with ZenTao PMS
-This iOS program is the easiest way to connect your iDevice with ZenTao PMS.
+an iOS Client connect with ZenTao PMS  
+This iOS program will be the easiest way to connect your iDevice with ZenTao PMS.
 
 ### Screenshots
 ![My Task List](https://raw.github.com/puttin/ZenTao-Client/gh-pages/My%20Task%20List.png "My Task List")
