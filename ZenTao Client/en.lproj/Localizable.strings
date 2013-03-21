@@ -8,6 +8,8 @@
 
 "task" = "Task";
 
+"task desc" = "Description";
+
 "task basic info" = "Basic info";
 "task project" = "Project";
 "task module" = "Module";

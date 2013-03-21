@@ -9,6 +9,14 @@
 #import "ZTCTaskViewController.h"
 
 #import "ZTCAPIClient.h"
+#import <QuartzCore/QuartzCore.h>
+#define FONT_SIZE 19.0f
+#define SMALL_FONT_SIZE 14.0f
+#define CELL_CONTENT_WIDTH 300.0f
+#define CELL_CONTENT_MARGIN 10.0f
+#define CELL_CONTENT_DEFAULT_HEIGHT 44.0f
+#define DEFAULT_GROUPED_HEADER_FONT_SIZE 23.0f
+#define DEFAULT_GROUPED_HEADER_HEIGHT 22.0f
 enum {
 	TaskSectionIndex,
     TaskBasicSectionIndex,
@@ -16,7 +24,7 @@ enum {
 
 enum {
 	TaskNameRowIndex,
-	TaskDescRowIndex,
+//	TaskDescRowIndex,
 } TaskInformationSectionRowIndicies;
 
 enum {
@@ -61,7 +69,7 @@ enum {
         taskDict = [[dict objectForKey:@"data"] objectForKey:@"task"];
         //DLog(@"%@",taskDict);
         [self.tableView reloadData];
-        self.title = [NSString stringWithFormat:@"%@ %u",NSLocalizedString(@"task", nil),taskID];
+        self.title = [NSString stringWithFormat:@"%@ #%u",NSLocalizedString(@"task", nil),taskID];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"ERROR: %@",error);
     }];
@@ -98,10 +106,12 @@ enum {
     NSString *sectionName;
     switch (section)
     {
+        case TaskSectionIndex:
+            sectionName = [taskDict objectForKey:@"name"];
+            break;
         case TaskBasicSectionIndex:
             sectionName = NSLocalizedString(@"task basic info", nil);
             break;
-            // ...
         default:
             sectionName = @"";
             break;
@@ -116,6 +126,62 @@ enum {
     return 2;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    switch (section) {
+        case TaskSectionIndex:
+        {
+            NSString *name = [taskDict objectForKey:@"name"];
+            CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000.0f);
+            CGSize nameSize = [name sizeWithFont:[UIFont systemFontOfSize:DEFAULT_GROUPED_HEADER_FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+            CGFloat height = MAX(nameSize.height, DEFAULT_GROUPED_HEADER_HEIGHT);
+            //DLog(@"%f",height);
+            
+            //[tableView headerViewForSection:section] iOS6 only...
+            
+            return height;
+        }
+            break;
+            
+        default:
+            break;
+    }
+    
+    
+    return DEFAULT_GROUPED_HEADER_HEIGHT;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath;
+{
+    switch (indexPath.section) {
+        case TaskSectionIndex:
+            switch (indexPath.row) {
+                case TaskNameRowIndex:{
+                    //NSString *name = [taskDict objectForKey:@"name"];
+                    NSString *desc = [taskDict objectForKey:@"desc"];
+                    
+                    CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000.0f);
+                    
+                    //CGSize nameSize = [name sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+                    CGSize descSize = [desc sizeWithFont:[UIFont systemFontOfSize:SMALL_FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+                    
+                    CGFloat height = MAX(descSize.height, 44.0f);//nameSize.height+descSize.height;
+                    
+                    return height + (CELL_CONTENT_MARGIN * 2);
+                }
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+            
+        default:
+            break;
+    }
+    return CELL_CONTENT_DEFAULT_HEIGHT;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 #warning Incomplete method implementation.
@@ -123,7 +189,7 @@ enum {
     if ([taskDict count]) {        
         switch (section) {
             case TaskSectionIndex:
-                return 2;
+                return 1;
                 break;
             case TaskBasicSectionIndex:
                 return 8;
@@ -141,23 +207,71 @@ enum {
 {
 #warning Incomplete method implementation.
     UITableViewCell * cell = nil;
+    //UILabel *nameLabel = nil;
+    UILabel *descLabel = nil;
 	switch (indexPath.section) {
         case TaskSectionIndex:
             switch (indexPath.row) {
-                case TaskNameRowIndex:
+                case TaskNameRowIndex:{
                     cell = [tableView dequeueReusableCellWithIdentifier:@"TaskNameCell"];
                     if (!cell) {
                         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TaskNameCell"];
+                        //name
+//                        nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+//                        [nameLabel setLineBreakMode:UILineBreakModeWordWrap];
+//                        [nameLabel setMinimumFontSize:FONT_SIZE];
+//                        [nameLabel setNumberOfLines:0];
+//                        [nameLabel setFont:[UIFont systemFontOfSize:FONT_SIZE]];
+//                        [nameLabel setBackgroundColor:[UIColor clearColor]];
+//                        [nameLabel setTag:1];
+//                        //[[nameLabel layer] setBorderWidth:2.0f];
+//                        [[cell contentView] addSubview:nameLabel];
+                        
+                        //desc
+                        descLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+                        [descLabel setLineBreakMode:UILineBreakModeWordWrap];
+                        [descLabel setMinimumFontSize:SMALL_FONT_SIZE];
+                        [descLabel setNumberOfLines:0];
+                        [descLabel setFont:[UIFont systemFontOfSize:SMALL_FONT_SIZE]];
+                        [descLabel setBackgroundColor:[UIColor clearColor]];
+                        [descLabel setTag:2];
+                        //[[descLabel layer] setBorderWidth:2.0f];
+                        [[cell contentView] addSubview:descLabel];
                     }
-                    cell.textLabel.text = [taskDict objectForKey:@"name"];
+                    //cell.textLabel.text = [taskDict objectForKey:@"name"];
+                    //[cell.textLabel setLineBreakMode:UILineBreakModeWordWrap];
+                    
+                    //NSString *name = [taskDict objectForKey:@"name"];
+                    NSString *desc = [taskDict objectForKey:@"desc"];
+                    
+                    CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000.0f);
+                    
+                    //CGSize nameSize = [name sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+                    CGSize descSize = [desc sizeWithFont:[UIFont systemFontOfSize:SMALL_FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+                    //name
+//                    if (!nameLabel)
+//                        nameLabel = (UILabel*)[cell viewWithTag:1];
+//                    
+//                    [nameLabel setText:name];
+//                    [nameLabel setFrame:CGRectMake(CELL_CONTENT_MARGIN, CELL_CONTENT_MARGIN, CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), nameSize.height)];
+                    //desc
+                    if (!descLabel)
+                        descLabel = (UILabel*)[cell viewWithTag:2];
+                    
+                    [descLabel setText:desc];
+                    [descLabel setFrame:CGRectMake(CELL_CONTENT_MARGIN, CELL_CONTENT_MARGIN, CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), MAX(descSize.height, 44.0f))];
+                    //DLog(@"%@",[descLabel backgroundColor]);
+                    
                     break;
-                case TaskDescRowIndex:
-                    cell = [tableView dequeueReusableCellWithIdentifier:@"TaskDescCell"];
-                    if (!cell) {
-                        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TaskDescCell"];
-                    }
-                    cell.textLabel.text = [taskDict objectForKey:@"desc"];
-                    break;
+                }
+//                case TaskDescRowIndex:
+//                    cell = [tableView dequeueReusableCellWithIdentifier:@"TaskDescCell"];
+//                    if (!cell) {
+//                        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TaskDescCell"];
+//                    }
+//                    cell.textLabel.text = [taskDict objectForKey:@"desc"];
+//                    [cell.textLabel setLineBreakMode:UILineBreakModeWordWrap];
+//                    break;
                 default:
                     break;
             }

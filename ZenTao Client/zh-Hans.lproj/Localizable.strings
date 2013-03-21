@@ -8,6 +8,8 @@
 
 "task" = "任务";
 
+"task desc" = "描述";
+
 "task basic info" = "基本信息";
 "task project" = "项目";
 "task module" = "模块";

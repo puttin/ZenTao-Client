@@ -10,6 +10,9 @@
 		8212C1549CC6406C9B6D7786 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 20C94E9C7559425A80386E3B /* libPods.a */; };
 		D272539B16F97805009B8508 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D272539D16F97805009B8508 /* Localizable.strings */; };
 		D27253A216F97B99009B8508 /* ZTCTaskViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D27253A116F97B99009B8508 /* ZTCTaskViewController.m */; };
+		D27253B916F9F926009B8508 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D27253B816F9F926009B8508 /* QuartzCore.framework */; };
+		D27253BC16F9FA57009B8508 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D27253BB16F9FA57009B8508 /* SystemConfiguration.framework */; };
+		D27253BE16F9FA6C009B8508 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D27253BD16F9FA6C009B8508 /* MobileCoreServices.framework */; };
 		D29D2ABB16F5B20200BB556F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D29D2ABA16F5B20200BB556F /* UIKit.framework */; };
 		D29D2ABD16F5B20200BB556F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D29D2ABC16F5B20200BB556F /* Foundation.framework */; };
 		D29D2ABF16F5B20200BB556F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D29D2ABE16F5B20200BB556F /* CoreGraphics.framework */; };
@@ -28,6 +31,9 @@
 		D272539F16F9785B009B8508 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		D27253A016F97B99009B8508 /* ZTCTaskViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZTCTaskViewController.h; sourceTree = "<group>"; };
 		D27253A116F97B99009B8508 /* ZTCTaskViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZTCTaskViewController.m; sourceTree = "<group>"; };
+		D27253B816F9F926009B8508 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		D27253BB16F9FA57009B8508 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		D27253BD16F9FA6C009B8508 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		D29D2AB616F5B20200BB556F /* ZenTao Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ZenTao Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D29D2ABA16F5B20200BB556F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		D29D2ABC16F5B20200BB556F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -49,6 +55,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D27253BE16F9FA6C009B8508 /* MobileCoreServices.framework in Frameworks */,
+				D27253BC16F9FA57009B8508 /* SystemConfiguration.framework in Frameworks */,
+				D27253B916F9F926009B8508 /* QuartzCore.framework in Frameworks */,
 				D29D2ABB16F5B20200BB556F /* UIKit.framework in Frameworks */,
 				D29D2ABD16F5B20200BB556F /* Foundation.framework in Frameworks */,
 				D29D2ABF16F5B20200BB556F /* CoreGraphics.framework in Frameworks */,
@@ -80,6 +89,9 @@
 		D29D2AB916F5B20200BB556F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D27253BD16F9FA6C009B8508 /* MobileCoreServices.framework */,
+				D27253BB16F9FA57009B8508 /* SystemConfiguration.framework */,
+				D27253B816F9F926009B8508 /* QuartzCore.framework */,
 				D29D2ABA16F5B20200BB556F /* UIKit.framework */,
 				D29D2ABC16F5B20200BB556F /* Foundation.framework */,
 				D29D2ABE16F5B20200BB556F /* CoreGraphics.framework */,
