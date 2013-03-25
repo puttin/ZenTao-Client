@@ -33,3 +33,5 @@
 "task status closed"  = "已关闭";
 "task pri" = "优先级";
 "task mailto" = "抄送给";
+
+"login" = "登陆";

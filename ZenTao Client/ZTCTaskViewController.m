@@ -62,6 +62,7 @@ enum {
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     ZTCAPIClient* api = [ZTCAPIClient sharedClient];
     [api getPath:[NSString stringWithFormat:@"task-view-%u.json",taskID] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
         NSMutableDictionary *dict = [ZTCAPIClient dealWithZTStrangeJSON:JSON];
@@ -207,12 +208,12 @@ enum {
 {
 #warning Incomplete method implementation.
     UITableViewCell * cell = nil;
-    //UILabel *nameLabel = nil;
-    UILabel *descLabel = nil;
 	switch (indexPath.section) {
         case TaskSectionIndex:
             switch (indexPath.row) {
                 case TaskNameRowIndex:{
+                    //UILabel *nameLabel = nil;
+                    UILabel *descLabel = nil;
                     cell = [tableView dequeueReusableCellWithIdentifier:@"TaskNameCell"];
                     if (!cell) {
                         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TaskNameCell"];
@@ -277,56 +278,42 @@ enum {
             }
             break;
         case TaskBasicSectionIndex:
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2
+                                          reuseIdentifier:@"TaskBasicInfoCell"];
             switch (indexPath.row) {
                 case TaskProjectRowIndex:
-                    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2
-                                                   reuseIdentifier:@"TaskBasicInfoCell"];
                     cell.textLabel.text = NSLocalizedString(@"task project", nil);
                     cell.detailTextLabel.text = [projectDict objectForKey:@"name"];
                     break;
                 case TaskModuleRowIndex:
-                    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2
-                                                  reuseIdentifier:@"TaskBasicInfoCell"];
                     cell.textLabel.text = NSLocalizedString(@"task module", nil);
                     cell.detailTextLabel.text = [taskDict objectForKey:@"module"];
                     break;
                 case TaskStoryRowIndex:
-                    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2
-                                                  reuseIdentifier:@"TaskBasicInfoCell"];
                     cell.textLabel.text = NSLocalizedString(@"task story", nil);
                     cell.detailTextLabel.text = [[taskDict objectForKey:@"story"] intValue]?[taskDict objectForKey:@"storyTitle"]:nil;
                     break;
                 case TaskAssignedToRowIndex:
-                    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2
-                                                  reuseIdentifier:@"TaskBasicInfoCell"];
                     cell.textLabel.text = NSLocalizedString(@"task assignedto", nil);
                     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ %@ %@",[taskDict objectForKey:@"assignedToRealName"],NSLocalizedString(@"task assignedto at", nil),[taskDict objectForKey:@"assignedDate"]];
                     break;
                 case TaskTypeRowIndex:{
-                    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2
-                                                  reuseIdentifier:@"TaskBasicInfoCell"];
                     cell.textLabel.text = NSLocalizedString(@"task type", nil);
                     NSString *type = [NSString stringWithFormat:@"task type %@",[taskDict objectForKey:@"type"]];
                     cell.detailTextLabel.text = NSLocalizedString(type, nil);
                     break;
                 }
                 case TaskStatusRowIndex:{
-                    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2
-                                                  reuseIdentifier:@"TaskBasicInfoCell"];
                     cell.textLabel.text = NSLocalizedString(@"task status", nil);
                     NSString *status = [NSString stringWithFormat:@"task status %@",[taskDict objectForKey:@"status"]];
                     cell.detailTextLabel.text = NSLocalizedString(status, nil);
                     break;
                 }
                 case TaskPriRowIndex:
-                    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2
-                                                  reuseIdentifier:@"TaskBasicInfoCell"];
                     cell.textLabel.text = NSLocalizedString(@"task pri", nil);
                     cell.detailTextLabel.text = [taskDict objectForKey:@"pri"];
                     break;
                 case TaskMailToRowIndex:
-                    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2
-                                                  reuseIdentifier:@"TaskBasicInfoCell"];
                     cell.textLabel.text = NSLocalizedString(@"task mailto", nil);
                     cell.detailTextLabel.text = [taskDict objectForKey:@"mailto"];
                     break;

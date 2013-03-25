@@ -10,10 +10,16 @@
 
 #import "AFHTTPClient.h"
 
+enum {
+	GETIndex,
+    PATHINFOIndex,
+} RequestTypeIndicies;
+
 @interface ZTCAPIClient : AFHTTPClient
 
 + (ZTCAPIClient *)sharedClient;
-+ (void) login;
++ (BOOL) loginWithAccount:(NSString *)account Password:(NSString *)password Mode:(NSString *)mode BaseURL:(NSString *)url;
 + (NSMutableDictionary *) dealWithZTStrangeJSON:(id)JSON;
-
++ (void) registerUserInfo;
++ (NSString*) getUrlWithType:(NSUInteger)type, ...;
 @end

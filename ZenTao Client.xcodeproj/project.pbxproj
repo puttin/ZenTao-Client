@@ -8,11 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		8212C1549CC6406C9B6D7786 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 20C94E9C7559425A80386E3B /* libPods.a */; };
+		D21AAA3416FB31F1006B0BDE /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D21AAA3316FB31F1006B0BDE /* Settings.bundle */; };
 		D272539B16F97805009B8508 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D272539D16F97805009B8508 /* Localizable.strings */; };
 		D27253A216F97B99009B8508 /* ZTCTaskViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D27253A116F97B99009B8508 /* ZTCTaskViewController.m */; };
 		D27253B916F9F926009B8508 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D27253B816F9F926009B8508 /* QuartzCore.framework */; };
 		D27253BC16F9FA57009B8508 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D27253BB16F9FA57009B8508 /* SystemConfiguration.framework */; };
 		D27253BE16F9FA6C009B8508 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D27253BD16F9FA6C009B8508 /* MobileCoreServices.framework */; };
+		D28B102316FCA66600CB6794 /* ZTCUserSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D28B102216FCA66600CB6794 /* ZTCUserSettingsViewController.m */; };
 		D29D2ABB16F5B20200BB556F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D29D2ABA16F5B20200BB556F /* UIKit.framework */; };
 		D29D2ABD16F5B20200BB556F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D29D2ABC16F5B20200BB556F /* Foundation.framework */; };
 		D29D2ABF16F5B20200BB556F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D29D2ABE16F5B20200BB556F /* CoreGraphics.framework */; };
@@ -26,6 +28,7 @@
 /* Begin PBXFileReference section */
 		20C94E9C7559425A80386E3B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		776B5121F3454DDC94F87A73 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
+		D21AAA3316FB31F1006B0BDE /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		D272539C16F97805009B8508 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D272539E16F9785B009B8508 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		D272539F16F9785B009B8508 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
@@ -34,6 +37,8 @@
 		D27253B816F9F926009B8508 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		D27253BB16F9FA57009B8508 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		D27253BD16F9FA6C009B8508 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		D28B102116FCA66600CB6794 /* ZTCUserSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZTCUserSettingsViewController.h; sourceTree = "<group>"; };
+		D28B102216FCA66600CB6794 /* ZTCUserSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZTCUserSettingsViewController.m; sourceTree = "<group>"; };
 		D29D2AB616F5B20200BB556F /* ZenTao Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ZenTao Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D29D2ABA16F5B20200BB556F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		D29D2ABC16F5B20200BB556F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -107,6 +112,8 @@
 				D29D2ACA16F5B20200BB556F /* ZTCAppDelegate.m */,
 				D2A3FE9B16F8020A00BBBFB3 /* ZTCAPIClient.h */,
 				D2A3FE9C16F8020B00BBBFB3 /* ZTCAPIClient.m */,
+				D28B102116FCA66600CB6794 /* ZTCUserSettingsViewController.h */,
+				D28B102216FCA66600CB6794 /* ZTCUserSettingsViewController.m */,
 				D2A568CF16F89F4900C45346 /* ZTCTaskListViewController.h */,
 				D2A568D016F89F4900C45346 /* ZTCTaskListViewController.m */,
 				D27253A016F97B99009B8508 /* ZTCTaskViewController.h */,
@@ -119,6 +126,7 @@
 		D29D2AC116F5B20200BB556F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				D21AAA3316FB31F1006B0BDE /* Settings.bundle */,
 				D272539D16F97805009B8508 /* Localizable.strings */,
 				D29D2AC216F5B20200BB556F /* ZenTao Client-Info.plist */,
 				D29D2AC316F5B20200BB556F /* InfoPlist.strings */,
@@ -183,6 +191,7 @@
 			files = (
 				D29D2AC516F5B20200BB556F /* InfoPlist.strings in Resources */,
 				D272539B16F97805009B8508 /* Localizable.strings in Resources */,
+				D21AAA3416FB31F1006B0BDE /* Settings.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -215,6 +224,7 @@
 				D2A3FE9D16F8020B00BBBFB3 /* ZTCAPIClient.m in Sources */,
 				D2A568D116F89F4900C45346 /* ZTCTaskListViewController.m in Sources */,
 				D27253A216F97B99009B8508 /* ZTCTaskViewController.m in Sources */,
+				D28B102316FCA66600CB6794 /* ZTCUserSettingsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

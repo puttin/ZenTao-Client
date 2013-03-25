@@ -30,6 +30,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     ZTCAPIClient* api = [ZTCAPIClient sharedClient];
     [api getPath:@"my-task.json" parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
         NSMutableDictionary *dict = [ZTCAPIClient dealWithZTStrangeJSON:JSON];

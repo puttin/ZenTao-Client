@@ -33,3 +33,5 @@
 "task status closed"  = "Closed";
 "task pri" = "Pri";
 "task mailto" = "Mailto";
+
+"login" = "Log in";
