@@ -21,5 +21,6 @@ enum {
 + (BOOL) loginWithAccount:(NSString *)account Password:(NSString *)password Mode:(NSString *)mode BaseURL:(NSString *)url;
 + (NSMutableDictionary *) dealWithZTStrangeJSON:(id)JSON;
 + (void) registerUserInfo;
++ (NSUInteger) getRequestType;
 + (NSString*) getUrlWithType:(NSUInteger)type, ...;
 @end

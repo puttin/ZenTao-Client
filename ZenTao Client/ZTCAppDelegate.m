@@ -18,9 +18,6 @@
 {
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     
-    //[ZTCAPIClient login];
-    DLog(@"%@",[ZTCAPIClient getUrlWithType:PATHINFOIndex,@"api",@"getsessionid"]);
-    
     UINavigationController *nav = [[UINavigationController alloc] init];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];

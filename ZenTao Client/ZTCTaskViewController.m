@@ -64,8 +64,9 @@ enum {
 {
     [super viewWillAppear:animated];
     ZTCAPIClient* api = [ZTCAPIClient sharedClient];
-    [api getPath:[NSString stringWithFormat:@"task-view-%u.json",taskID] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
+    [api getPath:[ZTCAPIClient getUrlWithType:[ZTCAPIClient getRequestType],@"m=task",@"f=view",[NSString stringWithFormat:@"id=%u",taskID],nil] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
         NSMutableDictionary *dict = [ZTCAPIClient dealWithZTStrangeJSON:JSON];
+        //DLog(@"%@",dict);
         projectDict = [[dict objectForKey:@"data"] objectForKey:@"project"];
         taskDict = [[dict objectForKey:@"data"] objectForKey:@"task"];
         //DLog(@"%@",taskDict);

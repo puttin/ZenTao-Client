@@ -59,13 +59,13 @@ static NSString * tmpUrl = nil;
     NSURLResponse *response = nil;
     NSError *error = nil;
     
-    NSURL *url = [NSURL URLWithString:urlStr];
+    //NSURL *url = [NSURL URLWithString:urlStr];
     
     ZTCAPIClient *httpClient = [ZTCAPIClient sharedClient];
     
     httpClient.parameterEncoding = AFFormURLParameterEncoding;
     
-    NSMutableURLRequest *request = [httpClient requestWithMethod:method path:[url path] parameters:params];
+    NSMutableURLRequest *request = [httpClient requestWithMethod:method path:urlStr parameters:params];
     NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
     
     if(error) {
@@ -109,7 +109,18 @@ static NSString * tmpUrl = nil;
     va_list argumentList;
     switch (type) {
         case GETIndex:
-            //
+        {
+            NSMutableString *str = [NSMutableString stringWithString:@"?"];
+            va_start(argumentList, type);
+            while ((eachObject = va_arg(argumentList, id))){
+                [str appendString:@"&"];
+                [str appendString:(NSString *)eachObject];
+            }
+            va_end(argumentList);
+            [str appendString:@"&t=json"];
+            [str deleteCharactersInRange:NSMakeRange(1, 1)];
+            return str;
+        }
             break;
             
         case PATHINFOIndex:
@@ -118,7 +129,10 @@ static NSString * tmpUrl = nil;
             va_start(argumentList, type);
             while ((eachObject = va_arg(argumentList, id))){
                 [str appendString:@"-"];
-                [str appendString:(NSString *)eachObject];
+                //[str appendString:(NSString *)eachObject];
+                NSUInteger location = [((NSString *)eachObject) rangeOfString:@"="].location;
+                [str appendString:[((NSString *)eachObject) substringFromIndex:location+1]];
+                //DLog(@"location:%u",location);
             }
             va_end(argumentList);
             [str appendString:@".json"];
@@ -174,9 +188,10 @@ static NSString * tmpUrl = nil;
     NSUInteger tmpRequestType = [mode isEqualToString:NSLocalizedStringFromTableInBundle(@"RequestType PATH_INFO", @"Root", bundle, nil)]?PATHINFOIndex:GETIndex;
     __block BOOL sessionSuccess = NO;
     __block BOOL loginSuccess = NO;
-    [ZTCAPIClient makeRequestTo:@"api-getsessionid.json" parameters:nil method:@"GET" successCallback:^(id JSON){
+    [ZTCAPIClient makeRequestTo:[ZTCAPIClient getUrlWithType:tmpRequestType,@"m=api",@"f=getsessionid",nil] parameters:nil method:@"GET" successCallback:^(id JSON){
         //DLog(@"JSON:%@",JSON);
         NSMutableDictionary *dict = [self dealWithZTStrangeJSON:JSON];
+        //DLog(@"%@",dict);
         if ([dict count]) {
             //DLog(@"%@:%@", [[dict objectForKey:@"data"] objectForKey:@"sessionName"],[[dict objectForKey:@"data"] objectForKey:@"sessionID"]);
             sessionSuccess = YES;
@@ -195,7 +210,7 @@ static NSString * tmpUrl = nil;
                                 account, @"account",
                                 password, @"password",
                                 nil];
-        [ZTCAPIClient makeRequestTo:@"user-login.json" parameters:params method:@"POST" successCallback:^(id JSON) {
+        [ZTCAPIClient makeRequestTo:[ZTCAPIClient getUrlWithType:tmpRequestType,@"m=user",@"f=login",nil] parameters:params method:@"POST" successCallback:^(id JSON) {
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:JSON options:NSJSONReadingMutableContainers error:nil];
             if ([[dict objectForKey:@"status"] isEqualToString:@"success"]) {
                 loginSuccess = YES;

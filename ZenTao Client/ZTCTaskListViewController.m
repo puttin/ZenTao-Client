@@ -32,7 +32,7 @@
 {
     [super viewWillAppear:animated];
     ZTCAPIClient* api = [ZTCAPIClient sharedClient];
-    [api getPath:@"my-task.json" parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
+    [api getPath:[ZTCAPIClient getUrlWithType:[ZTCAPIClient getRequestType],@"m=my",@"f=task",nil] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
         NSMutableDictionary *dict = [ZTCAPIClient dealWithZTStrangeJSON:JSON];
         taskArray = [[dict objectForKey:@"data"] objectForKey:@"tasks"];
         //DLog(@"%@",taskArray);
