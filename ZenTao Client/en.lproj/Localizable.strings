@@ -35,3 +35,8 @@
 "task mailto" = "Mailto";
 
 "login" = "Log in";
+"login success title" = "Login Success";
+"login fail title" = "Login failed";
+"login fail message" = "Please check the settings";
+"login first time use title" = "First time use";
+"login first time use message" = "Please set";

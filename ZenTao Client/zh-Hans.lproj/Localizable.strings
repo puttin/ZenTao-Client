@@ -35,3 +35,8 @@
 "task mailto" = "抄送给";
 
 "login" = "登陆";
+"login success title" = "登陆成功";
+"login fail title" = "登录失败";
+"login fail message" = "请检查设置";
+"login first time using title" = "初次使用";
+"login first time using message" = "请设置";

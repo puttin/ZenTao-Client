@@ -123,7 +123,6 @@ enum {
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-#warning Potentially incomplete method implementation.
     // Return the number of sections.
     return 2;
 }
@@ -159,15 +158,13 @@ enum {
         case TaskSectionIndex:
             switch (indexPath.row) {
                 case TaskNameRowIndex:{
-                    //NSString *name = [taskDict objectForKey:@"name"];
                     NSString *desc = [taskDict objectForKey:@"desc"];
                     
                     CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000.0f);
                     
-                    //CGSize nameSize = [name sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
                     CGSize descSize = [desc sizeWithFont:[UIFont systemFontOfSize:SMALL_FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
                     
-                    CGFloat height = MAX(descSize.height, 44.0f);//nameSize.height+descSize.height;
+                    CGFloat height = MAX(descSize.height, 44.0f);
                     
                     return height + (CELL_CONTENT_MARGIN * 2);
                 }
@@ -186,7 +183,6 @@ enum {
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
     // Return the number of rows in the section.
     if ([taskDict count]) {        
         switch (section) {
@@ -199,7 +195,6 @@ enum {
             default:
                 break;
         }
-        //else if (section == 1) return 2;
 
     }
     return 0;
@@ -207,7 +202,6 @@ enum {
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-#warning Incomplete method implementation.
     UITableViewCell * cell = nil;
 	switch (indexPath.section) {
         case TaskSectionIndex:
@@ -218,16 +212,6 @@ enum {
                     cell = [tableView dequeueReusableCellWithIdentifier:@"TaskNameCell"];
                     if (!cell) {
                         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TaskNameCell"];
-                        //name
-//                        nameLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-//                        [nameLabel setLineBreakMode:UILineBreakModeWordWrap];
-//                        [nameLabel setMinimumFontSize:FONT_SIZE];
-//                        [nameLabel setNumberOfLines:0];
-//                        [nameLabel setFont:[UIFont systemFontOfSize:FONT_SIZE]];
-//                        [nameLabel setBackgroundColor:[UIColor clearColor]];
-//                        [nameLabel setTag:1];
-//                        //[[nameLabel layer] setBorderWidth:2.0f];
-//                        [[cell contentView] addSubview:nameLabel];
                         
                         //desc
                         descLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -240,40 +224,21 @@ enum {
                         //[[descLabel layer] setBorderWidth:2.0f];
                         [[cell contentView] addSubview:descLabel];
                     }
-                    //cell.textLabel.text = [taskDict objectForKey:@"name"];
-                    //[cell.textLabel setLineBreakMode:UILineBreakModeWordWrap];
                     
-                    //NSString *name = [taskDict objectForKey:@"name"];
                     NSString *desc = [taskDict objectForKey:@"desc"];
                     
                     CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000.0f);
                     
-                    //CGSize nameSize = [name sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
                     CGSize descSize = [desc sizeWithFont:[UIFont systemFontOfSize:SMALL_FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
-                    //name
-//                    if (!nameLabel)
-//                        nameLabel = (UILabel*)[cell viewWithTag:1];
-//                    
-//                    [nameLabel setText:name];
-//                    [nameLabel setFrame:CGRectMake(CELL_CONTENT_MARGIN, CELL_CONTENT_MARGIN, CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), nameSize.height)];
-                    //desc
                     if (!descLabel)
                         descLabel = (UILabel*)[cell viewWithTag:2];
                     
                     [descLabel setText:desc];
                     [descLabel setFrame:CGRectMake(CELL_CONTENT_MARGIN, CELL_CONTENT_MARGIN, CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), MAX(descSize.height, 44.0f))];
-                    //DLog(@"%@",[descLabel backgroundColor]);
                     
                     break;
                 }
-//                case TaskDescRowIndex:
-//                    cell = [tableView dequeueReusableCellWithIdentifier:@"TaskDescCell"];
-//                    if (!cell) {
-//                        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TaskDescCell"];
-//                    }
-//                    cell.textLabel.text = [taskDict objectForKey:@"desc"];
-//                    [cell.textLabel setLineBreakMode:UILineBreakModeWordWrap];
-//                    break;
+                    
                 default:
                     break;
             }

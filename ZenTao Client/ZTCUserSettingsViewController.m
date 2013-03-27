@@ -9,6 +9,7 @@
 #import "ZTCUserSettingsViewController.h"
 #import "ZTCAPIClient.h"
 #import "ZTCTaskListViewController.h"
+#import "ZTCNotice.h"
 
 enum {
 	AccountSectionIndex,
@@ -102,19 +103,15 @@ enum {
         [defaults setObject:url forKey:@"url"];
         [defaults setObject:type forKey:@"requestType"];
         [defaults synchronize];
-        /*
-         DLog(@"%@",[defaults stringForKey:@"account"]);
-         DLog(@"%@",[defaults stringForKey:@"password"]);
-         DLog(@"%@",[defaults stringForKey:@"url"]);
-         DLog(@"%@",[defaults stringForKey:@"requestType"]);
-         */
-         
+        
         [self.parentViewController dismissModalViewControllerAnimated:YES];
         UITableViewController *viewController = [[ZTCTaskListViewController alloc] initWithStyle:UITableViewStylePlain];
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
         [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+        [ZTCNotice showSuccessNoticeInView:viewController.view title:NSLocalizedString(@"login success title", nil)];
     } else {
         //login fail;
+        [ZTCNotice showErrorNoticeInView:self.view title:NSLocalizedString(@"login fail title", nil) message:NSLocalizedString(@"login fail message", nil)];
     }
 }
 

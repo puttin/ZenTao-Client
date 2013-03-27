@@ -12,6 +12,7 @@
 #import "ZTCAPIClient.h"
 #import "ZTCUserSettingsViewController.h"
 #import "ZTCTaskListViewController.h"
+#import "ZTCNotice.h"
 
 #define TEST_MODE 0
 static NSString * const kDemoAPIBaseURLString = @"http://demo.zentao.net";
@@ -23,7 +24,6 @@ static NSString * tmpUrl = nil;
 }
 
 + (ZTCAPIClient *)sharedClient {
-#warning Potentially incomplete method implementation.
     static ZTCAPIClient *_sharedClient = nil;
     if (TEST_MODE) {
         static dispatch_once_t onceToken;
@@ -36,14 +36,12 @@ static NSString * tmpUrl = nil;
             return nil;
         }
         if (urlChanged) {
-            //DLog(@"inside");
             NSURL *myURL;
             if ([tmpUrl hasPrefix:@"http://"]) {
                 myURL = [NSURL URLWithString:tmpUrl];
             } else {
                 myURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@",tmpUrl]];
             }
-            //DLog(@"%@",myURL);
             _sharedClient = [[ZTCAPIClient alloc] initWithBaseURL:myURL];
             urlChanged = NO;
         }
@@ -59,8 +57,6 @@ static NSString * tmpUrl = nil;
     NSURLResponse *response = nil;
     NSError *error = nil;
     
-    //NSURL *url = [NSURL URLWithString:urlStr];
-    
     ZTCAPIClient *httpClient = [ZTCAPIClient sharedClient];
     
     httpClient.parameterEncoding = AFFormURLParameterEncoding;
@@ -71,7 +67,6 @@ static NSString * tmpUrl = nil;
     if(error) {
         errorCallback(error, nil);
     } else {
-        //id JSON = AFJSONDecode(data, &error);
         successCallback(data);
     }
 }
@@ -156,8 +151,8 @@ static NSString * tmpUrl = nil;
         ZTCUserSettingsViewController *userSettingsView = [[ZTCUserSettingsViewController alloc] init];
         UINavigationController *usersSettingsNav = [[UINavigationController alloc] initWithRootViewController:userSettingsView];
         [[[[[UIApplication sharedApplication] delegate] window] rootViewController] presentModalViewController:usersSettingsNav animated:NO];
+        [ZTCNotice showSuccessNoticeInView:userSettingsView.view title:[NSString stringWithFormat:@"%@,%@",NSLocalizedString(@"login first time use title", nil),NSLocalizedString(@"login first time use message", nil)]];
     } else {
-        //DLog(@"**********************");
         if ([ZTCAPIClient loginWithAccount:[defaults stringForKey:@"account"] Password:[defaults stringForKey:@"password"] Mode:[defaults stringForKey:@"requestType"] BaseURL:[defaults stringForKey:@"url"]]) {
             //DLog(@"Log in SUCCESS");
             UITableViewController *viewController = [[ZTCTaskListViewController alloc] initWithStyle:UITableViewStylePlain];
@@ -168,6 +163,7 @@ static NSString * tmpUrl = nil;
             ZTCUserSettingsViewController *userSettingsView = [[ZTCUserSettingsViewController alloc] init];
             UINavigationController *usersSettingsNav = [[UINavigationController alloc] initWithRootViewController:userSettingsView];
             [[[[[UIApplication sharedApplication] delegate] window] rootViewController] presentModalViewController:usersSettingsNav animated:NO];
+            [ZTCNotice showErrorNoticeInView:userSettingsView.view title:NSLocalizedString(@"login fail title", nil) message:NSLocalizedString(@"login fail message", nil)];
         }
     }
     /*
@@ -229,42 +225,6 @@ static NSString * tmpUrl = nil;
         requestType = tmpRequestType;
     }
     return loginSuccess;
-    /*
-    ZTCAPIClient *api = [ZTCAPIClient sharedClient];
-     __block BOOL sessionSuccess = NO;
-     __block BOOL loginSuccess = NO;
-    //Get session
-    [api getPath:@"api-getsessionid.json" parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
-        //DLog(@"JSON:%@",JSON);
-        NSMutableDictionary *dict = [self dealWithZTStrangeJSON:JSON];
-        if ([dict count]) {
-            DLog(@"%@:%@", [[dict objectForKey:@"data"] objectForKey:@"sessionName"],[[dict objectForKey:@"data"] objectForKey:@"sessionID"]);
-        } else {
-            NSLog(@"ERROR: Get no session!");
-        }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"ERROR: %@",error);
-    }];
-    [api.operationQueue waitUntilAllOperationsAreFinished];
-    //Login
-    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-                            @"demo", @"account",
-                            @"123456", @"password",
-                            nil];
-    [api postPath:@"user-login.json" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
-        if ([[dict objectForKey:@"status"] isEqualToString:@"success"]) {
-            loginSuccess = YES;
-        } else {
-            loginSuccess = NO;
-        }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"ERROR: %@",error);
-        loginSuccess = NO;
-    }];
-    [api.operationQueue waitUntilAllOperationsAreFinished];
-    return NO;
-     */
 }
 
 //ZenTao PMS always return a JSON with escape-character

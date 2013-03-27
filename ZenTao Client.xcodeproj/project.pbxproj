@@ -23,6 +23,7 @@
 		D29D2ACB16F5B20200BB556F /* ZTCAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D29D2ACA16F5B20200BB556F /* ZTCAppDelegate.m */; };
 		D2A3FE9D16F8020B00BBBFB3 /* ZTCAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = D2A3FE9C16F8020B00BBBFB3 /* ZTCAPIClient.m */; };
 		D2A568D116F89F4900C45346 /* ZTCTaskListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D2A568D016F89F4900C45346 /* ZTCTaskListViewController.m */; };
+		D2C6A08A17032C5200BF2244 /* ZTCNotice.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C6A08917032C5200BF2244 /* ZTCNotice.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +54,8 @@
 		D2A3FE9C16F8020B00BBBFB3 /* ZTCAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZTCAPIClient.m; sourceTree = "<group>"; };
 		D2A568CF16F89F4900C45346 /* ZTCTaskListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZTCTaskListViewController.h; sourceTree = "<group>"; };
 		D2A568D016F89F4900C45346 /* ZTCTaskListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZTCTaskListViewController.m; sourceTree = "<group>"; };
+		D2C6A08817032C5200BF2244 /* ZTCNotice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZTCNotice.h; sourceTree = "<group>"; };
+		D2C6A08917032C5200BF2244 /* ZTCNotice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZTCNotice.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +115,8 @@
 				D29D2ACA16F5B20200BB556F /* ZTCAppDelegate.m */,
 				D2A3FE9B16F8020A00BBBFB3 /* ZTCAPIClient.h */,
 				D2A3FE9C16F8020B00BBBFB3 /* ZTCAPIClient.m */,
+				D2C6A08817032C5200BF2244 /* ZTCNotice.h */,
+				D2C6A08917032C5200BF2244 /* ZTCNotice.m */,
 				D28B102116FCA66600CB6794 /* ZTCUserSettingsViewController.h */,
 				D28B102216FCA66600CB6794 /* ZTCUserSettingsViewController.m */,
 				D2A568CF16F89F4900C45346 /* ZTCTaskListViewController.h */,
@@ -164,7 +169,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = ZTC;
-				LastUpgradeCheck = 0440;
+				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Puttin Wong";
 			};
 			buildConfigurationList = D29D2AB016F5B20200BB556F /* Build configuration list for PBXProject "ZenTao Client" */;
@@ -225,6 +230,7 @@
 				D2A568D116F89F4900C45346 /* ZTCTaskListViewController.m in Sources */,
 				D27253A216F97B99009B8508 /* ZTCTaskViewController.m in Sources */,
 				D28B102316FCA66600CB6794 /* ZTCUserSettingsViewController.m in Sources */,
+				D2C6A08A17032C5200BF2244 /* ZTCNotice.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,6 +265,9 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -274,7 +283,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -287,6 +296,9 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
@@ -295,7 +307,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
