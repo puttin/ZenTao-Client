@@ -7,9 +7,8 @@
 //
 
 #import "ZTCTaskViewController.h"
-
 #import "ZTCAPIClient.h"
-#import <QuartzCore/QuartzCore.h>
+#import "ZTCNotice.h"
 #define FONT_SIZE 19.0f
 #define SMALL_FONT_SIZE 14.0f
 #define CELL_CONTENT_WIDTH 300.0f
@@ -74,6 +73,7 @@ enum {
         self.title = [NSString stringWithFormat:@"%@ #%u",NSLocalizedString(@"task", nil),taskID];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"ERROR: %@",error);
+        [ZTCNotice showErrorNoticeInView:self.view title:NSLocalizedString(@"error", nil) message:error.localizedDescription];
     }];
     [api.operationQueue waitUntilAllOperationsAreFinished];
 }
@@ -124,6 +124,9 @@ enum {
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
+    if (!taskDict) {
+        return 0;
+    }
     return 2;
 }
 

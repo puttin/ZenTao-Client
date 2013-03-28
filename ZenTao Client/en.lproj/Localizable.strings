@@ -40,3 +40,7 @@
 "login fail message" = "Please check the settings";
 "login first time use title" = "First time use";
 "login first time use message" = "Please set";
+"network not reachable title" = "Network Error";
+"network not reachable message" = "Please check your network";
+
+"error" = "Error";

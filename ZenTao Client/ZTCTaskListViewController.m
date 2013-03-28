@@ -10,6 +10,7 @@
 
 #import "ZTCAPIClient.h"
 #import "ZTCTaskViewController.h"
+#import "ZTCNotice.h"
 @interface ZTCTaskListViewController ()
 
 @end
@@ -39,6 +40,7 @@
         [self.tableView reloadData];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"ERROR: %@",error);
+        [ZTCNotice showErrorNoticeInView:self.view title:NSLocalizedString(@"error", nil) message:error.localizedDescription];
     }];
     [api.operationQueue waitUntilAllOperationsAreFinished];
 }

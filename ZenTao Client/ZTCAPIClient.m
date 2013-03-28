@@ -29,6 +29,14 @@ static NSString * tmpUrl = nil;
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
             _sharedClient = [[ZTCAPIClient alloc] initWithBaseURL:[NSURL URLWithString:kDemoAPIBaseURLString]];
+            [_sharedClient setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+                if (status == AFNetworkReachabilityStatusNotReachable) {
+                    // Not reachable
+                    [ZTCNotice showErrorNoticeInView:[((UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController]) visibleViewController].view title:NSLocalizedString(@"network not reachable title", nil) message:NSLocalizedString(@"network not reachable message", nil)];
+                } else {
+                    // Reachable
+                }
+            }];
         });
         return _sharedClient;
     } else {
@@ -43,6 +51,14 @@ static NSString * tmpUrl = nil;
                 myURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@",tmpUrl]];
             }
             _sharedClient = [[ZTCAPIClient alloc] initWithBaseURL:myURL];
+            [_sharedClient setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+                if (status == AFNetworkReachabilityStatusNotReachable) {
+                    // Not reachable
+                    [ZTCNotice showErrorNoticeInView:[((UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController]) visibleViewController].view title:NSLocalizedString(@"network not reachable title", nil) message:NSLocalizedString(@"network not reachable message", nil)];
+                } else {
+                    // Reachable
+                }
+            }];
             urlChanged = NO;
         }
         return _sharedClient;
