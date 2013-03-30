@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EGORefreshTableHeaderView.h"
 
-@interface ZTCTaskListViewController : UITableViewController
+@interface ZTCTaskListViewController : UITableViewController <EGORefreshTableHeaderDelegate> {
+    EGORefreshTableHeaderView *_refreshHeaderView;
+	BOOL _reloading;
+}
 
 @end
