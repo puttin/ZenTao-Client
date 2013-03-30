@@ -44,3 +44,7 @@
 "network not reachable message" = "Please check your network";
 
 "error" = "Error";
+
+"Release to refresh..." = "Release to refresh...";
+"Pull down to refresh..." = "Pull down to refresh...";
+"Loading..." = "Loading...";
