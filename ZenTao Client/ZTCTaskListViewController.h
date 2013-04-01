@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "EGORefreshTableHeaderView.h"
+#import "PWLoadMoreTableFooterView.h"
 
 enum {
     TaskLoadIndex,
@@ -15,9 +16,12 @@ enum {
     TaskAppendIndex,
 } TaskUpdateIndicies;
 
-@interface ZTCTaskListViewController : UITableViewController <EGORefreshTableHeaderDelegate> {
+@interface ZTCTaskListViewController : UITableViewController <EGORefreshTableHeaderDelegate,PWLoadMoreTableFooterDelegate> {
     EGORefreshTableHeaderView *_refreshHeaderView;
 	BOOL _reloading;
+    PWLoadMoreTableFooterView *_loadMoreFooterView;
+	BOOL _loadMoreLoading;
+    bool _loadMoreAllLoaded;
 }
 
 @end

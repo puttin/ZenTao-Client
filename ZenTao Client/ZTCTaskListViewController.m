@@ -18,6 +18,12 @@
 @implementation ZTCTaskListViewController {
 @private
     NSMutableArray *taskArray;
+    NSString *taskType;
+    NSString *orderBy;
+    NSUInteger recTotal;
+    NSUInteger recPerPage;
+    NSUInteger pageID;
+    //type=assignedto&orderBy=id_desc&recTotal=1&recPerPage=5&pageID=1
 }
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -25,6 +31,8 @@
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
+        taskType = @"assignedto";
+        orderBy = @"id_desc";
     }
     return self;
 }
@@ -51,6 +59,16 @@
 	
 	//  update the last update date
 	[_refreshHeaderView refreshLastUpdatedDate];
+    
+    if (_loadMoreFooterView == nil) {
+		
+		PWLoadMoreTableFooterView *view = [[PWLoadMoreTableFooterView alloc] init];
+		view.delegate = self;
+		_loadMoreFooterView = view;
+		
+	}
+    
+    self.tableView.tableFooterView = _loadMoreFooterView;
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -162,21 +180,33 @@
     va_start(args, type);
     [api getPath:[ZTCAPIClient getUrlWithType:[ZTCAPIClient getRequestType] withParameters:args] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
         NSMutableDictionary *dict = [ZTCAPIClient dealWithZTStrangeJSON:JSON];
+        NSDictionary *pager = [[dict objectForKey:@"data"] objectForKey:@"pager"];
+        recTotal = [[pager objectForKey:@"recTotal"] intValue];
+        recPerPage = [[pager objectForKey:@"recPerPage"] intValue];
+        pageID = [[pager objectForKey:@"pageID"] intValue];
+        //DLog(@"pager:%@",pager);
+        if (pageID == [[pager objectForKey:@"pageTotal"] intValue]) {
+            _loadMoreAllLoaded = YES;
+        }
+        //DLog(@"%@",dict);
         switch (type) {
             case TaskLoadIndex:{
                 taskArray = [[dict objectForKey:@"data"] objectForKey:@"tasks"];
+                _loadMoreAllLoaded = NO;
                 [self.tableView reloadData];
                 break;
             }
             case TaskRefreshIndex:{
                 taskArray = [[dict objectForKey:@"data"] objectForKey:@"tasks"];
                 //DLog(@"%@",taskArray);
-                [self doneLoadingTableViewData];
+                [self doneRefreshTableViewData];
+                [self resetLoadMore];
                 [self.tableView reloadData];
                 break;
             }
             case TaskAppendIndex:{
                 [taskArray addObjectsFromArray:[[dict objectForKey:@"data"] objectForKey:@"tasks"]];
+                [self.tableView reloadData];
                 break;
             }
             default:
@@ -189,7 +219,7 @@
                 break;
             }
             case TaskRefreshIndex:{
-                [self doneLoadingTableViewData];
+                [self doneRefreshTableViewData];
                 break;
             }
             case TaskAppendIndex:{
@@ -207,17 +237,30 @@
 	
 	//  should be calling your tableviews data source model to reload
 	//  put here just for demo
+	//DLog(@"reloadTableViewDataSource");
 	_reloading = YES;
     [self getTaskListWithType:TaskRefreshIndex,@"m=my",@"f=task",nil];
 }
 
-- (void)doneLoadingTableViewData{
+- (void)doneRefreshTableViewData{
 	
 	//  model should call this when its done loading
 	_reloading = NO;
 	[_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
 }
+- (void)doneLoadMoreTableViewData {
+	
+	//  model should call this when its done loading
+	_loadMoreLoading = NO;
+	[_loadMoreFooterView pwLoadMoreTableDataSourceDidFinishedLoading];
+	
+}
 
+- (void)resetLoadMore {
+    //data source should call this when it can load more
+    _loadMoreAllLoaded = NO;
+    [_loadMoreFooterView resetLoadMore];
+}
 
 #pragma mark -
 #pragma mark UIScrollViewDelegate Methods
@@ -239,9 +282,8 @@
 #pragma mark EGORefreshTableHeaderDelegate Methods
 
 - (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view{
-	
+	//DLog(@"egoRefreshTableHeaderDidTriggerRefresh");
 	[self reloadTableViewDataSource];
-	//[self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:3.0];
 	
 }
 
@@ -256,5 +298,20 @@
 	return [NSDate date]; // should return date data source was last changed
 	
 }
+#pragma mark -
+#pragma mark PWLoadMoreTableFooterDelegate Methods
 
+- (void)pwLoadMore {
+	_loadMoreLoading = YES;
+    [self getTaskListWithType:TaskAppendIndex,@"m=my",@"f=task",[NSString stringWithFormat:@"type=%@",taskType],[NSString stringWithFormat:@"orderBy=%@",orderBy],[NSString stringWithFormat:@"recTotal=%u",recTotal],[NSString stringWithFormat:@"recPerPage=%u",recPerPage],[NSString stringWithFormat:@"pageID=%u",pageID+1],nil];
+	[self performSelector:@selector(doneLoadMoreTableViewData) withObject:nil afterDelay:1.0];
+}
+
+
+- (BOOL)pwLoadMoreTableDataSourceIsLoading {
+    return _loadMoreLoading;
+}
+- (BOOL)pwLoadMoreTableDataSourceAllLoaded {
+    return _loadMoreAllLoaded;
+}
 @end
