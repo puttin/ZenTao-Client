@@ -116,18 +116,25 @@ static NSString * tmpUrl = nil;
 }
 
 + (NSString*) getUrlWithType:(NSUInteger)type, ... {
-    id eachObject;
     va_list argumentList;
+    va_start(argumentList, type);
+    
+    NSString *str = [ZTCAPIClient getUrlWithType:type withParameters:argumentList];
+    va_end(argumentList);
+    
+    return str;
+}
+
++ (NSString*) getUrlWithType:(NSUInteger)type withParameters:(va_list)valist  {
+    id eachObject;
     switch (type) {
         case GETIndex:
         {
             NSMutableString *str = [NSMutableString stringWithString:@"?"];
-            va_start(argumentList, type);
-            while ((eachObject = va_arg(argumentList, id))){
+            while ((eachObject = va_arg(valist, id))){
                 [str appendString:@"&"];
                 [str appendString:(NSString *)eachObject];
             }
-            va_end(argumentList);
             [str appendString:@"&t=json"];
             [str deleteCharactersInRange:NSMakeRange(1, 1)];
             return str;
@@ -137,15 +144,13 @@ static NSString * tmpUrl = nil;
         case PATHINFOIndex:
         {
             NSMutableString *str = [[NSMutableString alloc] init];
-            va_start(argumentList, type);
-            while ((eachObject = va_arg(argumentList, id))){
+            while ((eachObject = va_arg(valist, id))){
                 [str appendString:@"-"];
                 //[str appendString:(NSString *)eachObject];
                 NSUInteger location = [((NSString *)eachObject) rangeOfString:@"="].location;
                 [str appendString:[((NSString *)eachObject) substringFromIndex:location+1]];
                 //DLog(@"location:%u",location);
             }
-            va_end(argumentList);
             [str appendString:@".json"];
             [str deleteCharactersInRange:NSMakeRange(0, 1)];
             return str;

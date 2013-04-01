@@ -23,4 +23,5 @@ enum {
 + (void) registerUserInfo;
 + (NSUInteger) getRequestType;
 + (NSString*) getUrlWithType:(NSUInteger)type, ...;
++ (NSString*) getUrlWithType:(NSUInteger)type withParameters:(va_list)valist;
 @end

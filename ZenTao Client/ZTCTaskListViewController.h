@@ -7,7 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EGORefreshTableHeaderView.h"
+#import "PWLoadMoreTableFooterView.h"
 
-@interface ZTCTaskListViewController : UITableViewController
+enum {
+    TaskLoadIndex,
+    TaskRefreshIndex,
+    TaskAppendIndex,
+} TaskUpdateIndicies;
+
+@interface ZTCTaskListViewController : UITableViewController <EGORefreshTableHeaderDelegate,PWLoadMoreTableFooterDelegate> {
+    EGORefreshTableHeaderView *_refreshHeaderView;
+	BOOL _reloading;
+    PWLoadMoreTableFooterView *_loadMoreFooterView;
+	BOOL _loadMoreLoading;
+    bool _loadMoreAllLoaded;
+}
 
 @end

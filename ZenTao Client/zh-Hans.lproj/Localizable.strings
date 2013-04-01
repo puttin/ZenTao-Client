@@ -44,3 +44,7 @@
 "network not reachable message" = "请检查你的网络";
 
 "error" = "错误";
+
+"Release to refresh..." = "释放以刷新...";
+"Pull down to refresh..." = "下拉以刷新...";
+"Loading..." = "正在加载...";
