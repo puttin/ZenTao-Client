@@ -9,6 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "EGORefreshTableHeaderView.h"
 
+enum {
+    TaskLoadIndex,
+    TaskRefreshIndex,
+    TaskAppendIndex,
+} TaskUpdateIndicies;
+
 @interface ZTCTaskListViewController : UITableViewController <EGORefreshTableHeaderDelegate> {
     EGORefreshTableHeaderView *_refreshHeaderView;
 	BOOL _reloading;

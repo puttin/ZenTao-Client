@@ -17,7 +17,7 @@
 
 @implementation ZTCTaskListViewController {
 @private
-    NSArray *taskArray;
+    NSMutableArray *taskArray;
 }
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -32,17 +32,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    ZTCAPIClient* api = [ZTCAPIClient sharedClient];
-    [api getPath:[ZTCAPIClient getUrlWithType:[ZTCAPIClient getRequestType],@"m=my",@"f=task",nil] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
-        NSMutableDictionary *dict = [ZTCAPIClient dealWithZTStrangeJSON:JSON];
-        taskArray = [[dict objectForKey:@"data"] objectForKey:@"tasks"];
-        //DLog(@"%@",taskArray);
-        [self.tableView reloadData];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"ERROR: %@",error);
-        [ZTCNotice showErrorNoticeInView:self.view title:NSLocalizedString(@"error", nil) message:error.localizedDescription];
-    }];
-    [api.operationQueue waitUntilAllOperationsAreFinished];
+    
+    [self getTaskListWithType:TaskLoadIndex,@"m=my",@"f=task",nil];
 }
 
 - (void)viewDidLoad
@@ -165,24 +156,59 @@
 #pragma mark -
 #pragma mark Data Source Loading / Reloading Methods
 
+- (void)getTaskListWithType:(NSUInteger)type,... {
+    ZTCAPIClient* api = [ZTCAPIClient sharedClient];
+    va_list args;
+    va_start(args, type);
+    [api getPath:[ZTCAPIClient getUrlWithType:[ZTCAPIClient getRequestType] withParameters:args] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
+        NSMutableDictionary *dict = [ZTCAPIClient dealWithZTStrangeJSON:JSON];
+        switch (type) {
+            case TaskLoadIndex:{
+                taskArray = [[dict objectForKey:@"data"] objectForKey:@"tasks"];
+                [self.tableView reloadData];
+                break;
+            }
+            case TaskRefreshIndex:{
+                taskArray = [[dict objectForKey:@"data"] objectForKey:@"tasks"];
+                //DLog(@"%@",taskArray);
+                [self doneLoadingTableViewData];
+                [self.tableView reloadData];
+                break;
+            }
+            case TaskAppendIndex:{
+                [taskArray addObjectsFromArray:[[dict objectForKey:@"data"] objectForKey:@"tasks"]];
+                break;
+            }
+            default:
+                break;
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"ERROR: %@",error);
+        switch (type) {
+            case TaskLoadIndex:{
+                break;
+            }
+            case TaskRefreshIndex:{
+                [self doneLoadingTableViewData];
+                break;
+            }
+            case TaskAppendIndex:{
+                break;
+            }
+            default:
+                break;
+        }
+        [ZTCNotice showErrorNoticeInView:self.view title:NSLocalizedString(@"error", nil) message:error.localizedDescription];
+    }];
+    va_end(args);
+}
+
 - (void)reloadTableViewDataSource{
 	
 	//  should be calling your tableviews data source model to reload
 	//  put here just for demo
 	_reloading = YES;
-    ZTCAPIClient* api = [ZTCAPIClient sharedClient];
-    [api getPath:[ZTCAPIClient getUrlWithType:[ZTCAPIClient getRequestType],@"m=my",@"f=task",nil] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
-        NSMutableDictionary *dict = [ZTCAPIClient dealWithZTStrangeJSON:JSON];
-        taskArray = [[dict objectForKey:@"data"] objectForKey:@"tasks"];
-        [self doneLoadingTableViewData];
-        //DLog(@"%@",taskArray);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"ERROR: %@",error);
-        [self doneLoadingTableViewData];
-        [ZTCNotice showErrorNoticeInView:self.view title:NSLocalizedString(@"error", nil) message:error.localizedDescription];
-    }];
-    [api.operationQueue waitUntilAllOperationsAreFinished];
-	
+    [self getTaskListWithType:TaskRefreshIndex,@"m=my",@"f=task",nil];
 }
 
 - (void)doneLoadingTableViewData{
@@ -190,8 +216,6 @@
 	//  model should call this when its done loading
 	_reloading = NO;
 	[_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
-    [self.tableView reloadData];
-	
 }
 
 
