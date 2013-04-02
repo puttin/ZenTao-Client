@@ -174,7 +174,7 @@ static NSString * tmpUrl = nil;
         [[[[[UIApplication sharedApplication] delegate] window] rootViewController] presentModalViewController:usersSettingsNav animated:NO];
         [ZTCNotice showSuccessNoticeInView:userSettingsView.view title:[NSString stringWithFormat:@"%@,%@",NSLocalizedString(@"login first time use title", nil),NSLocalizedString(@"login first time use message", nil)]];
     } else {
-        if ([ZTCAPIClient loginWithAccount:[defaults stringForKey:@"account"] Password:[defaults stringForKey:@"password"] Mode:[defaults stringForKey:@"requestType"] BaseURL:[defaults stringForKey:@"url"]]) {
+        if ([ZTCAPIClient loginWithAccount:[defaults stringForKey:@"account"] Password:[defaults stringForKey:@"password"] Mode:[defaults integerForKey:@"requestType"] BaseURL:[defaults stringForKey:@"url"]]) {
             //DLog(@"Log in SUCCESS");
             UITableViewController *viewController = [[ZTCTaskListViewController alloc] initWithStyle:UITableViewStylePlain];
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
@@ -197,12 +197,11 @@ static NSString * tmpUrl = nil;
 
 + (BOOL) loginWithAccount:(NSString *)account
                  Password:(NSString *)password
-                     Mode:(NSString *)mode
+                     Mode:(NSUInteger)mode
                   BaseURL:(NSString *)url {
     tmpUrl = url;
     urlChanged = YES;
-    NSBundle *bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"bundle"]];
-    NSUInteger tmpRequestType = [mode isEqualToString:NSLocalizedStringFromTableInBundle(@"RequestType PATH_INFO", @"Root", bundle, nil)]?PATHINFOIndex:GETIndex;
+    NSUInteger tmpRequestType = mode;
     __block BOOL sessionSuccess = NO;
     __block BOOL loginSuccess = NO;
     [ZTCAPIClient makeRequestTo:[ZTCAPIClient getUrlWithType:tmpRequestType,@"m=api",@"f=getsessionid",nil] parameters:nil method:@"GET" successCallback:^(id JSON){
