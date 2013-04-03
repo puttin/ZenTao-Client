@@ -184,7 +184,7 @@
         recTotal = [[pager objectForKey:@"recTotal"] intValue];
         recPerPage = [[pager objectForKey:@"recPerPage"] intValue];
         pageID = [[pager objectForKey:@"pageID"] intValue];
-        DLog(@"pager:%@",pager);
+        //DLog(@"pager:%@",pager);
         if (pageID == [[pager objectForKey:@"pageTotal"] intValue]) {
             _loadMoreAllLoaded = YES;
         }
