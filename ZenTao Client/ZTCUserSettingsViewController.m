@@ -31,34 +31,81 @@ enum {
 } ModeSectionRowIndicies;
 
 enum {
-    AccountTagIndex,
-    PasswordTagIndex,
-    URLTagIndex,
-} TextFieldTagIndicies;
+    kTextFieldTag = 1000,
+    kSegTag = 2000,
+} TagIndicies;
+
 @interface ZTCUserSettingsViewController ()
 
 @end
 
 @implementation ZTCUserSettingsViewController{
-    BOOL keyboardIsShown;
-    NSString *account;
-    NSString *password;
-    NSString *url;
-    NSUInteger mode;
 }
+
+@synthesize accountTextFiled = _accountTextFiled;
+@synthesize passwordTextFiled = _passwordTextFiled;
+@synthesize urlTextFiled = _urlTextFiled;
+@synthesize modeSeg = _modeSeg;
 
 - (id)init{
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         // Custom initialization
-        NSBundle *bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"bundle"]];
+        [self initAccountTextFiled];
+        [self initPasswordTextFiled];
+        [self initUrlTextFiled];
+        [self initModeSeg];
+        
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        account = [defaults stringForKey:@"account"];
-        password = [defaults stringForKey:@"password"];
-        url = [defaults stringForKey:@"url"];
-        mode = [[defaults stringForKey:@"requestType"] isEqualToString:NSLocalizedStringFromTableInBundle(@"RequestType GET", @"Root", bundle, nil)]?0:1;
+        
+        _accountTextFiled.text = [defaults stringForKey:@"account"];
+        _passwordTextFiled.text = [defaults stringForKey:@"password"];
+        _urlTextFiled.text = [defaults stringForKey:@"url"];
+        _modeSeg.selectedSegmentIndex = [defaults integerForKey:@"requestType"];
     }
     return self;
+}
+
+- (UITextField*)getBasicTextField {
+    UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(110, 10, 185, 30)];
+    textField.clearsOnBeginEditing = NO;
+    textField.adjustsFontSizeToFitWidth = YES;
+    textField.autocorrectionType = UITextAutocorrectionTypeNo;
+    textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    textField.backgroundColor = [UIColor clearColor];
+    textField.tag = kTextFieldTag;
+    [textField addTarget:self action:@selector(textFieldDone:) forControlEvents:UIControlEventEditingDidEndOnExit];
+    return textField;
+}
+
+- (void)initAccountTextFiled {
+    _accountTextFiled= [self getBasicTextField];
+    
+    _accountTextFiled.placeholder = @"demo";
+    _accountTextFiled.keyboardType = UIKeyboardTypeDefault;
+    _accountTextFiled.returnKeyType = UIReturnKeyNext;
+}
+
+- (void)initPasswordTextFiled {
+    _passwordTextFiled= [self getBasicTextField];
+    
+    _passwordTextFiled.placeholder = @"123456";
+    _passwordTextFiled.keyboardType = UIKeyboardTypeDefault;
+    _passwordTextFiled.returnKeyType = UIReturnKeyNext;
+}
+
+- (void)initUrlTextFiled {
+    _urlTextFiled= [self getBasicTextField];
+    
+    _urlTextFiled.placeholder = @"demo.zentao.net";
+    _urlTextFiled.keyboardType = UIKeyboardTypeDefault;
+    _urlTextFiled.returnKeyType = UIReturnKeyDone;
+}
+
+- (void)initModeSeg {
+    NSBundle *bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"bundle"]];
+    _modeSeg = [[UISegmentedControl alloc] initWithItems:[[NSArray alloc]initWithObjects:NSLocalizedStringFromTableInBundle(@"RequestType GET", @"Root", bundle, nil),NSLocalizedStringFromTableInBundle(@"RequestType PATH_INFO", @"Root", bundle, nil),nil]];
+    _modeSeg.tag = kSegTag;
 }
 
 - (void)viewDidLoad
@@ -95,13 +142,11 @@ enum {
 - (void)registerUserSettings
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSBundle *bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"bundle"]];
-    NSString *type = mode?NSLocalizedStringFromTableInBundle(@"RequestType PATH_INFO", @"Root", bundle, nil):NSLocalizedStringFromTableInBundle(@"RequestType GET", @"Root", bundle, nil);
-    if ([ZTCAPIClient loginWithAccount:account Password:password Mode:type BaseURL:url]) {
-        [defaults setObject:account forKey:@"account"];
-        [defaults setObject:password forKey:@"password"];
-        [defaults setObject:url forKey:@"url"];
-        [defaults setObject:type forKey:@"requestType"];
+    if ([ZTCAPIClient loginWithAccount:_accountTextFiled.text Password:_passwordTextFiled.text Mode:_modeSeg.selectedSegmentIndex BaseURL:_urlTextFiled.text]) {
+        [defaults setObject:_accountTextFiled.text forKey:@"account"];
+        [defaults setObject:_passwordTextFiled.text forKey:@"password"];
+        [defaults setObject:_urlTextFiled.text forKey:@"url"];
+        [defaults setInteger:_modeSeg.selectedSegmentIndex forKey:@"requestType"];
         [defaults synchronize];
         
         [self.parentViewController dismissModalViewControllerAnimated:YES];
@@ -192,51 +237,37 @@ enum {
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *CellIdentifier = @"Cell";
+    NSString *CellIdentifier = nil;
     UITableViewCell *cell = nil;
     NSBundle *bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"bundle"]];
     switch (indexPath.section) {
         case AccountSectionIndex:
         case URLSectionIndex:
         {
+            CellIdentifier = @"TextFieldCell";
             cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
             if (!cell) {
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:CellIdentifier];
                 cell.accessoryType = UITableViewCellAccessoryNone;
                 
             }
-            UITextField *textField = nil;
-            textField = [[UITextField alloc] initWithFrame:CGRectMake(110, 10, 185, 30)];
-            textField.clearsOnBeginEditing = NO;
-            textField.adjustsFontSizeToFitWidth = YES;
-            //textField.backgroundColor = [UIColor whiteColor];
-            textField.autocorrectionType = UITextAutocorrectionTypeNo; // no auto correction support
-            textField.autocapitalizationType = UITextAutocapitalizationTypeNone; // no auto capitalization support
-            textField.backgroundColor = [UIColor clearColor];
-            //[textField setDelegate:self];
-            [textField addTarget:self action:@selector(textFieldDone:) forControlEvents:UIControlEventEditingDidEndOnExit];
-            [textField addTarget:self action:@selector(textFieldChanged:) forControlEvents:UIControlEventEditingChanged];
+            for(UIView *subview in [cell subviews]) {
+                if([subview isKindOfClass:[UITextField class]]) {
+                    [subview removeFromSuperview];
+                }
+            }
             switch (indexPath.section) {
                 case AccountSectionIndex:
                     switch (indexPath.row) {
                         case AccountRowIndex:
                         {
-                            textField.tag = AccountTagIndex;
-                            textField.placeholder = @"demo";
-                            textField.text = account;
-                            textField.keyboardType = UIKeyboardTypeDefault;
-                            textField.returnKeyType = UIReturnKeyNext;
+                            [cell.contentView addSubview:_accountTextFiled];
                             cell.textLabel.text = NSLocalizedStringFromTableInBundle(@"Account", @"Root", bundle, nil);
-                            
                         }
                             break;
                         case PasswordRowIndex:
                         {
-                            textField.tag = PasswordTagIndex;
-                            textField.placeholder = @"123456";
-                            textField.text = password;
-                            textField.keyboardType = UIKeyboardTypeDefault;
-                            textField.returnKeyType = UIReturnKeyNext;
+                            [cell.contentView addSubview:_passwordTextFiled];
                             cell.textLabel.text = NSLocalizedStringFromTableInBundle(@"Password", @"Root", bundle, nil);
                         }
                             break;
@@ -248,15 +279,10 @@ enum {
                     switch (indexPath.row) {
                         case UrlRowIndex:
                         {
-                            textField.tag = URLTagIndex;
-                            textField.placeholder = @"demo.zentao.net";
-                            textField.text = url;
-                            textField.keyboardType = UIKeyboardTypeURL;
-                            textField.returnKeyType = UIReturnKeyDone;
+                            [cell.contentView addSubview:_urlTextFiled];
                             cell.textLabel.text = NSLocalizedStringFromTableInBundle(@"URL", @"Root", bundle, nil);
                         }
                             break;
-                            
                         default:
                             break;
                     }
@@ -264,12 +290,6 @@ enum {
                 default:
                     break;
             }
-            for(UIView *subview in [cell subviews]) {
-                if([subview isKindOfClass:[UITextField class]]) {
-                    [subview removeFromSuperview];
-                }
-            }
-            [cell addSubview:textField];
             
         }
             break;
@@ -280,28 +300,22 @@ enum {
             if (!cell) {
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
                 cell.accessoryType = UITableViewCellAccessoryNone;
+                cell.backgroundColor = [UIColor clearColor];
+                cell.backgroundView = [[UIView alloc] initWithFrame:CGRectZero];
                 
+            }
+            for(UIView *subview in [cell subviews]) {
+                if([subview isKindOfClass:[UISegmentedControl class]]) {
+                    [subview removeFromSuperview];
+                }
             }
             switch (indexPath.row) {
                 case ModeRowIndex:
                 {
-                    UISegmentedControl *seg = nil;
-                    seg = [[UISegmentedControl alloc] initWithItems:[[NSArray alloc]initWithObjects:NSLocalizedStringFromTableInBundle(@"RequestType GET", @"Root", bundle, nil),NSLocalizedStringFromTableInBundle(@"RequestType PATH_INFO", @"Root", bundle, nil),nil]];
-                    seg.selectedSegmentIndex = mode;
-                    cell.backgroundColor = [UIColor clearColor];
-                    cell.backgroundView = [[UIView alloc] initWithFrame:CGRectZero];
-                    //DLog(@"%f %f",cell.frame.size.width,cell.frame.size.height);
-                    [seg setCenter:CGPointMake(cell.frame.size.width/2, cell.frame.size.height/2)];
-                    [seg addTarget:self action:@selector(segChanged:) forControlEvents:UIControlEventValueChanged];
-                    for(UIView *subview in [cell subviews]) {
-                        if([subview isKindOfClass:[UISegmentedControl class]]) {
-                            [subview removeFromSuperview];
-                        }
-                    }
-                    [cell addSubview:seg];
+                    [_modeSeg setCenter:CGPointMake(cell.frame.size.width/2, cell.frame.size.height/2)];
+                    [cell.contentView addSubview:_modeSeg];
                 }
                     break;
-                    
                 default:
                     break;
             }
@@ -314,45 +328,6 @@ enum {
     return cell;
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
 #pragma mark - Table view delegate
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -360,81 +335,28 @@ enum {
     return nil;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
-}
-
 #pragma mark - TextField delegate
 
-- (IBAction)textFieldDone:(id)sender
+- (void)textFieldDone:(UITextField*)textField
 {
+    [textField resignFirstResponder];
+    UITextField *nextField = nil;
     NSIndexPath *newPath = nil;
-    switch (((UITextField*)sender).tag) {
-        case AccountTagIndex:
-            account = [(UITextField *)sender text];
-            newPath = [NSIndexPath indexPathForRow:PasswordRowIndex inSection:AccountSectionIndex];
-            break;
-        case PasswordTagIndex:
-            password = [(UITextField *)sender text];
-            newPath = [NSIndexPath indexPathForRow:UrlRowIndex inSection:URLSectionIndex];
-            break;
-        case URLTagIndex:
-            url = [(UITextField *)sender text];
-            break;
-
-        default:
-            break;
-    }
-    
-    if (newPath) {
-        UITableViewCell *nextCell = [self.tableView cellForRowAtIndexPath:newPath];
-        if (nextCell) {
-            UITextField *nextField = nil;
-            for (UIView *oneView in nextCell.subviews) {
-                if ([oneView isMemberOfClass:[UITextField class]]) {
-                    nextField = (UITextField *)oneView;
-                }
-            }
-            [nextField becomeFirstResponder];
-            [self.tableView scrollToRowAtIndexPath:newPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
-        } else {
-            [sender resignFirstResponder];
-        }
+    if (textField == _accountTextFiled) {
+        newPath = [NSIndexPath indexPathForRow:PasswordRowIndex inSection:AccountSectionIndex];
+        nextField = _passwordTextFiled;
+    } else if (textField == _passwordTextFiled) {
+        newPath = [NSIndexPath indexPathForRow:UrlRowIndex inSection:URLSectionIndex];
+        nextField = _urlTextFiled;
     } else {
-        [sender resignFirstResponder];
+        //
     }
-    
-}
-
-- (IBAction)textFieldChanged:(id)sender
-{
-    switch (((UITextField*)sender).tag) {
-        case AccountTagIndex:
-            account = [(UITextField *)sender text];
-            break;
-        case PasswordTagIndex:
-            password = [(UITextField *)sender text];
-            break;
-        case URLTagIndex:
-            url = [(UITextField *)sender text];
-            break;
-        default:
-            break;
+    if (newPath && [[self.tableView indexPathsForVisibleRows] containsObject:newPath]) {
+        if ([nextField canBecomeFirstResponder]) {
+            [self.tableView scrollToRowAtIndexPath:newPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+            [nextField becomeFirstResponder];
+        }
     }
-}
-
-#pragma mark - SegmentedControl delegate
-
-- (IBAction)segChanged:(id)sender
-{
-    mode = ((UISegmentedControl*)sender).selectedSegmentIndex;
 }
 
 @end

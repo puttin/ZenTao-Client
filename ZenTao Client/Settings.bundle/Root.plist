@@ -90,11 +90,11 @@
 			<key>Key</key>
 			<string>requestType</string>
 			<key>DefaultValue</key>
-			<string>PATH_INFO</string>
+			<string>1</string>
 			<key>Values</key>
 			<array>
-				<string>GET</string>
-				<string>PATH_INFO</string>
+				<string>0</string>
+				<string>1</string>
 			</array>
 			<key>Titles</key>
 			<array>
