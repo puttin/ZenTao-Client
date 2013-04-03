@@ -45,7 +45,6 @@ enum {
 @synthesize accountTextFiled = _accountTextFiled;
 @synthesize passwordTextFiled = _passwordTextFiled;
 @synthesize urlTextFiled = _urlTextFiled;
-@synthesize modeSeg = _modeSeg;
 
 - (id)init{
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -54,14 +53,12 @@ enum {
         [self initAccountTextFiled];
         [self initPasswordTextFiled];
         [self initUrlTextFiled];
-        [self initModeSeg];
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         
         _accountTextFiled.text = [defaults stringForKey:@"account"];
         _passwordTextFiled.text = [defaults stringForKey:@"password"];
         _urlTextFiled.text = [defaults stringForKey:@"url"];
-        _modeSeg.selectedSegmentIndex = [defaults integerForKey:@"requestType"];
     }
     return self;
 }
@@ -102,12 +99,6 @@ enum {
     _urlTextFiled.returnKeyType = UIReturnKeyDone;
 }
 
-- (void)initModeSeg {
-    NSBundle *bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"bundle"]];
-    _modeSeg = [[UISegmentedControl alloc] initWithItems:[[NSArray alloc]initWithObjects:NSLocalizedStringFromTableInBundle(@"RequestType GET", @"Root", bundle, nil),NSLocalizedStringFromTableInBundle(@"RequestType PATH_INFO", @"Root", bundle, nil),nil]];
-    _modeSeg.tag = kSegTag;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -142,11 +133,10 @@ enum {
 - (void)registerUserSettings
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if ([ZTCAPIClient loginWithAccount:_accountTextFiled.text Password:_passwordTextFiled.text Mode:_modeSeg.selectedSegmentIndex BaseURL:_urlTextFiled.text]) {
+    if ([ZTCAPIClient loginWithAccount:_accountTextFiled.text Password:_passwordTextFiled.text BaseURL:_urlTextFiled.text]) {
         [defaults setObject:_accountTextFiled.text forKey:@"account"];
         [defaults setObject:_passwordTextFiled.text forKey:@"password"];
         [defaults setObject:_urlTextFiled.text forKey:@"url"];
-        [defaults setInteger:_modeSeg.selectedSegmentIndex forKey:@"requestType"];
         [defaults synchronize];
         
         [self.parentViewController dismissModalViewControllerAnimated:YES];
@@ -184,9 +174,6 @@ enum {
         case URLSectionIndex:
             sectionName = NSLocalizedStringFromTableInBundle(@"URL Group", @"Root", bundle, nil);
             break;
-        case ModeSectionIndex:
-            sectionName = NSLocalizedStringFromTableInBundle(@"RequestType Group", @"Root", bundle, nil);
-            break;
         default:
             sectionName = @"";
             break;
@@ -206,9 +193,6 @@ enum {
         case URLSectionIndex:
             sectionFooter = NSLocalizedStringFromTableInBundle(@"URL Group Desc", @"Root", bundle, nil);
             break;
-        case ModeSectionIndex:
-            sectionFooter = NSLocalizedStringFromTableInBundle(@"RequestType Group Desc", @"Root", bundle, nil);
-            break;
         default:
             sectionFooter = @"";
             break;
@@ -224,9 +208,6 @@ enum {
             return 2;
             break;
         case URLSectionIndex:
-            return 1;
-            break;
-        case ModeSectionIndex:
             return 1;
             break;
         default:
@@ -291,34 +272,6 @@ enum {
                     break;
             }
             
-        }
-            break;
-        case ModeSectionIndex:
-        {
-            CellIdentifier = @"SegCell";
-            cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-            if (!cell) {
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-                cell.accessoryType = UITableViewCellAccessoryNone;
-                cell.backgroundColor = [UIColor clearColor];
-                cell.backgroundView = [[UIView alloc] initWithFrame:CGRectZero];
-                
-            }
-            for(UIView *subview in [cell subviews]) {
-                if([subview isKindOfClass:[UISegmentedControl class]]) {
-                    [subview removeFromSuperview];
-                }
-            }
-            switch (indexPath.row) {
-                case ModeRowIndex:
-                {
-                    [_modeSeg setCenter:CGPointMake(cell.frame.size.width/2, cell.frame.size.height/2)];
-                    [cell.contentView addSubview:_modeSeg];
-                }
-                    break;
-                default:
-                    break;
-            }
         }
             break;
         default:
