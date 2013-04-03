@@ -13,12 +13,13 @@
 enum {
 	GETIndex = 0,
     PATHINFOIndex = 1,
+    ERRORIndex = 100,
 } RequestTypeIndicies;
 
 @interface ZTCAPIClient : AFHTTPClient
 
 + (ZTCAPIClient *)sharedClient;
-+ (BOOL) loginWithAccount:(NSString *)account Password:(NSString *)password Mode:(NSUInteger)mode BaseURL:(NSString *)url;
++ (BOOL) loginWithAccount:(NSString *)account Password:(NSString *)password BaseURL:(NSString *)url;
 + (NSMutableDictionary *) dealWithZTStrangeJSON:(id)JSON;
 + (void) registerUserInfo;
 + (NSUInteger) getRequestType;
