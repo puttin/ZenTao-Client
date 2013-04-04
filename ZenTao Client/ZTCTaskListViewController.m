@@ -40,8 +40,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    [self getTaskListWithType:TaskLoadIndex,@"m=my",@"f=task",nil];
 }
 
 - (void)viewDidLoad
@@ -70,16 +68,17 @@
     
     self.tableView.tableFooterView = _loadMoreFooterView;
     
+    [self getTaskListWithType:TaskLoadIndex,@"m=my",@"f=task",nil];
+    
+    
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)viewDidUnload
 {
     [super viewDidUnload];
+    _loadMoreFooterView = nil;
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 }
@@ -118,45 +117,6 @@
     return cell;
 }
 
-/*
- // Override to support conditional editing of the table view.
- - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
- {
- // Return NO if you do not want the specified item to be editable.
- return YES;
- }
- */
-
-/*
- // Override to support editing the table view.
- - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
- {
- if (editingStyle == UITableViewCellEditingStyleDelete) {
- // Delete the row from the data source
- [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
- }
- else if (editingStyle == UITableViewCellEditingStyleInsert) {
- // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
- }
- }
- */
-
-/*
- // Override to support rearranging the table view.
- - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
- {
- }
- */
-
-/*
- // Override to support conditional rearranging of the table view.
- - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
- {
- // Return NO if you do not want the item to be re-orderable.
- return YES;
- }
- */
-
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -171,6 +131,7 @@
     [self.navigationController pushViewController:detailViewController animated:YES];
     
 }
+
 #pragma mark -
 #pragma mark Data Source Loading / Reloading Methods
 
@@ -185,15 +146,14 @@
         recPerPage = [[pager objectForKey:@"recPerPage"] intValue];
         pageID = [[pager objectForKey:@"pageID"] intValue];
         //DLog(@"pager:%@",pager);
-        if (pageID == [[pager objectForKey:@"pageTotal"] intValue]) {
+        if (pageID >= [[pager objectForKey:@"pageTotal"] intValue]) {
             _loadMoreAllLoaded = YES;
-        }
+        } else
+            _loadMoreAllLoaded = NO;
         //DLog(@"%@",dict);
         switch (type) {
             case TaskLoadIndex:{
                 taskArray = [[dict objectForKey:@"data"] objectForKey:@"tasks"];
-                _loadMoreAllLoaded = NO;
-                [self.tableView reloadData];
                 break;
             }
             case TaskRefreshIndex:{
@@ -201,17 +161,17 @@
                 //DLog(@"%@",taskArray);
                 [self doneRefreshTableViewData];
                 [self resetLoadMore];
-                [self.tableView reloadData];
                 break;
             }
             case TaskAppendIndex:{
                 [taskArray addObjectsFromArray:[[dict objectForKey:@"data"] objectForKey:@"tasks"]];
-                [self.tableView reloadData];
                 break;
             }
             default:
                 break;
         }
+        [self doneLoadMoreTableViewData];
+        [self.tableView reloadData];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"ERROR: %@",error);
         switch (type) {
@@ -228,6 +188,7 @@
             default:
                 break;
         }
+        [self doneLoadMoreTableViewData];
         [ZTCNotice showErrorNoticeInView:self.view title:NSLocalizedString(@"error", nil) message:error.localizedDescription];
     }];
     va_end(args);
@@ -258,7 +219,6 @@
 
 - (void)resetLoadMore {
     //data source should call this when it can load more
-    _loadMoreAllLoaded = NO;
     [_loadMoreFooterView resetLoadMore];
 }
 
@@ -304,7 +264,6 @@
 - (void)pwLoadMore {
 	_loadMoreLoading = YES;
     [self getTaskListWithType:TaskAppendIndex,@"m=my",@"f=task",[NSString stringWithFormat:@"type=%@",taskType],[NSString stringWithFormat:@"orderBy=%@",orderBy],[NSString stringWithFormat:@"recTotal=%u",recTotal],[NSString stringWithFormat:@"recPerPage=%u",recPerPage],[NSString stringWithFormat:@"pageID=%u",pageID+1],nil];
-	[self performSelector:@selector(doneLoadMoreTableViewData) withObject:nil afterDelay:1.0];
 }
 
 
