@@ -18,7 +18,7 @@
 static NSString * const kDemoAPIBaseURLString = @"http://demo.zentao.net";
 static NSString * const kCookieURLString = @"demo.zentao.net";
 static BOOL urlChanged = NO;
-static NSUInteger requestType = 0;
+static NSUInteger requestType = ERRORIndex;
 static NSString * tmpUrl = nil;
 @implementation ZTCAPIClient{
 }
@@ -50,6 +50,7 @@ static NSString * tmpUrl = nil;
             } else {
                 myURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@",tmpUrl]];
             }
+            //DLog(@"%@",myURL);
             _sharedClient = [[ZTCAPIClient alloc] initWithBaseURL:myURL];
             [_sharedClient setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
                 if (status == AFNetworkReachabilityStatusNotReachable) {
@@ -72,12 +73,16 @@ static NSString * tmpUrl = nil;
     
     NSURLResponse *response = nil;
     NSError *error = nil;
-    
-    ZTCAPIClient *httpClient = [ZTCAPIClient sharedClient];
-    
-    httpClient.parameterEncoding = AFFormURLParameterEncoding;
-    
-    NSMutableURLRequest *request = [httpClient requestWithMethod:method path:urlStr parameters:params];
+    NSURL *url = [NSURL URLWithString:urlStr];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:method];
+    if (params) {
+        if ([method isEqualToString:@"GET"] || [method isEqualToString:@"HEAD"] || [method isEqualToString:@"DELETE"]) {
+            url = [NSURL URLWithString:[[url absoluteString] stringByAppendingFormat:[urlStr rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@", AFQueryStringFromParametersWithEncoding(params, NSUTF8StringEncoding)]];
+            [request setURL:url];
+        }
+    }
+    //DLog(@"%@",url);
     NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
     
     if(error) {
@@ -116,20 +121,27 @@ static NSString * tmpUrl = nil;
 }
 
 + (NSString*) getUrlWithType:(NSUInteger)type, ... {
-    id eachObject;
     va_list argumentList;
+    va_start(argumentList, type);
+    
+    NSString *str = [ZTCAPIClient getUrlWithType:type withParameters:argumentList];
+    va_end(argumentList);
+    
+    return str;
+}
+
++ (NSString*) getUrlWithType:(NSUInteger)type withParameters:(va_list)valist  {
+    id eachObject;
     switch (type) {
         case GETIndex:
         {
-            NSMutableString *str = [NSMutableString stringWithString:@"?"];
-            va_start(argumentList, type);
-            while ((eachObject = va_arg(argumentList, id))){
+            NSMutableString *str = [NSMutableString stringWithString:@"index.php?"];
+            while ((eachObject = va_arg(valist, id))){
                 [str appendString:@"&"];
                 [str appendString:(NSString *)eachObject];
             }
-            va_end(argumentList);
             [str appendString:@"&t=json"];
-            [str deleteCharactersInRange:NSMakeRange(1, 1)];
+            [str deleteCharactersInRange:NSMakeRange(10, 1)];
             return str;
         }
             break;
@@ -137,15 +149,13 @@ static NSString * tmpUrl = nil;
         case PATHINFOIndex:
         {
             NSMutableString *str = [[NSMutableString alloc] init];
-            va_start(argumentList, type);
-            while ((eachObject = va_arg(argumentList, id))){
+            while ((eachObject = va_arg(valist, id))){
                 [str appendString:@"-"];
                 //[str appendString:(NSString *)eachObject];
                 NSUInteger location = [((NSString *)eachObject) rangeOfString:@"="].location;
                 [str appendString:[((NSString *)eachObject) substringFromIndex:location+1]];
                 //DLog(@"location:%u",location);
             }
-            va_end(argumentList);
             [str appendString:@".json"];
             [str deleteCharactersInRange:NSMakeRange(0, 1)];
             return str;
@@ -169,7 +179,7 @@ static NSString * tmpUrl = nil;
         [[[[[UIApplication sharedApplication] delegate] window] rootViewController] presentModalViewController:usersSettingsNav animated:NO];
         [ZTCNotice showSuccessNoticeInView:userSettingsView.view title:[NSString stringWithFormat:@"%@,%@",NSLocalizedString(@"login first time use title", nil),NSLocalizedString(@"login first time use message", nil)]];
     } else {
-        if ([ZTCAPIClient loginWithAccount:[defaults stringForKey:@"account"] Password:[defaults stringForKey:@"password"] Mode:[defaults stringForKey:@"requestType"] BaseURL:[defaults stringForKey:@"url"]]) {
+        if ([ZTCAPIClient loginWithAccount:[defaults stringForKey:@"account"] Password:[defaults stringForKey:@"password"] BaseURL:[defaults stringForKey:@"url"]]) {
             //DLog(@"Log in SUCCESS");
             UITableViewController *viewController = [[ZTCTaskListViewController alloc] initWithStyle:UITableViewStylePlain];
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
@@ -190,18 +200,41 @@ static NSString * tmpUrl = nil;
     */
 }
 
++ (NSUInteger) getRequestTypeOfWebsite:(NSString *)url {
+    NSBundle *bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"bundle"]];
+    __block NSUInteger type = ERRORIndex;
+    NSString *configURL = [NSString stringWithFormat:@"%@index.php?mode=getconfig",url];
+    //DLog(@"%@",configURL);
+    [ZTCAPIClient makeRequestTo:configURL parameters:nil method:@"GET" successCallback:^(id JSON){
+        NSMutableDictionary *dict = [NSJSONSerialization JSONObjectWithData:JSON options:NSJSONReadingMutableContainers error:nil];
+        //DLog(@"%@",dict);
+        NSString *requestType = [dict objectForKey:@"requestType"];
+        if (requestType) {
+            type = [requestType isEqualToString:NSLocalizedStringFromTableInBundle(@"RequestType PATH_INFO", @"Root", bundle, nil)]?PATHINFOIndex:GETIndex;
+        }
+    } errorCallback:^(NSError *error, NSString *errorMsg) {
+        NSLog(@"ERROR: Get request type error:%@",error);
+    }];
+    //DLog(@"%u",type);
+    return type;
+}
+
 + (BOOL) loginWithAccount:(NSString *)account
                  Password:(NSString *)password
-                     Mode:(NSString *)mode
                   BaseURL:(NSString *)url {
-    tmpUrl = url;
-    urlChanged = YES;
-    NSBundle *bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"bundle"]];
-    NSUInteger tmpRequestType = [mode isEqualToString:NSLocalizedStringFromTableInBundle(@"RequestType PATH_INFO", @"Root", bundle, nil)]?PATHINFOIndex:GETIndex;
+    if (![url hasSuffix:@"/"]) {
+        url = [NSString stringWithFormat:@"%@/",url];
+    }
+    if (![url hasPrefix:@"http://"]) {
+        url = [NSString stringWithFormat:@"http://%@",url];
+    }
+    NSUInteger tmpRequestType = [ZTCAPIClient getRequestTypeOfWebsite:url];
+    if (tmpRequestType == ERRORIndex) {
+        return NO;
+    }
     __block BOOL sessionSuccess = NO;
     __block BOOL loginSuccess = NO;
-    [ZTCAPIClient makeRequestTo:[ZTCAPIClient getUrlWithType:tmpRequestType,@"m=api",@"f=getsessionid",nil] parameters:nil method:@"GET" successCallback:^(id JSON){
-        //DLog(@"JSON:%@",JSON);
+    [ZTCAPIClient makeRequestTo:[NSString stringWithFormat:@"%@%@",url,[ZTCAPIClient getUrlWithType:tmpRequestType,@"m=api",@"f=getsessionid",nil]] parameters:nil method:@"GET" successCallback:^(id JSON){
         NSMutableDictionary *dict = [self dealWithZTStrangeJSON:JSON];
         //DLog(@"%@",dict);
         if ([dict count]) {
@@ -222,8 +255,9 @@ static NSString * tmpUrl = nil;
                                 account, @"account",
                                 password, @"password",
                                 nil];
-        [ZTCAPIClient makeRequestTo:[ZTCAPIClient getUrlWithType:tmpRequestType,@"m=user",@"f=login",nil] parameters:params method:@"POST" successCallback:^(id JSON) {
+        [ZTCAPIClient makeRequestTo:[NSString stringWithFormat:@"%@%@",url,[ZTCAPIClient getUrlWithType:tmpRequestType,@"m=user",@"f=login",nil]] parameters:params method:@"GET" successCallback:^(id JSON) {
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:JSON options:NSJSONReadingMutableContainers error:nil];
+            //DLog(@"%@",dict);
             if ([[dict objectForKey:@"status"] isEqualToString:@"success"]) {
                 loginSuccess = YES;
             } else {
@@ -240,6 +274,8 @@ static NSString * tmpUrl = nil;
     if (loginSuccess) {
         requestType = tmpRequestType;
     }
+    tmpUrl = url;
+    urlChanged = YES;
     return loginSuccess;
 }
 

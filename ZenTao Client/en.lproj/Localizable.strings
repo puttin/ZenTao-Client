@@ -15,7 +15,7 @@
 "task module" = "Module";
 "task story" = "Story";
 "task assignedto" = "Assign";
-"task assignedto at" = "at";
+"task at" = "at";
 "task type" = "Type";
 "task type design"  = "Design";
 "task type devel"   = "Devel";
@@ -33,6 +33,21 @@
 "task status closed"  = "Closed";
 "task pri" = "Pri";
 "task mailto" = "Mailto";
+"task effort" = "Effort";
+"task estimatestart" = "estStarted";
+"task real" = "Real start";
+"task deadline" = "Deadline";
+"task hour" = "Hour";
+"task estimate" = "Estimate";
+"task consumed" = "Consumed";
+"task left" = "Left";
+"task lifetime" = "Lifetime";
+"task opened" = "Opened";
+"task finished" = "Finished";
+"task canceled" = "Canceled";
+"task closed" = "Closed";
+"task closedreason" = "Reason";
+"task edited" = "Edited";
 
 "login" = "Log in";
 "login success title" = "Login Success";
@@ -44,3 +59,7 @@
 "network not reachable message" = "Please check your network";
 
 "error" = "Error";
+
+"Release to refresh..." = "Release to refresh...";
+"Pull down to refresh..." = "Pull down to refresh...";
+"Loading..." = "Loading...";

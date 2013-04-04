@@ -10,4 +10,8 @@
 
 @interface ZTCUserSettingsViewController : UITableViewController
 
+@property(nonatomic,strong) UITextField *accountTextFiled;
+@property(nonatomic,strong) UITextField *passwordTextFiled;
+@property(nonatomic,strong) UITextField *urlTextFiled;
+
 @end

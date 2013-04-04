@@ -15,7 +15,7 @@
 "task module" = "模块";
 "task story" = "需求";
 "task assignedto" = "指派给";
-"task assignedto at" = "在";
+"task at" = "在";
 "task type" = "类型";
 "task type design"  = "设计";
 "task type devel"   = "开发";
@@ -33,6 +33,21 @@
 "task status closed"  = "已关闭";
 "task pri" = "优先级";
 "task mailto" = "抄送给";
+"task effort" = "工时信息";
+"task estimatestart" = "预计开始";
+"task real" = "实际开始";
+"task deadline" = "截止日期";
+"task hour" = "工时";
+"task estimate" = "最初预计";
+"task consumed" = "总消耗";
+"task left" = "预计剩余";
+"task lifetime" = "任务的一生";
+"task opened" = "有谁创建";
+"task finished" = "由谁完成";
+"task canceled" = "由谁取消";
+"task closed" = "由谁关闭";
+"task closedreason" = "关闭原因";
+"task edited" = "最后编辑";
 
 "login" = "登陆";
 "login success title" = "登陆成功";
@@ -44,3 +59,7 @@
 "network not reachable message" = "请检查你的网络";
 
 "error" = "错误";
+
+"Release to refresh..." = "释放以刷新...";
+"Pull down to refresh..." = "下拉以刷新...";
+"Loading..." = "正在加载...";

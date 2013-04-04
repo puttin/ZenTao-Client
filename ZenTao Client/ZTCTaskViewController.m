@@ -17,17 +17,21 @@
 #define DEFAULT_GROUPED_HEADER_FONT_SIZE 23.0f
 #define DEFAULT_GROUPED_HEADER_HEIGHT 22.0f
 enum {
-	TaskSectionIndex,
+	TaskSectionIndex = 0,
     TaskBasicSectionIndex,
+    TaskEffortSectionIndex,
+    TaskLifetimeSectionIndex,
+    SectionsCount,              //count
 } TaskSectionIndicies;
 
 enum {
-	TaskNameRowIndex,
+	TaskNameRowIndex = 0,
 //	TaskDescRowIndex,
+    InfoRowsCount,              //count
 } TaskInformationSectionRowIndicies;
 
 enum {
-    TaskProjectRowIndex,
+    TaskProjectRowIndex = 0,
     TaskModuleRowIndex,
     TaskStoryRowIndex,
     TaskAssignedToRowIndex,
@@ -35,8 +39,28 @@ enum {
     TaskStatusRowIndex,
     TaskPriRowIndex,
     TaskMailToRowIndex,
+    BasicInfoRowsCount,         //count
 } TaskBasicInformationSectionRowIndicies;
 
+enum {
+    TaskEstimateStartRowIndex = 0,
+    TaskRealRowIndex,
+    TaskDeadlineRowIndex,
+    TaskEstimateRowIndex,
+    TaskConsumedRowIndex,
+    TaskLeftRowIndex,
+    EffortRowsCount,            //count
+} TaskEffortSectionIndicies;
+
+enum {
+    TaskOpenedRowIndex = 0,
+    TaskFinishedRowIndex,
+    TaskCanceledRowIndex,
+    TaskClosedRowIndex,
+    TaskClosedReasonRowIndex,
+    TaskEditedRowIndex,
+    LifetimeRowsCount,          //count
+} TaskLifetimeSectionRowIndicies;
 
 @interface ZTCTaskViewController ()
 
@@ -47,6 +71,9 @@ enum {
     unsigned int taskID;
     NSDictionary *projectDict;
     NSDictionary *taskDict;
+    NSDictionary *usersDict;
+    NSDictionary *cellKeyDict;
+    NSDictionary *cellValueDict;
 }
 
 - (id)initWithTaskID:(unsigned int) ID
@@ -65,10 +92,61 @@ enum {
     ZTCAPIClient* api = [ZTCAPIClient sharedClient];
     [api getPath:[ZTCAPIClient getUrlWithType:[ZTCAPIClient getRequestType],@"m=task",@"f=view",[NSString stringWithFormat:@"id=%u",taskID],nil] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
         NSMutableDictionary *dict = [ZTCAPIClient dealWithZTStrangeJSON:JSON];
-        //DLog(@"%@",dict);
         projectDict = [[dict objectForKey:@"data"] objectForKey:@"project"];
         taskDict = [[dict objectForKey:@"data"] objectForKey:@"task"];
+        usersDict = [[dict objectForKey:@"data"] objectForKey:@"users"];
+        //DLog(@"%@",usersDict);
         //DLog(@"%@",taskDict);
+        cellKeyDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                       //TaskBasicSectionIndex
+                       NSLocalizedString(@"task project", nil),[NSString stringWithFormat:@"%u:%u",TaskBasicSectionIndex,TaskProjectRowIndex],
+                       NSLocalizedString(@"task module", nil),[NSString stringWithFormat:@"%u:%u",TaskBasicSectionIndex,TaskModuleRowIndex],
+                       NSLocalizedString(@"task story", nil),[NSString stringWithFormat:@"%u:%u",TaskBasicSectionIndex,TaskStoryRowIndex],
+                       NSLocalizedString(@"task assignedto", nil),[NSString stringWithFormat:@"%u:%u",TaskBasicSectionIndex,TaskAssignedToRowIndex],
+                       NSLocalizedString(@"task type", nil),[NSString stringWithFormat:@"%u:%u",TaskBasicSectionIndex,TaskTypeRowIndex],
+                       NSLocalizedString(@"task status", nil),[NSString stringWithFormat:@"%u:%u",TaskBasicSectionIndex,TaskStatusRowIndex],
+                       NSLocalizedString(@"task pri", nil),[NSString stringWithFormat:@"%u:%u",TaskBasicSectionIndex,TaskPriRowIndex],
+                       NSLocalizedString(@"task mailto", nil),[NSString stringWithFormat:@"%u:%u",TaskBasicSectionIndex,TaskMailToRowIndex],
+                       //TaskEffortSectionIndex
+                       NSLocalizedString(@"task estimatestart", nil),[NSString stringWithFormat:@"%u:%u",TaskEffortSectionIndex,TaskEstimateStartRowIndex],
+                       NSLocalizedString(@"task real", nil),[NSString stringWithFormat:@"%u:%u",TaskEffortSectionIndex,TaskRealRowIndex],
+                       NSLocalizedString(@"task deadline", nil),[NSString stringWithFormat:@"%u:%u",TaskEffortSectionIndex,TaskDeadlineRowIndex],
+                       NSLocalizedString(@"task estimate", nil),[NSString stringWithFormat:@"%u:%u",TaskEffortSectionIndex,TaskEstimateRowIndex],
+                       NSLocalizedString(@"task consumed", nil),[NSString stringWithFormat:@"%u:%u",TaskEffortSectionIndex,TaskConsumedRowIndex],
+                       NSLocalizedString(@"task left", nil),[NSString stringWithFormat:@"%u:%u",TaskEffortSectionIndex,TaskLeftRowIndex],
+                       //TaskLifetimeSectionIndex
+                       NSLocalizedString(@"task opened", nil),[NSString stringWithFormat:@"%u:%u",TaskLifetimeSectionIndex,TaskOpenedRowIndex],
+                       NSLocalizedString(@"task finished", nil),[NSString stringWithFormat:@"%u:%u",TaskLifetimeSectionIndex,TaskFinishedRowIndex],
+                       NSLocalizedString(@"task canceled", nil),[NSString stringWithFormat:@"%u:%u",TaskLifetimeSectionIndex,TaskCanceledRowIndex],
+                       NSLocalizedString(@"task closed", nil),[NSString stringWithFormat:@"%u:%u",TaskLifetimeSectionIndex,TaskClosedRowIndex],
+                       NSLocalizedString(@"task closedreason", nil),[NSString stringWithFormat:@"%u:%u",TaskLifetimeSectionIndex,TaskClosedReasonRowIndex],
+                       NSLocalizedString(@"task edited", nil),[NSString stringWithFormat:@"%u:%u",TaskLifetimeSectionIndex,TaskEditedRowIndex],
+                       nil];
+        cellValueDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                         //TaskBasicSectionIndex
+                         [projectDict objectForKey:@"name"],[NSString stringWithFormat:@"%u:%u",TaskBasicSectionIndex,TaskProjectRowIndex],
+                         [taskDict objectForKey:@"module"],[NSString stringWithFormat:@"%u:%u",TaskBasicSectionIndex,TaskModuleRowIndex],
+                         [[taskDict objectForKey:@"story"] intValue]?[taskDict objectForKey:@"storyTitle"]:@"",[NSString stringWithFormat:@"%u:%u",TaskBasicSectionIndex,TaskStoryRowIndex],
+                         [NSString stringWithFormat:@"%@ %@ %@",[taskDict objectForKey:@"assignedToRealName"],NSLocalizedString(@"task at", nil),[taskDict objectForKey:@"assignedDate"]],[NSString stringWithFormat:@"%u:%u",TaskBasicSectionIndex,TaskAssignedToRowIndex],
+                         [[NSBundle mainBundle] localizedStringForKey:([NSString stringWithFormat:@"task type %@",[taskDict objectForKey:@"type"]]) value:@"" table:nil],[NSString stringWithFormat:@"%u:%u",TaskBasicSectionIndex,TaskTypeRowIndex],
+                         [[NSBundle mainBundle] localizedStringForKey:([NSString stringWithFormat:@"task status %@",[taskDict objectForKey:@"status"]]) value:@"" table:nil],[NSString stringWithFormat:@"%u:%u",TaskBasicSectionIndex,TaskStatusRowIndex],
+                         [taskDict objectForKey:@"pri"],[NSString stringWithFormat:@"%u:%u",TaskBasicSectionIndex,TaskPriRowIndex],
+                         [taskDict objectForKey:@"mailto"],[NSString stringWithFormat:@"%u:%u",TaskBasicSectionIndex,TaskMailToRowIndex],
+                         //TaskEffortSectionIndex
+                         [taskDict objectForKey:@"estStarted"],[NSString stringWithFormat:@"%u:%u",TaskEffortSectionIndex,TaskEstimateStartRowIndex],
+                         [taskDict objectForKey:@"realStarted"],[NSString stringWithFormat:@"%u:%u",TaskEffortSectionIndex,TaskRealRowIndex],
+                         [taskDict objectForKey:@"deadline"],[NSString stringWithFormat:@"%u:%u",TaskEffortSectionIndex,TaskDeadlineRowIndex],
+                         [NSString stringWithFormat:@"%@ %@",[taskDict objectForKey:@"estimate"],NSLocalizedString(@"task hour", nil)],[NSString stringWithFormat:@"%u:%u",TaskEffortSectionIndex,TaskEstimateRowIndex],
+                         [NSString stringWithFormat:@"%@ %@",[taskDict objectForKey:@"consumed"],NSLocalizedString(@"task hour", nil)],[NSString stringWithFormat:@"%u:%u",TaskEffortSectionIndex,TaskConsumedRowIndex],
+                         [NSString stringWithFormat:@"%@ %@",[taskDict objectForKey:@"left"],NSLocalizedString(@"task hour", nil)],[NSString stringWithFormat:@"%u:%u",TaskEffortSectionIndex,TaskLeftRowIndex],
+                         //TaskLifetimeSectionIndex
+                         [[taskDict objectForKey:@"openedDate"] isEqualToString:@""]?@"":[NSString stringWithFormat:@"%@ %@ %@",[usersDict objectForKey:[taskDict objectForKey:@"openedBy"]],NSLocalizedString(@"task at", nil),[taskDict objectForKey:@"openedDate"]],[NSString stringWithFormat:@"%u:%u",TaskLifetimeSectionIndex,TaskOpenedRowIndex],
+                         [[taskDict objectForKey:@"finishedDate"] isEqualToString:@""]?@"":[NSString stringWithFormat:@"%@ %@ %@",[usersDict objectForKey:[taskDict objectForKey:@"finishedBy"]],NSLocalizedString(@"task at", nil),[taskDict objectForKey:@"finishedDate"]],[NSString stringWithFormat:@"%u:%u",TaskLifetimeSectionIndex,TaskFinishedRowIndex],
+                         [[taskDict objectForKey:@"canceledDate"] isEqualToString:@""]?@"":[NSString stringWithFormat:@"%@ %@ %@",[usersDict objectForKey:[taskDict objectForKey:@"canceledBy"]],NSLocalizedString(@"task at", nil),[taskDict objectForKey:@"canceledDate"]],[NSString stringWithFormat:@"%u:%u",TaskLifetimeSectionIndex,TaskCanceledRowIndex],
+                         [[taskDict objectForKey:@"closedDate"] isEqualToString:@""]?@"":[NSString stringWithFormat:@"%@ %@ %@",[usersDict objectForKey:[taskDict objectForKey:@"closedBy"]],NSLocalizedString(@"task at", nil),[taskDict objectForKey:@"closedDate"]],[NSString stringWithFormat:@"%u:%u",TaskLifetimeSectionIndex,TaskClosedRowIndex],
+                         [taskDict objectForKey:@"closedReason"],[NSString stringWithFormat:@"%u:%u",TaskLifetimeSectionIndex,TaskClosedReasonRowIndex],
+                         [[taskDict objectForKey:@"lastEditedDate"] isEqualToString:@""]?@"":[NSString stringWithFormat:@"%@ %@ %@",[usersDict objectForKey:[taskDict objectForKey:@"lastEditedBy"]],NSLocalizedString(@"task at", nil),[taskDict objectForKey:@"lastEditedDate"]],[NSString stringWithFormat:@"%u:%u",TaskLifetimeSectionIndex,TaskEditedRowIndex],
+                         nil];
         [self.tableView reloadData];
         self.title = [NSString stringWithFormat:@"%@ #%u",NSLocalizedString(@"task", nil),taskID];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -103,6 +181,40 @@ enum {
 
 #pragma mark - Table view data source
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    // Return the number of sections.
+    if (!taskDict) {
+        return 0;
+    }
+    return SectionsCount;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    // Return the number of rows in the section.
+    if ([taskDict count]) {
+        switch (section) {
+            case TaskSectionIndex:
+                return InfoRowsCount;
+                break;
+            case TaskBasicSectionIndex:
+                return BasicInfoRowsCount;
+                break;
+            case TaskEffortSectionIndex:
+                return EffortRowsCount;
+                break;
+            case TaskLifetimeSectionIndex:
+                return LifetimeRowsCount;
+                break;
+            default:
+                break;
+        }
+        
+    }
+    return 0;
+}
+
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     NSString *sectionName;
@@ -114,20 +226,17 @@ enum {
         case TaskBasicSectionIndex:
             sectionName = NSLocalizedString(@"task basic info", nil);
             break;
+        case TaskEffortSectionIndex:
+            sectionName = NSLocalizedString(@"task effort", nil);
+            break;
+        case TaskLifetimeSectionIndex:
+            sectionName = NSLocalizedString(@"task lifetime", nil);
+            break;
         default:
             sectionName = @"";
             break;
     }
     return sectionName;
-}
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    // Return the number of sections.
-    if (!taskDict) {
-        return 0;
-    }
-    return 2;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -184,25 +293,6 @@ enum {
     return CELL_CONTENT_DEFAULT_HEIGHT;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    // Return the number of rows in the section.
-    if ([taskDict count]) {        
-        switch (section) {
-            case TaskSectionIndex:
-                return 1;
-                break;
-            case TaskBasicSectionIndex:
-                return 8;
-                break;
-            default:
-                break;
-        }
-
-    }
-    return 0;
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell * cell = nil;
@@ -247,48 +337,15 @@ enum {
             }
             break;
         case TaskBasicSectionIndex:
+        case TaskEffortSectionIndex:
+        case TaskLifetimeSectionIndex:
+        {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2
-                                          reuseIdentifier:@"TaskBasicInfoCell"];
-            switch (indexPath.row) {
-                case TaskProjectRowIndex:
-                    cell.textLabel.text = NSLocalizedString(@"task project", nil);
-                    cell.detailTextLabel.text = [projectDict objectForKey:@"name"];
-                    break;
-                case TaskModuleRowIndex:
-                    cell.textLabel.text = NSLocalizedString(@"task module", nil);
-                    cell.detailTextLabel.text = [taskDict objectForKey:@"module"];
-                    break;
-                case TaskStoryRowIndex:
-                    cell.textLabel.text = NSLocalizedString(@"task story", nil);
-                    cell.detailTextLabel.text = [[taskDict objectForKey:@"story"] intValue]?[taskDict objectForKey:@"storyTitle"]:nil;
-                    break;
-                case TaskAssignedToRowIndex:
-                    cell.textLabel.text = NSLocalizedString(@"task assignedto", nil);
-                    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ %@ %@",[taskDict objectForKey:@"assignedToRealName"],NSLocalizedString(@"task assignedto at", nil),[taskDict objectForKey:@"assignedDate"]];
-                    break;
-                case TaskTypeRowIndex:{
-                    cell.textLabel.text = NSLocalizedString(@"task type", nil);
-                    NSString *type = [NSString stringWithFormat:@"task type %@",[taskDict objectForKey:@"type"]];
-                    cell.detailTextLabel.text = NSLocalizedString(type, nil);
-                    break;
-                }
-                case TaskStatusRowIndex:{
-                    cell.textLabel.text = NSLocalizedString(@"task status", nil);
-                    NSString *status = [NSString stringWithFormat:@"task status %@",[taskDict objectForKey:@"status"]];
-                    cell.detailTextLabel.text = NSLocalizedString(status, nil);
-                    break;
-                }
-                case TaskPriRowIndex:
-                    cell.textLabel.text = NSLocalizedString(@"task pri", nil);
-                    cell.detailTextLabel.text = [taskDict objectForKey:@"pri"];
-                    break;
-                case TaskMailToRowIndex:
-                    cell.textLabel.text = NSLocalizedString(@"task mailto", nil);
-                    cell.detailTextLabel.text = [taskDict objectForKey:@"mailto"];
-                    break;
-                default:
-                    break;
-            }
+                                          reuseIdentifier:@"TaskCell"];
+            cell.textLabel.text = [cellKeyDict objectForKey:[NSString stringWithFormat:@"%u:%u",indexPath.section,indexPath.row]];
+            cell.detailTextLabel.text = [cellValueDict objectForKey:[NSString stringWithFormat:@"%u:%u",indexPath.section,indexPath.row]];
+            cell.detailTextLabel.adjustsFontSizeToFitWidth = YES;
+        }
             break;
         default:
             NSLog(@"ERROR: section unknown!");
@@ -299,45 +356,6 @@ enum {
     
     return cell;
 }
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 #pragma mark - Table view delegate
 
