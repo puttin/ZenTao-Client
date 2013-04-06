@@ -132,22 +132,34 @@ enum {
 */
 - (void)registerUserSettings
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if ([ZTCAPIClient loginWithAccount:_accountTextFiled.text Password:_passwordTextFiled.text BaseURL:_urlTextFiled.text]) {
-        [defaults setObject:_accountTextFiled.text forKey:@"account"];
-        [defaults setObject:_passwordTextFiled.text forKey:@"password"];
-        [defaults setObject:_urlTextFiled.text forKey:@"url"];
-        [defaults synchronize];
-        
-        [self.parentViewController dismissModalViewControllerAnimated:YES];
-        UITableViewController *viewController = [[ZTCTaskListViewController alloc] initWithStyle:UITableViewStylePlain];
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
-        [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
-        [ZTCNotice showSuccessNoticeInView:viewController.view title:NSLocalizedString(@"login success title", nil)];
-    } else {
-        //login fail;
-        [ZTCNotice showErrorNoticeInView:self.view title:NSLocalizedString(@"login fail title", nil) message:NSLocalizedString(@"login fail message", nil)];
-    }
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.navigationItem.rightBarButtonItem.enabled = NO;
+        });
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        if ([ZTCAPIClient loginWithAccount:_accountTextFiled.text Password:_passwordTextFiled.text BaseURL:_urlTextFiled.text]) {
+            [defaults setObject:_accountTextFiled.text forKey:@"account"];
+            [defaults setObject:_passwordTextFiled.text forKey:@"password"];
+            [defaults setObject:_urlTextFiled.text forKey:@"url"];
+            [defaults synchronize];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.parentViewController dismissModalViewControllerAnimated:YES];
+                UITableViewController *viewController = [[ZTCTaskListViewController alloc] initWithStyle:UITableViewStylePlain];
+                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
+                [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                [ZTCNotice showSuccessNoticeInView:viewController.view title:NSLocalizedString(@"login success title", nil)];
+            });
+        } else {
+            //login fail;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [ZTCNotice showErrorNoticeInView:self.view title:NSLocalizedString(@"login fail title", nil) message:NSLocalizedString(@"login fail message", nil)];
+            });
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.navigationItem.rightBarButtonItem.enabled = YES;
+        });
+    });
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

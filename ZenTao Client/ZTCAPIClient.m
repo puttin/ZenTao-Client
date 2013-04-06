@@ -172,25 +172,35 @@ static NSString * tmpUrl = nil;
     
     NSString *account = [defaults stringForKey:@"account"];
     if(!account) {
-        // load default value
-        [self performSelector:@selector(registerDefaultsFromSettingsBundle)];
-        ZTCUserSettingsViewController *userSettingsView = [[ZTCUserSettingsViewController alloc] init];
-        UINavigationController *usersSettingsNav = [[UINavigationController alloc] initWithRootViewController:userSettingsView];
-        [[[[[UIApplication sharedApplication] delegate] window] rootViewController] presentModalViewController:usersSettingsNav animated:NO];
-        [ZTCNotice showSuccessNoticeInView:userSettingsView.view title:[NSString stringWithFormat:@"%@,%@",NSLocalizedString(@"login first time use title", nil),NSLocalizedString(@"login first time use message", nil)]];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            // load default value
+            [self performSelector:@selector(registerDefaultsFromSettingsBundle)];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                ZTCUserSettingsViewController *userSettingsView = [[ZTCUserSettingsViewController alloc] init];
+                UINavigationController *usersSettingsNav = [[UINavigationController alloc] initWithRootViewController:userSettingsView];
+                [[[[[UIApplication sharedApplication] delegate] window] rootViewController] presentModalViewController:usersSettingsNav animated:NO];
+                [ZTCNotice showSuccessNoticeInView:userSettingsView.view title:[NSString stringWithFormat:@"%@,%@",NSLocalizedString(@"login first time use title", nil),NSLocalizedString(@"login first time use message", nil)]];//TODO
+            });
+        });
     } else {
-        if ([ZTCAPIClient loginWithAccount:[defaults stringForKey:@"account"] Password:[defaults stringForKey:@"password"] BaseURL:[defaults stringForKey:@"url"]]) {
-            //DLog(@"Log in SUCCESS");
-            UITableViewController *viewController = [[ZTCTaskListViewController alloc] initWithStyle:UITableViewStylePlain];
-            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
-            [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
-        } else {
-            //DLog(@"Log in FAIL");
-            ZTCUserSettingsViewController *userSettingsView = [[ZTCUserSettingsViewController alloc] init];
-            UINavigationController *usersSettingsNav = [[UINavigationController alloc] initWithRootViewController:userSettingsView];
-            [[[[[UIApplication sharedApplication] delegate] window] rootViewController] presentModalViewController:usersSettingsNav animated:NO];
-            [ZTCNotice showErrorNoticeInView:userSettingsView.view title:NSLocalizedString(@"login fail title", nil) message:NSLocalizedString(@"login fail message", nil)];
-        }
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            if ([ZTCAPIClient loginWithAccount:[defaults stringForKey:@"account"] Password:[defaults stringForKey:@"password"] BaseURL:[defaults stringForKey:@"url"]]) {
+                //DLog(@"Log in SUCCESS");
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    UITableViewController *viewController = [[ZTCTaskListViewController alloc] initWithStyle:UITableViewStylePlain];
+                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
+                    [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+                });
+            } else {
+                //DLog(@"Log in FAIL");
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    ZTCUserSettingsViewController *userSettingsView = [[ZTCUserSettingsViewController alloc] init];
+                    UINavigationController *usersSettingsNav = [[UINavigationController alloc] initWithRootViewController:userSettingsView];
+                    [[[[[UIApplication sharedApplication] delegate] window] rootViewController] presentModalViewController:usersSettingsNav animated:NO];
+                    [ZTCNotice showErrorNoticeInView:userSettingsView.view title:NSLocalizedString(@"login fail title", nil) message:NSLocalizedString(@"login fail message", nil)];
+                });
+            }
+        });
     }
     /*
     DLog(@"%@",[defaults stringForKey:@"account"]);

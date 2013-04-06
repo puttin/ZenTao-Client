@@ -17,6 +17,7 @@
 
 @implementation ZTCTaskListViewController {
 @private
+    dispatch_queue_t updateQueue;
     NSMutableArray *taskArray;
     NSString *taskType;
     NSString *orderBy;
@@ -45,6 +46,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    updateQueue = dispatch_queue_create("com.puttinwong.ZenTao-Client.taskQueue", NULL);
     
     if (_refreshHeaderView == nil) {
 		
@@ -136,60 +139,69 @@
 #pragma mark Data Source Loading / Reloading Methods
 
 - (void)getTaskListWithType:(NSUInteger)type,... {
+	_dataSourceIsLoading = YES;
     ZTCAPIClient* api = [ZTCAPIClient sharedClient];
     va_list args;
     va_start(args, type);
     [api getPath:[ZTCAPIClient getUrlWithType:[ZTCAPIClient getRequestType] withParameters:args] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
-        NSMutableDictionary *dict = [ZTCAPIClient dealWithZTStrangeJSON:JSON];
-        NSDictionary *pager = [[dict objectForKey:@"data"] objectForKey:@"pager"];
-        recTotal = [[pager objectForKey:@"recTotal"] intValue];
-        recPerPage = [[pager objectForKey:@"recPerPage"] intValue];
-        pageID = [[pager objectForKey:@"pageID"] intValue];
-        //DLog(@"pager:%@",pager);
-        if (pageID >= [[pager objectForKey:@"pageTotal"] intValue]) {
-            _loadMoreAllLoaded = YES;
-        } else
-            _loadMoreAllLoaded = NO;
-        //DLog(@"%@",dict);
-        switch (type) {
-            case TaskLoadIndex:{
-                taskArray = [[dict objectForKey:@"data"] objectForKey:@"tasks"];
-                break;
+        dispatch_async(updateQueue, ^{
+            NSMutableDictionary *dict = [ZTCAPIClient dealWithZTStrangeJSON:JSON];
+            NSDictionary *pager = [[dict objectForKey:@"data"] objectForKey:@"pager"];
+            recTotal = [[pager objectForKey:@"recTotal"] intValue];
+            recPerPage = [[pager objectForKey:@"recPerPage"] intValue];
+            pageID = [[pager objectForKey:@"pageID"] intValue];
+            //DLog(@"pager:%@",pager);
+            if (pageID >= [[pager objectForKey:@"pageTotal"] intValue]) {
+                _loadMoreAllLoaded = YES;
+            } else
+                _loadMoreAllLoaded = NO;
+            //DLog(@"%@",dict);
+            switch (type) {
+                case TaskLoadIndex:{
+                    taskArray = [[dict objectForKey:@"data"] objectForKey:@"tasks"];
+                    break;
+                }
+                case TaskRefreshIndex:{
+                    taskArray = [[dict objectForKey:@"data"] objectForKey:@"tasks"];
+                    //DLog(@"%@",taskArray);
+                    dispatch_sync(dispatch_get_main_queue(), ^{
+                        [self doneRefreshTableViewData];
+                        [self resetLoadMore];
+                    });
+                    break;
+                }
+                case TaskAppendIndex:{
+                    [taskArray addObjectsFromArray:[[dict objectForKey:@"data"] objectForKey:@"tasks"]];
+                    break;
+                }
+                default:
+                    break;
             }
-            case TaskRefreshIndex:{
-                taskArray = [[dict objectForKey:@"data"] objectForKey:@"tasks"];
-                //DLog(@"%@",taskArray);
-                [self doneRefreshTableViewData];
-                [self resetLoadMore];
-                break;
-            }
-            case TaskAppendIndex:{
-                [taskArray addObjectsFromArray:[[dict objectForKey:@"data"] objectForKey:@"tasks"]];
-                break;
-            }
-            default:
-                break;
-        }
-        [self doneLoadMoreTableViewData];
-        [self.tableView reloadData];
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [self doneLoadMoreTableViewData];
+                [self.tableView reloadData];
+            });
+        });
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"ERROR: %@",error);
-        switch (type) {
-            case TaskLoadIndex:{
-                break;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"ERROR: %@",error);
+            switch (type) {
+                case TaskLoadIndex:{
+                    break;
+                }
+                case TaskRefreshIndex:{
+                    [self doneRefreshTableViewData];
+                    break;
+                }
+                case TaskAppendIndex:{
+                    break;
+                }
+                default:
+                    break;
             }
-            case TaskRefreshIndex:{
-                [self doneRefreshTableViewData];
-                break;
-            }
-            case TaskAppendIndex:{
-                break;
-            }
-            default:
-                break;
-        }
-        [self doneLoadMoreTableViewData];
-        [ZTCNotice showErrorNoticeInView:self.view title:NSLocalizedString(@"error", nil) message:error.localizedDescription];
+            [self doneLoadMoreTableViewData];
+            [ZTCNotice showErrorNoticeInView:self.view title:NSLocalizedString(@"error", nil) message:error.localizedDescription];
+        });
     }];
     va_end(args);
 }
@@ -212,7 +224,7 @@
 - (void)doneLoadMoreTableViewData {
 	
 	//  model should call this when its done loading
-	_loadMoreLoading = NO;
+	_dataSourceIsLoading = NO;
 	[_loadMoreFooterView pwLoadMoreTableDataSourceDidFinishedLoading];
 	
 }
@@ -262,13 +274,12 @@
 #pragma mark PWLoadMoreTableFooterDelegate Methods
 
 - (void)pwLoadMore {
-	_loadMoreLoading = YES;
     [self getTaskListWithType:TaskAppendIndex,@"m=my",@"f=task",[NSString stringWithFormat:@"type=%@",taskType],[NSString stringWithFormat:@"orderBy=%@",orderBy],[NSString stringWithFormat:@"recTotal=%u",recTotal],[NSString stringWithFormat:@"recPerPage=%u",recPerPage],[NSString stringWithFormat:@"pageID=%u",pageID+1],nil];
 }
 
 
 - (BOOL)pwLoadMoreTableDataSourceIsLoading {
-    return _loadMoreLoading;
+    return _dataSourceIsLoading;
 }
 - (BOOL)pwLoadMoreTableDataSourceAllLoaded {
     return _loadMoreAllLoaded;

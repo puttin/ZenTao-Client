@@ -98,14 +98,7 @@
 		D2370023170729820034A80D /* PullToRefresh */ = {
 			isa = PBXGroup;
 			children = (
-				D237002717072A490034A80D /* blackArrow.png */,
-				D237002817072A490034A80D /* blackArrow@2x.png */,
-				D237002917072A490034A80D /* blueArrow.png */,
-				D237002A17072A490034A80D /* blueArrow@2x.png */,
-				D237002B17072A490034A80D /* grayArrow.png */,
-				D237002C17072A490034A80D /* grayArrow@2x.png */,
-				D237002D17072A490034A80D /* whiteArrow.png */,
-				D237002E17072A490034A80D /* whiteArrow@2x.png */,
+				D2D7F24117110FB10044D3F7 /* Images */,
 				D2370024170729DE0034A80D /* EGORefreshTableHeaderView.h */,
 				D2370025170729DE0034A80D /* EGORefreshTableHeaderView.m */,
 			);
@@ -176,6 +169,21 @@
 				D29D2AC816F5B20200BB556F /* ZenTao Client-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D2D7F24117110FB10044D3F7 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				D237002717072A490034A80D /* blackArrow.png */,
+				D237002817072A490034A80D /* blackArrow@2x.png */,
+				D237002917072A490034A80D /* blueArrow.png */,
+				D237002A17072A490034A80D /* blueArrow@2x.png */,
+				D237002B17072A490034A80D /* grayArrow.png */,
+				D237002C17072A490034A80D /* grayArrow@2x.png */,
+				D237002D17072A490034A80D /* whiteArrow.png */,
+				D237002E17072A490034A80D /* whiteArrow@2x.png */,
+			);
+			path = Images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

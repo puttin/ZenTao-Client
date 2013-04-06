@@ -18,9 +18,9 @@ enum {
 
 @interface ZTCTaskListViewController : UITableViewController <EGORefreshTableHeaderDelegate,PWLoadMoreTableFooterDelegate> {
     EGORefreshTableHeaderView *_refreshHeaderView;
-	BOOL _reloading;
     PWLoadMoreTableFooterView *_loadMoreFooterView;
-	BOOL _loadMoreLoading;
+	BOOL _reloading;
+	BOOL _dataSourceIsLoading;
     bool _loadMoreAllLoaded;
 }
 
