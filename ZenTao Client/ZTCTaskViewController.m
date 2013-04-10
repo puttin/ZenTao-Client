@@ -9,9 +9,9 @@
 #import "ZTCTaskViewController.h"
 #import "ZTCAPIClient.h"
 #import "ZTCNotice.h"
+//#import <QuartzCore/QuartzCore.h>
 #define FONT_SIZE 19.0f
-#define SMALL_FONT_SIZE 14.0f
-#define CELL_CONTENT_WIDTH 300.0f
+#define SMALL_FONT_SIZE 15.0f
 #define CELL_CONTENT_MARGIN 10.0f
 #define CELL_CONTENT_DEFAULT_HEIGHT 44.0f
 #define DEFAULT_GROUPED_HEADER_FONT_SIZE 23.0f
@@ -25,8 +25,8 @@ enum {
 } TaskSectionIndicies;
 
 enum {
-	TaskNameRowIndex = 0,
-//	TaskDescRowIndex,
+//    TaskNameRowIndex,
+	TaskDescRowIndex = 0,
     InfoRowsCount,              //count
 } TaskInformationSectionRowIndicies;
 
@@ -182,7 +182,29 @@ enum {
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    if (IS_IPAD) {
+        return YES;
+    } else {
+        return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+    }
+}
+
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+
+- (NSInteger)supportedInterfaceOrientations{
+    NSInteger mask = 0;
+    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeRight])
+        mask |= UIInterfaceOrientationMaskLandscapeRight;
+    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeLeft])
+        mask |= UIInterfaceOrientationMaskLandscapeLeft;
+    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortrait])
+        mask |= UIInterfaceOrientationMaskPortrait;
+    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortraitUpsideDown])
+        mask |= UIInterfaceOrientationMaskPortraitUpsideDown;
+    return mask;
 }
 
 #pragma mark - Table view data source
@@ -245,43 +267,16 @@ enum {
     return sectionName;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    switch (section) {
-        case TaskSectionIndex:
-        {
-            NSString *name = [taskDict objectForKey:@"name"];
-            CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000.0f);
-            CGSize nameSize = [name sizeWithFont:[UIFont systemFontOfSize:DEFAULT_GROUPED_HEADER_FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
-            CGFloat height = MAX(nameSize.height, DEFAULT_GROUPED_HEADER_HEIGHT);
-            //DLog(@"%f",height);
-            
-            //[tableView headerViewForSection:section] iOS6 only...
-            
-            return height;
-        }
-            break;
-            
-        default:
-            break;
-    }
-    
-    
-    return DEFAULT_GROUPED_HEADER_HEIGHT;
-}
-
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath;
 {
     switch (indexPath.section) {
         case TaskSectionIndex:
             switch (indexPath.row) {
-                case TaskNameRowIndex:{
+                case TaskDescRowIndex:{
                     NSString *desc = [taskDict objectForKey:@"desc"];
-                    
-                    CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000.0f);
+                    CGSize constraint = CGSizeMake(tableView.frame.size.width - (CELL_CONTENT_MARGIN * 2), 20000.0f);
                     
                     CGSize descSize = [desc sizeWithFont:[UIFont systemFontOfSize:SMALL_FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
-                    
                     CGFloat height = MAX(descSize.height, 44.0f);
                     
                     return height + (CELL_CONTENT_MARGIN * 2);
@@ -305,35 +300,19 @@ enum {
 	switch (indexPath.section) {
         case TaskSectionIndex:
             switch (indexPath.row) {
-                case TaskNameRowIndex:{
-                    //UILabel *nameLabel = nil;
-                    UILabel *descLabel = nil;
-                    cell = [tableView dequeueReusableCellWithIdentifier:@"TaskNameCell"];
+                case TaskDescRowIndex:{
+                    cell = [tableView dequeueReusableCellWithIdentifier:@"TaskDescCell"];
                     if (!cell) {
-                        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TaskNameCell"];
-                        
-                        //desc
-                        descLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-                        [descLabel setLineBreakMode:UILineBreakModeWordWrap];
-                        [descLabel setMinimumFontSize:SMALL_FONT_SIZE];
-                        [descLabel setNumberOfLines:0];
-                        [descLabel setFont:[UIFont systemFontOfSize:SMALL_FONT_SIZE]];
-                        [descLabel setBackgroundColor:[UIColor clearColor]];
-                        [descLabel setTag:2];
-                        //[[descLabel layer] setBorderWidth:2.0f];
-                        [[cell contentView] addSubview:descLabel];
+                        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TaskDescCell"];
                     }
                     
                     NSString *desc = [taskDict objectForKey:@"desc"];
                     
-                    CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), 20000.0f);
-                    
-                    CGSize descSize = [desc sizeWithFont:[UIFont systemFontOfSize:SMALL_FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
-                    if (!descLabel)
-                        descLabel = (UILabel*)[cell viewWithTag:2];
-                    
-                    [descLabel setText:desc];
-                    [descLabel setFrame:CGRectMake(CELL_CONTENT_MARGIN, CELL_CONTENT_MARGIN, CELL_CONTENT_WIDTH - (CELL_CONTENT_MARGIN * 2), MAX(descSize.height, 44.0f))];
+                    [cell.textLabel setLineBreakMode:UILineBreakModeWordWrap];
+                    [cell.textLabel setNumberOfLines:0];
+//                    [[cell.textLabel layer] setBorderWidth:2.0f];
+                    [cell.textLabel setFont:[UIFont systemFontOfSize:SMALL_FONT_SIZE]];
+                    cell.textLabel.text = desc;
                     
                     break;
                 }

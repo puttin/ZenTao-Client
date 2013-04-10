@@ -88,7 +88,29 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    if (IS_IPAD) {
+        return YES;
+    } else {
+        return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+    }
+}
+
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+
+- (NSInteger)supportedInterfaceOrientations{
+    NSInteger mask = 0;
+    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeRight])
+        mask |= UIInterfaceOrientationMaskLandscapeRight;
+    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationLandscapeLeft])
+        mask |= UIInterfaceOrientationMaskLandscapeLeft;
+    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortrait])
+        mask |= UIInterfaceOrientationMaskPortrait;
+    if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortraitUpsideDown])
+        mask |= UIInterfaceOrientationMaskPortraitUpsideDown;
+    return mask;
 }
 
 #pragma mark - Table view data source
@@ -113,7 +135,6 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     // Configure the cell...
-    
     cell.textLabel.text = [[taskArray objectAtIndex:indexPath.row] objectForKey:@"name"];
     //cell.textLabel.font= [UIFont fontWithName:@"STHeitiSC-Medium" size:[UIFont systemFontSize]];
     
@@ -163,11 +184,6 @@
                 }
                 case TaskRefreshIndex:{
                     taskArray = [[dict objectForKey:@"data"] objectForKey:@"tasks"];
-                    //DLog(@"%@",taskArray);
-                    dispatch_sync(dispatch_get_main_queue(), ^{
-                        [self doneRefreshTableViewData];
-                        [self resetLoadMore];
-                    });
                     break;
                 }
                 case TaskAppendIndex:{
@@ -180,7 +196,12 @@
             dispatch_sync(dispatch_get_main_queue(), ^{
                 [self doneLoadMoreTableViewData];
                 [self.tableView reloadData];
+                if (type == TaskRefreshIndex) {
+                    [self doneRefreshTableViewData];
+                    [self resetLoadMore];
+                }
             });
+            _dataSourceIsLoading = NO;
         });
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -202,6 +223,7 @@
             [self doneLoadMoreTableViewData];
             [ZTCNotice showErrorNoticeInView:self.view title:NSLocalizedString(@"error", nil) message:error.localizedDescription];
         });
+        _dataSourceIsLoading = NO;
     }];
     va_end(args);
 }
@@ -224,7 +246,6 @@
 - (void)doneLoadMoreTableViewData {
 	
 	//  model should call this when its done loading
-	_dataSourceIsLoading = NO;
 	[_loadMoreFooterView pwLoadMoreTableDataSourceDidFinishedLoading];
 	
 }

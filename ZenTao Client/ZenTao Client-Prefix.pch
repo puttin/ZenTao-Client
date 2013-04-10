@@ -25,3 +25,5 @@
 #else
 #define DLog( s, ... ) /* */
 #endif
+
+#define IS_IPAD	(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
