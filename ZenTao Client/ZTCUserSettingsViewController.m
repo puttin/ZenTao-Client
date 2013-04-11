@@ -328,7 +328,6 @@ enum {
 
 - (void)textFieldDone:(UITextField*)textField
 {
-    [textField resignFirstResponder];
     UITextField *nextField = nil;
     NSIndexPath *newPath = nil;
     if (textField == _accountTextFiled) {
@@ -340,11 +339,14 @@ enum {
     } else {
         //
     }
-    if (newPath && [[self.tableView indexPathsForVisibleRows] containsObject:newPath]) {
-        if ([nextField canBecomeFirstResponder]) {
-            [self.tableView scrollToRowAtIndexPath:newPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    if (newPath) {
+        [UIView animateWithDuration:0.2 animations:^{
+            [self.tableView scrollToRowAtIndexPath:newPath atScrollPosition:UITableViewScrollPositionNone animated:NO];
+        } completion:^(BOOL finished){
             [nextField becomeFirstResponder];
-        }
+        }];
+    } else {
+        [textField resignFirstResponder];
     }
 }
 
