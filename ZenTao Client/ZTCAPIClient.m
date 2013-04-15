@@ -13,8 +13,10 @@
 #import "ZTCUserSettingsViewController.h"
 #import "ZTCTaskListViewController.h"
 #import "ZTCNotice.h"
+#import "PDKeychainBindings.h"
 
 #define TEST_MODE 0
+#define kHasKeychain          @"Keychain"
 static NSString * const kDemoAPIBaseURLString = @"http://demo.zentao.net";
 static NSString * const kCookieURLString = @"demo.zentao.net";
 static BOOL urlChanged = NO;
@@ -92,28 +94,17 @@ static NSString * tmpUrl = nil;
     }
 }
 
-+ (void)registerDefaultsFromSettingsBundle {
++ (void)registerDefaultsFromDemoPlist {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *settingsBundle = [[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"bundle"];
-    if(!settingsBundle) {
-        NSLog(@"ERROR: Could not find Settings.bundle");
+    NSString *demoSettings = [[NSBundle mainBundle] pathForResource:@"demo" ofType:@"plist"];
+    if(!demoSettings) {
+        NSLog(@"ERROR: Could not find demo.plist");
         return;
     }
     
-    NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[settingsBundle stringByAppendingPathComponent:@"Root.plist"]];
-    NSArray *preferences = [settings objectForKey:@"PreferenceSpecifiers"];
+    NSMutableDictionary *settings = [NSMutableDictionary dictionaryWithContentsOfFile:demoSettings];
     
-    NSMutableDictionary *defaultsToRegister = [[NSMutableDictionary alloc] init];
-    for(NSDictionary *prefSpecification in preferences) {
-        NSString *key = [prefSpecification objectForKey:@"Key"];
-        if(key) {
-            if (![defaults objectForKey:key]) {//only when don't have this key
-                [defaultsToRegister setObject:[prefSpecification objectForKey:@"DefaultValue"] forKey:key];
-            }
-            
-        }
-    }
-    [defaults registerDefaults:defaultsToRegister];
+    [defaults registerDefaults:settings];
 }
 
 + (NSUInteger) getRequestType {
@@ -168,23 +159,23 @@ static NSString * tmpUrl = nil;
 }
 
 + (void) registerUserInfo {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    NSString *account = [defaults stringForKey:@"account"];
-    if(!account) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        PDKeychainBindings *bindings = [PDKeychainBindings sharedKeychainBindings];
+        NSString *account = [bindings objectForKey:kZTCKeychainAccount];
+        NSString *password = [bindings objectForKey:kZTCKeychainPassword];
+        NSString *url = [bindings objectForKey:kZTCKeychainUrl];
+        //DLog(@"\n*************\naccount:%@\npassword:%@\nurl:%@\n*************",account,password,url);
+        if( !account || !password || !url ) {
             // load default value
-            [self performSelector:@selector(registerDefaultsFromSettingsBundle)];
+            [self performSelector:@selector(registerDefaultsFromDemoPlist)];
             dispatch_async(dispatch_get_main_queue(), ^{
                 ZTCUserSettingsViewController *userSettingsView = [[ZTCUserSettingsViewController alloc] init];
                 UINavigationController *usersSettingsNav = [[UINavigationController alloc] initWithRootViewController:userSettingsView];
                 [[[[[UIApplication sharedApplication] delegate] window] rootViewController] presentModalViewController:usersSettingsNav animated:NO];
                 [ZTCNotice showSuccessNoticeInView:userSettingsView.view title:[NSString stringWithFormat:@"%@,%@",NSLocalizedString(@"login first time use title", nil),NSLocalizedString(@"login first time use message", nil)]];//TODO
             });
-        });
-    } else {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            if ([ZTCAPIClient loginWithAccount:[defaults stringForKey:@"account"] Password:[defaults stringForKey:@"password"] BaseURL:[defaults stringForKey:@"url"]]) {
+        } else {
+            if ([ZTCAPIClient loginWithAccount:account Password:password BaseURL:url]) {
                 //DLog(@"Log in SUCCESS");
                 dispatch_async(dispatch_get_main_queue(), ^{
                     UITableViewController *viewController = [[ZTCTaskListViewController alloc] initWithStyle:UITableViewStylePlain];
@@ -193,6 +184,11 @@ static NSString * tmpUrl = nil;
                 });
             } else {
                 //DLog(@"Log in FAIL");
+                [[NSUserDefaults standardUserDefaults] registerDefaults:@{
+                 @"account": account,//same key with demo.plist
+                 @"password": password,
+                 @"url": url
+                 }];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     ZTCUserSettingsViewController *userSettingsView = [[ZTCUserSettingsViewController alloc] init];
                     UINavigationController *usersSettingsNav = [[UINavigationController alloc] initWithRootViewController:userSettingsView];
@@ -200,14 +196,8 @@ static NSString * tmpUrl = nil;
                     [ZTCNotice showErrorNoticeInView:userSettingsView.view title:NSLocalizedString(@"login fail title", nil) message:NSLocalizedString(@"login fail message", nil)];
                 });
             }
-        });
-    }
-    /*
-    DLog(@"%@",[defaults stringForKey:@"account"]);
-    DLog(@"%@",[defaults stringForKey:@"password"]);
-    DLog(@"%@",[defaults stringForKey:@"url"]);
-    DLog(@"%@",[defaults stringForKey:@"requestType"]);
-    */
+        }
+    });
 }
 
 + (NSUInteger) getRequestTypeOfWebsite:(NSString *)url {

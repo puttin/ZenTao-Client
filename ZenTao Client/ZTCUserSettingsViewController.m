@@ -10,6 +10,7 @@
 #import "ZTCAPIClient.h"
 #import "ZTCTaskListViewController.h"
 #import "ZTCNotice.h"
+#import "PDKeychainBindings.h"
 
 enum {
 	AccountSectionIndex,
@@ -56,7 +57,7 @@ enum {
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         
-        _accountTextFiled.text = [defaults stringForKey:@"account"];
+        _accountTextFiled.text = [defaults stringForKey:@"account"];//same key with demo.plist
         _passwordTextFiled.text = [defaults stringForKey:@"password"];
         _urlTextFiled.text = [defaults stringForKey:@"url"];
     }
@@ -138,12 +139,11 @@ enum {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.navigationItem.rightBarButtonItem.enabled = NO;
         });
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         if ([ZTCAPIClient loginWithAccount:_accountTextFiled.text Password:_passwordTextFiled.text BaseURL:_urlTextFiled.text]) {
-            [defaults setObject:_accountTextFiled.text forKey:@"account"];
-            [defaults setObject:_passwordTextFiled.text forKey:@"password"];
-            [defaults setObject:_urlTextFiled.text forKey:@"url"];
-            [defaults synchronize];
+            PDKeychainBindings *bindings = [PDKeychainBindings sharedKeychainBindings];
+            [bindings setObject:_accountTextFiled.text forKey:kZTCKeychainAccount];
+            [bindings setObject:_passwordTextFiled.text forKey:kZTCKeychainPassword];
+            [bindings setObject:_urlTextFiled.text forKey:kZTCKeychainUrl];
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.parentViewController dismissModalViewControllerAnimated:YES];
