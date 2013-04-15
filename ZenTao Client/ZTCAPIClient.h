@@ -10,6 +10,9 @@
 
 #import "AFHTTPClient.h"
 
+#define kZTCKeychainAccount  @"ZTCAccount"
+#define kZTCKeychainPassword @"ZTCPassword"
+#define kZTCKeychainUrl      @"ZTCUrl"
 enum {
 	GETIndex = 0,
     PATHINFOIndex = 1,
