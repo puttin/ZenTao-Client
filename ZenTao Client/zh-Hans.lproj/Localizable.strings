@@ -53,8 +53,8 @@
 "login success title" = "登陆成功";
 "login fail title" = "登录失败";
 "login fail message" = "请检查设置";
-"login first time using title" = "初次使用";
-"login first time using message" = "请设置";
+"login first time use title" = "初次使用";
+"login first time use message" = "请设置";
 "network not reachable title" = "网络不可达";
 "network not reachable message" = "请检查你的网络";
 
