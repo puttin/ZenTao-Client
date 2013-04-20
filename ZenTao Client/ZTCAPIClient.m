@@ -11,7 +11,7 @@
 
 #import "ZTCAPIClient.h"
 #import "ZTCUserSettingsViewController.h"
-#import "ZTCTaskListViewController.h"
+#import "ZTCListViewController.h"
 #import "ZTCNotice.h"
 #import "PDKeychainBindings.h"
 
@@ -178,7 +178,7 @@ static NSString * tmpUrl = nil;
             if ([ZTCAPIClient loginWithAccount:account Password:password BaseURL:url]) {
                 //DLog(@"Log in SUCCESS");
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    UITableViewController *viewController = [[ZTCTaskListViewController alloc] initWithStyle:UITableViewStylePlain];
+                    UIViewController *viewController = [[ZTCListViewController alloc] init];
                     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
                     [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
                 });
