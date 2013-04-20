@@ -30,6 +30,7 @@
     
     //dataSourceDelegate and delegate
     self.dataSourceDelegate = [[ZTCListDataSourceDelegate alloc] init];
+    [self.dataSourceDelegate setType:listTypeMyBug];
     
     //refreshHeaderView init
     if (_refreshHeaderView == nil) {
@@ -62,6 +63,13 @@
     //let the delegate can control listView
     self.dataSourceDelegate.listViewDelegate = self;
     
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    //when user get back, deselect the row.
+    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
 }
 
 - (void)didReceiveMemoryWarning

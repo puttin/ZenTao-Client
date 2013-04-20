@@ -15,9 +15,16 @@
 
 @synthesize listViewDelegate = _listViewDelegate;
 @synthesize updateQueue = _updateQueue;
+
+@synthesize type = _type;
 @synthesize itemArray = _itemArray;
 @synthesize itemType = _itemType;
 @synthesize orderBy = _orderBy;
+@synthesize itemName = _itemName;
+@synthesize module = _module;
+@synthesize function = _function;
+@synthesize itemsNameInJSON = _itemsNameInJSON;
+
 @synthesize recTotal = _recTotal;
 @synthesize recPerPage = _recPerPage;
 @synthesize pageID = _pageID;
@@ -28,11 +35,37 @@
         // Custom initialization
         [self addObserver:self forKeyPath:@"listViewDelegate" options:NSKeyValueObservingOptionNew context:nil];
         _updateQueue = dispatch_queue_create("com.puttinwong.ZenTao-Client.itemUpdateQueue", NULL);
-        _itemType = @"assignedto";//todo
-        _orderBy = @"id_desc";
     }
     return self;
 }
+
+- (void)setType:(NSUInteger)type {
+    _type = type;
+    switch (type) {
+        case ListTypeMyTask: {
+            _itemType = @"assignedTo";
+            _orderBy = @"id_desc";
+            _itemName = @"name";
+            _module = @"my";
+            _function = @"task";
+            _itemsNameInJSON = @"tasks";
+        }
+            break;
+        case listTypeMyBug: {
+            _itemType = @"assigntome";
+            _orderBy = @"id_desc";
+            _itemName = @"title";
+            _module = @"my";
+            _function = @"bug";
+            _itemsNameInJSON = @"bugs";
+            
+        }
+            break;
+        default:
+            break;
+    }
+}
+
 #pragma mark -
 #pragma mark UIScrollViewDelegate Methods
 
@@ -52,14 +85,22 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //[tableView deselectRowAtIndexPath:indexPath animated:YES];
     // Navigation logic may go here. Create and push another view controller.
-    
-    //DLog(@"%d",[[[taskArray objectAtIndex:indexPath.row] objectForKey:@"id"] intValue]);
-    UIViewController *detailViewController = [[ZTCTaskViewController alloc] initWithTaskID:[[[_listViewDelegate.dataSourceDelegate.itemArray objectAtIndex:indexPath.row] objectForKey:@"id"] intValue]];
-    // ...
     // Pass the selected object to the new view controller.
-    [_listViewDelegate.navigationController pushViewController:detailViewController animated:YES];
+    UIViewController *detailViewController = nil;
+    switch (self.type) {
+        case ListTypeMyTask: {
+            detailViewController = [[ZTCTaskViewController alloc] initWithTaskID:[[[_listViewDelegate.dataSourceDelegate.itemArray objectAtIndex:indexPath.row] objectForKey:@"id"] intValue]];
+        }
+            break;
+            //todo
+        default:
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+            break;
+    }
+    if (detailViewController) {
+        [_listViewDelegate.navigationController pushViewController:detailViewController animated:YES];
+    }
 }
 
 #pragma mark - Table view data source
@@ -84,7 +125,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     // Configure the cell...
-    cell.textLabel.text = [[_itemArray objectAtIndex:indexPath.row] objectForKey:@"name"]; // name TODO
+    cell.textLabel.text = [[_itemArray objectAtIndex:indexPath.row] objectForKey:_itemName];
     //cell.textLabel.font= [UIFont fontWithName:@"STHeitiSC-Medium" size:[UIFont systemFontSize]];
     
     return cell;
@@ -98,8 +139,7 @@
 	//  should be calling your tableviews data source model to reload
 	//  put here just for demo
 	_reloading = YES;
-    [self getItemListWithType:ItemRefreshIndex,@"m=my",@"f=task",nil];//todo
-	
+	[self refreshTable];
 }
 
 - (BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view{
@@ -117,7 +157,17 @@
 #pragma mark PWLoadMoreTableFooterDelegate Methods
 
 - (void)pwLoadMore {
-    [self getItemListWithType:ItemAppendIndex,@"m=my",@"f=task",[NSString stringWithFormat:@"type=%@",_itemType],[NSString stringWithFormat:@"orderBy=%@",_orderBy],[NSString stringWithFormat:@"recTotal=%u",_recTotal],[NSString stringWithFormat:@"recPerPage=%u",_recPerPage],[NSString stringWithFormat:@"pageID=%u",_pageID+1],nil];//todo
+    switch (self.type) {
+        case ListTypeMyTask:
+        case listTypeMyBug:{
+            [self getItemListWithType:ItemAppendIndex,[NSString stringWithFormat:@"m=%@",_module],[NSString stringWithFormat:@"f=%@",_function],[NSString stringWithFormat:@"type=%@",_itemType],[NSString stringWithFormat:@"orderBy=%@",_orderBy],[NSString stringWithFormat:@"recTotal=%u",_recTotal],[NSString stringWithFormat:@"recPerPage=%u",_recPerPage],[NSString stringWithFormat:@"pageID=%u",_pageID+1],nil];
+        }
+            break;
+            
+        default:
+            NSLog(@"ERROR: No match list type");
+            break;
+    }
 }
 
 
@@ -130,6 +180,10 @@
 
 #pragma mark -
 #pragma mark Data Source Loading / Reloading Methods
+
+- (void)refreshTable {
+    [self getItemListWithType:ItemRefreshIndex,[NSString stringWithFormat:@"m=%@",_module],[NSString stringWithFormat:@"f=%@",_function],nil];
+}
 
 - (void)getItemListWithType:(NSUInteger)type,... {
 	_dataSourceIsLoading = YES;
@@ -151,15 +205,15 @@
             //DLog(@"%@",dict);
             switch (type) {
                 case ItemLoadIndex:{
-                    _itemArray = [[dict objectForKey:@"data"] objectForKey:@"tasks"];//todo
+                    _itemArray = [[dict objectForKey:@"data"] objectForKey:_itemsNameInJSON];
                     break;
                 }
                 case ItemRefreshIndex:{
-                    _itemArray = [[dict objectForKey:@"data"] objectForKey:@"tasks"];//todo
+                    _itemArray = [[dict objectForKey:@"data"] objectForKey:_itemsNameInJSON];
                     break;
                 }
                 case ItemAppendIndex:{
-                    [_itemArray addObjectsFromArray:[[dict objectForKey:@"data"] objectForKey:@"tasks"]];//todo
+                    [_itemArray addObjectsFromArray:[[dict objectForKey:@"data"] objectForKey:_itemsNameInJSON]];
                     break;
                 }
                 default:
@@ -227,7 +281,7 @@
                        context:(void *)context {
     DLog(@"observeValueForKeyPath");
     if ([keyPath isEqual:@"listViewDelegate"]) {
-        [self getItemListWithType:ItemLoadIndex,@"m=my",@"f=task",nil];//todo
+        [self refreshTable];
     }
     /*
      Be sure to call the superclass's implementation *if it implements it*.

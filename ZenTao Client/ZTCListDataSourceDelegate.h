@@ -12,6 +12,11 @@
 #import "ZTCListViewController.h"
 
 enum {
+    ListTypeMyTask = 0,
+    listTypeMyBug,//todo
+} ListType;
+
+enum {
     ItemLoadIndex,
     ItemRefreshIndex,
     ItemAppendIndex,
@@ -28,8 +33,13 @@ enum {
 @property(nonatomic,assign) dispatch_queue_t updateQueue;
 
 @property(nonatomic,strong) NSMutableArray *itemArray;
+@property(nonatomic,assign) NSUInteger type;
 @property(nonatomic,strong) NSString *itemType;
 @property(nonatomic,strong) NSString *orderBy;
+@property(nonatomic,strong) NSString *itemName;
+@property(nonatomic,strong) NSString *module;
+@property(nonatomic,strong) NSString *function;
+@property(nonatomic,strong) NSString *itemsNameInJSON;
 
 //pager
 @property(nonatomic,assign) NSUInteger recTotal;
@@ -37,6 +47,5 @@ enum {
 @property(nonatomic,assign) NSUInteger pageID;
 
 - (id)init;
-- (void)getItemListWithType:(NSUInteger)type,...;
 
 @end
