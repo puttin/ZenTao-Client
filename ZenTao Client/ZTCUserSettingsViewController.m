@@ -105,7 +105,7 @@ enum {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(registerUserSettings)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(tryLogin)];
     self.title = NSLocalizedString(@"login", nil);
     
     // Uncomment the following line to preserve selection between presentations.
@@ -133,36 +133,6 @@ enum {
     [super loadView];
 }
 */
-- (void)registerUserSettings
-{
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.navigationItem.rightBarButtonItem.enabled = NO;
-        });
-        if ([ZTCAPIClient loginWithAccount:_accountTextFiled.text Password:_passwordTextFiled.text BaseURL:_urlTextFiled.text]) {
-            PDKeychainBindings *bindings = [PDKeychainBindings sharedKeychainBindings];
-            [bindings setObject:_accountTextFiled.text forKey:kZTCKeychainAccount];
-            [bindings setObject:_passwordTextFiled.text forKey:kZTCKeychainPassword];
-            [bindings setObject:_urlTextFiled.text forKey:kZTCKeychainUrl];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.parentViewController dismissModalViewControllerAnimated:YES];
-                UIViewController *viewController = [[ZTCListViewController alloc] init];
-                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
-                [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
-                [ZTCNotice showSuccessNoticeInView:viewController.view title:NSLocalizedString(@"login success title", nil)];
-            });
-        } else {
-            //login fail;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [ZTCNotice showErrorNoticeInView:self.view title:NSLocalizedString(@"login fail title", nil) message:NSLocalizedString(@"login fail message", nil)];
-            });
-        }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.navigationItem.rightBarButtonItem.enabled = YES;
-        });
-    });
-}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
@@ -348,6 +318,37 @@ enum {
     } else {
         [textField resignFirstResponder];
     }
+}
+
+#pragma mark - login
+
+- (void)tryLogin
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.navigationItem.rightBarButtonItem.enabled = NO;
+        });
+        if ([ZTCAPIClient loginWithAccount:_accountTextFiled.text Password:_passwordTextFiled.text BaseURL:_urlTextFiled.text]) {
+            PDKeychainBindings *bindings = [PDKeychainBindings sharedKeychainBindings];
+            [bindings setObject:_accountTextFiled.text forKey:kZTCKeychainAccount];
+            [bindings setObject:_passwordTextFiled.text forKey:kZTCKeychainPassword];
+            [bindings setObject:_urlTextFiled.text forKey:kZTCKeychainUrl];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.parentViewController dismissModalViewControllerAnimated:YES];
+                [ZTCAPIClient showMainView];
+                [ZTCNotice showSuccessNoticeInView:[[[[UIApplication sharedApplication] delegate] window] rootViewController].view title:NSLocalizedString(@"login success title", nil)];
+            });
+        } else {
+            //login fail;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [ZTCNotice showErrorNoticeInView:self.view title:NSLocalizedString(@"login fail title", nil) message:NSLocalizedString(@"login fail message", nil)];
+            });
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.navigationItem.rightBarButtonItem.enabled = YES;
+        });
+    });
 }
 
 @end

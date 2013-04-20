@@ -17,13 +17,17 @@
 
 #define TEST_MODE 0
 #define kHasKeychain          @"Keychain"
-static NSString * const kDemoAPIBaseURLString = @"http://demo.zentao.net";
-static NSString * const kCookieURLString = @"demo.zentao.net";
+#define kDemoAPIBaseURLString @"http://demo.zentao.net"
+#define kCookieURLString      @"demo.zentao.net";
 static BOOL urlChanged = NO;
 static NSUInteger requestType = ERRORIndex;
 static NSString * tmpUrl = nil;
-@implementation ZTCAPIClient{
+
+@implementation ZTCAPIClient {
+    
 }
+
+#pragma mark -
 
 + (ZTCAPIClient *)sharedClient {
     static ZTCAPIClient *_sharedClient = nil;
@@ -67,6 +71,21 @@ static NSString * tmpUrl = nil;
         return _sharedClient;
     }
 }
+
+- (id)initWithBaseURL:(NSURL *)url {
+    self = [super initWithBaseURL:url];
+    if (!self) {
+        return nil;
+    }
+    
+    [self registerHTTPOperationClass:[AFURLConnectionOperation class]];
+    
+    // Accept HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
+	//[self setDefaultHeader:@"Accept" value:@"text/html"];
+    
+    return self;
+}
+
 + (void) makeRequestTo:(NSString *) urlStr
             parameters:(NSDictionary *) params
                 method:(NSString *) method
@@ -92,19 +111,6 @@ static NSString * tmpUrl = nil;
     } else {
         successCallback(data);
     }
-}
-
-+ (void)registerDefaultsFromDemoPlist {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *demoSettings = [[NSBundle mainBundle] pathForResource:@"demo" ofType:@"plist"];
-    if(!demoSettings) {
-        NSLog(@"ERROR: Could not find demo.plist");
-        return;
-    }
-    
-    NSMutableDictionary *settings = [NSMutableDictionary dictionaryWithContentsOfFile:demoSettings];
-    
-    [defaults registerDefaults:settings];
 }
 
 + (NSUInteger) getRequestType {
@@ -158,6 +164,21 @@ static NSString * tmpUrl = nil;
     return nil;
 }
 
+#pragma mark - Register and login
+
++ (void)registerDefaultsFromDemoPlist {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *demoSettings = [[NSBundle mainBundle] pathForResource:@"demo" ofType:@"plist"];
+    if(!demoSettings) {
+        NSLog(@"ERROR: Could not find demo.plist");
+        return;
+    }
+    
+    NSMutableDictionary *settings = [NSMutableDictionary dictionaryWithContentsOfFile:demoSettings];
+    
+    [defaults registerDefaults:settings];
+}
+
 + (void) registerUserInfo {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         PDKeychainBindings *bindings = [PDKeychainBindings sharedKeychainBindings];
@@ -167,7 +188,7 @@ static NSString * tmpUrl = nil;
         //DLog(@"\n*************\naccount:%@\npassword:%@\nurl:%@\n*************",account,password,url);
         if( !account || !password || !url ) {
             // load default value
-            [self performSelector:@selector(registerDefaultsFromDemoPlist)];
+            [self registerDefaultsFromDemoPlist];
             dispatch_async(dispatch_get_main_queue(), ^{
                 ZTCUserSettingsViewController *userSettingsView = [[ZTCUserSettingsViewController alloc] init];
                 UINavigationController *usersSettingsNav = [[UINavigationController alloc] initWithRootViewController:userSettingsView];
@@ -177,11 +198,7 @@ static NSString * tmpUrl = nil;
         } else {
             if ([ZTCAPIClient loginWithAccount:account Password:password BaseURL:url]) {
                 //DLog(@"Log in SUCCESS");
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    UIViewController *viewController = [[ZTCListViewController alloc] init];
-                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
-                    [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
-                });
+                [self showMainView];
             } else {
                 //DLog(@"Log in FAIL");
                 [[NSUserDefaults standardUserDefaults] registerDefaults:@{
@@ -279,6 +296,16 @@ static NSString * tmpUrl = nil;
     return loginSuccess;
 }
 
++ (void) showMainView {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIViewController *viewController = [[ZTCListViewController alloc] init];
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
+        [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+    });
+}
+
+#pragma mark -
+
 //ZenTao PMS always return a JSON with escape-character
 //This method can remove the superfluous characters.
 + (NSMutableDictionary *) dealWithZTStrangeJSON:(id)JSON {
@@ -296,6 +323,8 @@ static NSString * tmpUrl = nil;
     return dict;
 }
 
+#pragma mark - md5 (no use now)
+
 + (NSString *)md5HexDigest:(NSString*)input
 {
     const char* str = [input UTF8String];
@@ -308,6 +337,8 @@ static NSString * tmpUrl = nil;
     }
     return ret;
 }
+
+#pragma mark - Cookie (no use now)
 
 + (void) addCookieWithName:(id) name WithValue:(id) value ForURL:(NSString *) url {
     NSMutableDictionary *cookieProperties = [NSMutableDictionary dictionary];
@@ -340,17 +371,4 @@ static NSString * tmpUrl = nil;
     }
 }
 
-- (id)initWithBaseURL:(NSURL *)url {
-    self = [super initWithBaseURL:url];
-    if (!self) {
-        return nil;
-    }
-    
-    [self registerHTTPOperationClass:[AFURLConnectionOperation class]];
-    
-    // Accept HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
-	//[self setDefaultHeader:@"Accept" value:@"text/html"];
-    
-    return self;
-}
 @end

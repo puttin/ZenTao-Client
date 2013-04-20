@@ -22,10 +22,14 @@ enum {
 @interface ZTCAPIClient : AFHTTPClient
 
 + (ZTCAPIClient *)sharedClient;
-+ (BOOL) loginWithAccount:(NSString *)account Password:(NSString *)password BaseURL:(NSString *)url;
-+ (NSMutableDictionary *) dealWithZTStrangeJSON:(id)JSON;
+
 + (void) registerUserInfo;
 + (NSUInteger) getRequestType;
++ (BOOL) loginWithAccount:(NSString *)account Password:(NSString *)password BaseURL:(NSString *)url;
++ (void) showMainView;
+
 + (NSString*) getUrlWithType:(NSUInteger)type, ...;
 + (NSString*) getUrlWithType:(NSUInteger)type withParameters:(va_list)valist;
+
++ (NSMutableDictionary *) dealWithZTStrangeJSON:(id)JSON;
 @end
