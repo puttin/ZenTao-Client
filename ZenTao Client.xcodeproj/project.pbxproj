@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		8212C1549CC6406C9B6D7786 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 20C94E9C7559425A80386E3B /* libPods.a */; };
+		D209DF7E1721837C00C0785C /* ZTCListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D209DF7D1721837C00C0785C /* ZTCListViewController.m */; };
+		D209DF81172183C200C0785C /* ZTCListDataSourceDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D209DF80172183C200C0785C /* ZTCListDataSourceDelegate.m */; };
 		D21AAA3416FB31F1006B0BDE /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D21AAA3316FB31F1006B0BDE /* Settings.bundle */; };
 		D2370026170729DE0034A80D /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D2370025170729DE0034A80D /* EGORefreshTableHeaderView.m */; };
 		D237002F17072A490034A80D /* blackArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = D237002717072A490034A80D /* blackArrow.png */; };
@@ -32,13 +34,16 @@
 		D29D2AC716F5B20200BB556F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D29D2AC616F5B20200BB556F /* main.m */; };
 		D29D2ACB16F5B20200BB556F /* ZTCAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D29D2ACA16F5B20200BB556F /* ZTCAppDelegate.m */; };
 		D2A3FE9D16F8020B00BBBFB3 /* ZTCAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = D2A3FE9C16F8020B00BBBFB3 /* ZTCAPIClient.m */; };
-		D2A568D116F89F4900C45346 /* ZTCTaskListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D2A568D016F89F4900C45346 /* ZTCTaskListViewController.m */; };
 		D2C6A08A17032C5200BF2244 /* ZTCNotice.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C6A08917032C5200BF2244 /* ZTCNotice.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		20C94E9C7559425A80386E3B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		776B5121F3454DDC94F87A73 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
+		D209DF7C1721837C00C0785C /* ZTCListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZTCListViewController.h; sourceTree = "<group>"; };
+		D209DF7D1721837C00C0785C /* ZTCListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZTCListViewController.m; sourceTree = "<group>"; };
+		D209DF7F172183C200C0785C /* ZTCListDataSourceDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZTCListDataSourceDelegate.h; sourceTree = "<group>"; };
+		D209DF80172183C200C0785C /* ZTCListDataSourceDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZTCListDataSourceDelegate.m; sourceTree = "<group>"; };
 		D21AAA3316FB31F1006B0BDE /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		D2370024170729DE0034A80D /* EGORefreshTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGORefreshTableHeaderView.h; sourceTree = "<group>"; };
 		D2370025170729DE0034A80D /* EGORefreshTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EGORefreshTableHeaderView.m; sourceTree = "<group>"; };
@@ -73,8 +78,6 @@
 		D29D2ACA16F5B20200BB556F /* ZTCAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZTCAppDelegate.m; sourceTree = "<group>"; };
 		D2A3FE9B16F8020A00BBBFB3 /* ZTCAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZTCAPIClient.h; sourceTree = "<group>"; };
 		D2A3FE9C16F8020B00BBBFB3 /* ZTCAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZTCAPIClient.m; sourceTree = "<group>"; };
-		D2A568CF16F89F4900C45346 /* ZTCTaskListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZTCTaskListViewController.h; sourceTree = "<group>"; };
-		D2A568D016F89F4900C45346 /* ZTCTaskListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZTCTaskListViewController.m; sourceTree = "<group>"; };
 		D2C6A08817032C5200BF2244 /* ZTCNotice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZTCNotice.h; sourceTree = "<group>"; };
 		D2C6A08917032C5200BF2244 /* ZTCNotice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZTCNotice.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -151,8 +154,10 @@
 				D2C6A08917032C5200BF2244 /* ZTCNotice.m */,
 				D28B102116FCA66600CB6794 /* ZTCUserSettingsViewController.h */,
 				D28B102216FCA66600CB6794 /* ZTCUserSettingsViewController.m */,
-				D2A568CF16F89F4900C45346 /* ZTCTaskListViewController.h */,
-				D2A568D016F89F4900C45346 /* ZTCTaskListViewController.m */,
+				D209DF7C1721837C00C0785C /* ZTCListViewController.h */,
+				D209DF7D1721837C00C0785C /* ZTCListViewController.m */,
+				D209DF7F172183C200C0785C /* ZTCListDataSourceDelegate.h */,
+				D209DF80172183C200C0785C /* ZTCListDataSourceDelegate.m */,
 				D27253A016F97B99009B8508 /* ZTCTaskViewController.h */,
 				D27253A116F97B99009B8508 /* ZTCTaskViewController.m */,
 				D29D2AC116F5B20200BB556F /* Supporting Files */,
@@ -298,11 +303,12 @@
 				D29D2AC716F5B20200BB556F /* main.m in Sources */,
 				D29D2ACB16F5B20200BB556F /* ZTCAppDelegate.m in Sources */,
 				D2A3FE9D16F8020B00BBBFB3 /* ZTCAPIClient.m in Sources */,
-				D2A568D116F89F4900C45346 /* ZTCTaskListViewController.m in Sources */,
 				D27253A216F97B99009B8508 /* ZTCTaskViewController.m in Sources */,
 				D28B102316FCA66600CB6794 /* ZTCUserSettingsViewController.m in Sources */,
 				D2C6A08A17032C5200BF2244 /* ZTCNotice.m in Sources */,
 				D2370026170729DE0034A80D /* EGORefreshTableHeaderView.m in Sources */,
+				D209DF7E1721837C00C0785C /* ZTCListViewController.m in Sources */,
+				D209DF81172183C200C0785C /* ZTCListDataSourceDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

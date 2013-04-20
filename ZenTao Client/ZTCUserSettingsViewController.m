@@ -8,7 +8,7 @@
 
 #import "ZTCUserSettingsViewController.h"
 #import "ZTCAPIClient.h"
-#import "ZTCTaskListViewController.h"
+#import "ZTCListViewController.h"
 #import "ZTCNotice.h"
 #import "PDKeychainBindings.h"
 
@@ -147,7 +147,7 @@ enum {
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.parentViewController dismissModalViewControllerAnimated:YES];
-                UITableViewController *viewController = [[ZTCTaskListViewController alloc] initWithStyle:UITableViewStylePlain];
+                UIViewController *viewController = [[ZTCListViewController alloc] init];
                 UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
                 [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
                 [ZTCNotice showSuccessNoticeInView:viewController.view title:NSLocalizedString(@"login success title", nil)];
