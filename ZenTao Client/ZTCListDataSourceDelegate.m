@@ -26,8 +26,9 @@
     self = [super init];
     if (self) {
         // Custom initialization
+        [self addObserver:self forKeyPath:@"listViewDelegate" options:NSKeyValueObservingOptionNew context:nil];
         _updateQueue = dispatch_queue_create("com.puttinwong.ZenTao-Client.itemUpdateQueue", NULL);
-        _itemType = @"assignedto";
+        _itemType = @"assignedto";//todo
         _orderBy = @"id_desc";
     }
     return self;
@@ -97,7 +98,7 @@
 	//  should be calling your tableviews data source model to reload
 	//  put here just for demo
 	_reloading = YES;
-    [self getItemListWithType:ItemRefreshIndex,@"m=my",@"f=task",nil];
+    [self getItemListWithType:ItemRefreshIndex,@"m=my",@"f=task",nil];//todo
 	
 }
 
@@ -116,7 +117,7 @@
 #pragma mark PWLoadMoreTableFooterDelegate Methods
 
 - (void)pwLoadMore {
-    [self getItemListWithType:ItemAppendIndex,@"m=my",@"f=task",[NSString stringWithFormat:@"type=%@",_itemType],[NSString stringWithFormat:@"orderBy=%@",_orderBy],[NSString stringWithFormat:@"recTotal=%u",_recTotal],[NSString stringWithFormat:@"recPerPage=%u",_recPerPage],[NSString stringWithFormat:@"pageID=%u",_pageID+1],nil];
+    [self getItemListWithType:ItemAppendIndex,@"m=my",@"f=task",[NSString stringWithFormat:@"type=%@",_itemType],[NSString stringWithFormat:@"orderBy=%@",_orderBy],[NSString stringWithFormat:@"recTotal=%u",_recTotal],[NSString stringWithFormat:@"recPerPage=%u",_recPerPage],[NSString stringWithFormat:@"pageID=%u",_pageID+1],nil];//todo
 }
 
 
@@ -150,15 +151,15 @@
             //DLog(@"%@",dict);
             switch (type) {
                 case ItemLoadIndex:{
-                    _itemArray = [[dict objectForKey:@"data"] objectForKey:@"tasks"];
+                    _itemArray = [[dict objectForKey:@"data"] objectForKey:@"tasks"];//todo
                     break;
                 }
                 case ItemRefreshIndex:{
-                    _itemArray = [[dict objectForKey:@"data"] objectForKey:@"tasks"];
+                    _itemArray = [[dict objectForKey:@"data"] objectForKey:@"tasks"];//todo
                     break;
                 }
                 case ItemAppendIndex:{
-                    [_itemArray addObjectsFromArray:[[dict objectForKey:@"data"] objectForKey:@"tasks"]];
+                    [_itemArray addObjectsFromArray:[[dict objectForKey:@"data"] objectForKey:@"tasks"]];//todo
                     break;
                 }
                 default:
@@ -216,6 +217,32 @@
 - (void)resetLoadMore {
     //data source should call this when it can load more
     [_listViewDelegate.loadMoreFooterView resetLoadMore];
+}
+
+#pragma mark - KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context {
+    DLog(@"observeValueForKeyPath");
+    if ([keyPath isEqual:@"listViewDelegate"]) {
+        [self getItemListWithType:ItemLoadIndex,@"m=my",@"f=task",nil];//todo
+    }
+    /*
+     Be sure to call the superclass's implementation *if it implements it*.
+     NSObject does not implement the method.
+     */
+//    [super observeValueForKeyPath:keyPath
+//                         ofObject:object
+//                           change:change
+//                          context:context];
+}
+
+#pragma mark - dealloc
+
+- (void)dealloc {
+    [self removeObserver:self forKeyPath:@"listViewDelegate" context:nil];
 }
 
 @end

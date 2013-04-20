@@ -62,7 +62,6 @@
     //let the delegate can control listView
     self.dataSourceDelegate.listViewDelegate = self;
     
-    [self.dataSourceDelegate getItemListWithType:ItemLoadIndex,@"m=my",@"f=task",nil];
 }
 
 - (void)didReceiveMemoryWarning
