@@ -167,7 +167,7 @@ enum {
     [super viewDidLoad];
 
     // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
+    self.clearsSelectionOnViewWillAppear = NO;
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
@@ -327,6 +327,9 @@ enum {
         {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2
                                           reuseIdentifier:@"TaskCell"];
+            if (!cell) {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TaskCell"];
+            }
             cell.textLabel.text = [cellKeyDict objectForKey:[NSString stringWithFormat:@"%u:%u",indexPath.section,indexPath.row]];
             cell.detailTextLabel.text = [cellValueDict objectForKey:[NSString stringWithFormat:@"%u:%u",indexPath.section,indexPath.row]];
             cell.detailTextLabel.adjustsFontSizeToFitWidth = YES;

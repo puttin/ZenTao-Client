@@ -6,6 +6,7 @@
   Copyright (c) 2013 Puttin Wong. All rights reserved.
 */
 
+//Task
 "task" = "Task";
 
 "task desc" = "Description";
@@ -49,6 +50,128 @@
 "task closedreason" = "Reason";
 "task edited" = "Edited";
 
+//Bug
+"bug" = "Bug";
+
+"bug steps" = "Steps";
+
+"bug basic info" = "Basic info";
+"bug product" = "Product";
+"bug module" = "Module";
+"bug type" = "Type";
+"bug type " = "";
+"bug type codeerror"    = "Code error";
+"bug type interface"    = "Interface";
+"bug type designchange" = "Design change";
+"bug type newfeature"   = "New feature";
+"bug type designdefect" = "Design defect";
+"bug type config"       = "Config";
+"bug type install"      = "Install";
+"bug type security"     = "Security";
+"bug type performance"  = "Performance";
+"bug type standard"     = "Standard";
+"bug type automation"   = "Automation";
+"bug type trackthings"  = "Tracking";
+"bug type others"       = "Others";
+"bug severity" = "Severity";
+"bug severity " = "";
+"bug severity 3" = "3";
+"bug severity 1" = "1";
+"bug severity 2" = "2";
+"bug severity 4" = "4";
+"bug priority" = "Priority";
+"bug pri 0" = "";
+"bug pri 3" = "3";
+"bug pri 1" = "1";
+"bug pri 2" = "2";
+"bug pri 4" = "4";
+"bug status" = "Status";
+"bug status "         = "";
+"bug status active"   = "Active";
+"bug status resolved" = "Resolved";
+"bug status closed"   = "Closed";
+"bug activatedCount" = "ActivatedCount";
+"bug confirmed" = "Confirmed";
+"bug confirmed 1" = "Confirmed";
+"bug confirmed 0" = "Unconfirmed";
+"bug assignedTo" = "Assigned";
+"bug os" = "OS";
+"bug os "        = "";
+"bug os all"     = "All";
+"bug os windows" = "Windows";
+"bug os winxp"   = "Windows XP";
+"bug os win7"    = "Windows 7";
+"bug os vista"   = "Windows Vista";
+"bug os win2000" = "Windows 2000";
+"bug os win2003" = "Windows 2003";
+"bug os win2008" = "Windows 2008";
+"bug os winnt"   = "Windows NT";
+"bug os win98"   = "Windows 98";
+"bug os andriod" = "Andriod";
+"bug os ios"     = "IOS";
+"bug os wp7"     = "WP7";
+"bug os symbian" = "Symbian";
+"bug os linux"   = "Linux";
+"bug os freebsd" = "FreeBSD";
+"bug os mac"     = "Mac OS";
+"bug os unix"    = "Unix";
+"bug os others"  = "Others";
+"bug browser" = "Browser";
+"bug browser "         = "";
+"bug browser all"      = "All";
+"bug browser ie"       = "IE";
+"bug browser ie8"      = "IE8";
+"bug browser ie9"      = "IE9";
+"bug browser ie6"      = "IE6";
+"bug browser ie7"      = "IE7";
+"bug browser chrome"   = "chrome";
+"bug browser firefox"  = "Firefox";
+"bug browser firefox2" = "Firefox2";
+"bug browser firefox3" = "Firefox3";
+"bug browser firefox4" = "Firefox4";
+"bug browser opera"    = "opera";
+"bug browser opera9"   = "opera9";
+"bug browser oprea10"  = "opera10";
+"bug browser oprea11"  = "opera11";
+"bug browser safari"   = "safari";
+"bug browser maxthon"  = "Maxthon";
+"bug browser uc"       = "UC";
+"bug browser other"    = "Others";
+"bug keywords" = "Keywords";
+"bug case" = "Case";
+"bug fromCase" = "From case";
+"bug toCase" = "To case";
+"bug toCase multi" = "Cases";
+"bug lifetime" = "Lifetime";
+"bug openedBy" = "Opened By";
+"bug openedBuild" = "Opened Build";
+"bug resolved" = "Resolved";
+"bug resolvedBuild" = "Resolved Build";
+"bug resolution" = "Resolution";
+"bug resolution "           = "";
+"bug resolution bydesign"   = "By design";
+"bug resolution duplicate"  = "Duplicate";
+"bug resolution external"   = "External";
+"bug resolution fixed"      = "Fixed";
+"bug resolution notrepro"   = "Not reproduce";
+"bug resolution postponed"  = "Postponed";
+"bug resolution willnotfix" = "Won't fix";
+"bug resolution tostory"    = "To story";
+"bug closedBy" = "Closed By";
+"bug lastEditedBy" = "Last edited";
+"bug Project&Story&Task" = "Project, story & task";
+"bug project" = "Project";
+"bug story" = "Story";
+"bug task" = "Task";
+"bug misc" = "Misc";
+"bug mailto" = "Mailto";
+"bug linkBug" = "Related";
+"bug linkBug multi" = "Bugs";
+"bug toStory" = "To story";
+"bug toTask" = "To task";
+"bug at" = "at";
+
+//Other
 "login" = "Log in";
 "login success title" = "Login Success";
 "login fail title" = "Login failed";
