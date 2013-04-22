@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface ZTCTaskViewController : UITableViewController
-- (id)initWithTaskID:(unsigned int) ID;
+- (id)initWithID:(id) ID;
 @end

@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface ZTCBugViewController : UITableViewController
-- (id)initWithBugID:(unsigned int) ID;
+- (id)initWithID:(id) ID;
 @end

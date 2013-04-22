@@ -91,17 +91,17 @@ enum {
     NSDictionary *cellValueDict;
 }
 
-- (id)initWithBugID:(unsigned int) ID
+- (id)initWithID:(id) ID
 {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         // Custom initialization
-        bugID = ID;
+        bugID = [ID intValue];
     }
     return self;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     ZTCAPIClient* api = [ZTCAPIClient sharedClient];
     [api getPath:[ZTCAPIClient getUrlWithType:[ZTCAPIClient getRequestType],@"m=bug",@"f=view",[NSString stringWithFormat:@"id=%u",bugID],nil] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {

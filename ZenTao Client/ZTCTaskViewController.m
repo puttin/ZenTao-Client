@@ -76,17 +76,17 @@ enum {
     NSDictionary *cellValueDict;
 }
 
-- (id)initWithTaskID:(unsigned int) ID
+- (id)initWithID:(id) ID
 {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         // Custom initialization
-        taskID = ID;
+        taskID = [ID intValue];
     }
     return self;
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     ZTCAPIClient* api = [ZTCAPIClient sharedClient];

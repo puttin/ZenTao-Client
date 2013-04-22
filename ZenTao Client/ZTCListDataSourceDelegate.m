@@ -10,8 +10,6 @@
 #import "ZTCAPIClient.h"
 #import "ZTCNotice.h"
 #import "ZTCListViewController.h"
-#import "ZTCTaskViewController.h"
-#import "ZTCBugViewController.h"
 
 @implementation ZTCListDataSourceDelegate
 
@@ -51,6 +49,7 @@
             _module = @"my";
             _function = @"task";
             _itemsNameInJSON = @"tasks";
+            itemViewController = @"ZTCTaskViewController";
         }
             break;
         case listTypeMyBug: {
@@ -60,6 +59,7 @@
             _module = @"my";
             _function = @"bug";
             _itemsNameInJSON = @"bugs";
+            itemViewController = @"ZTCBugViewController";
             
         }
             break;
@@ -90,20 +90,13 @@
     // Navigation logic may go here. Create and push another view controller.
     // Pass the selected object to the new view controller.
     UIViewController *detailViewController = nil;
-    switch (self.type) {
-        case ListTypeMyTask: {
-            detailViewController = [[ZTCTaskViewController alloc] initWithTaskID:[[[_listViewDelegate.dataSourceDelegate.itemArray objectAtIndex:indexPath.row] objectForKey:@"id"] intValue]];
-        }
-            break;
-        case listTypeMyBug: {
-            detailViewController = [[ZTCBugViewController alloc] initWithBugID:[[[_listViewDelegate.dataSourceDelegate.itemArray objectAtIndex:indexPath.row] objectForKey:@"id"] intValue]];
-        }
-            break;
-            //todo
-        default:
-            [tableView deselectRowAtIndexPath:indexPath animated:YES];
-            break;
-    }
+    Class c = NSClassFromString(itemViewController);
+    SEL s = NSSelectorFromString(@"initWithID:");
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+    detailViewController = [[c alloc] performSelector:s withObject:[[_listViewDelegate.dataSourceDelegate.itemArray objectAtIndex:indexPath.row] objectForKey:@"id"]];
+#pragma clang diagnostic pop
+
     if (detailViewController) {
         [_listViewDelegate.navigationController pushViewController:detailViewController animated:YES];
     }

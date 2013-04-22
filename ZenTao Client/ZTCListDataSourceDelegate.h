@@ -26,6 +26,7 @@ enum {
 	BOOL _reloading;
 	BOOL _dataSourceIsLoading;
     bool _loadMoreAllLoaded;
+    NSString *itemViewController;
 }
 @property(nonatomic,weak) ZTCListViewController *listViewDelegate;
 
