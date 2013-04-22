@@ -3,13 +3,15 @@
 //  ZenTao Client
 //
 //  Created by Puttin Wong on 13-4-19.
-//  Copyright (c) 2013年 Puttin Wong. All rights reserved.
+//  Copyright (c) 2013 Puttin Wong. All rights reserved.
 //
 
 #import "ZTCListDataSourceDelegate.h"
 #import "ZTCAPIClient.h"
 #import "ZTCNotice.h"
+#import "ZTCListViewController.h"
 #import "ZTCTaskViewController.h"
+#import "ZTCBugViewController.h"
 
 @implementation ZTCListDataSourceDelegate
 
@@ -91,6 +93,10 @@
     switch (self.type) {
         case ListTypeMyTask: {
             detailViewController = [[ZTCTaskViewController alloc] initWithTaskID:[[[_listViewDelegate.dataSourceDelegate.itemArray objectAtIndex:indexPath.row] objectForKey:@"id"] intValue]];
+        }
+            break;
+        case listTypeMyBug: {
+            detailViewController = [[ZTCBugViewController alloc] initWithBugID:[[[_listViewDelegate.dataSourceDelegate.itemArray objectAtIndex:indexPath.row] objectForKey:@"id"] intValue]];
         }
             break;
             //todo

@@ -3,14 +3,13 @@
 //  ZenTao Client
 //
 //  Created by Puttin Wong on 13-4-19.
-//  Copyright (c) 2013年 Puttin Wong. All rights reserved.
+//  Copyright (c) 2013 Puttin Wong. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-#import "ZTCListDataSourceDelegate.h"
-#import "EGORefreshTableHeaderView.h"
-#import "PWLoadMoreTableFooterView.h"
 
+@class EGORefreshTableHeaderView;
+@class PWLoadMoreTableFooterView;
 @class ZTCListDataSourceDelegate;
 @interface ZTCListViewController : UIViewController
 @property(nonatomic,strong) EGORefreshTableHeaderView *refreshHeaderView;

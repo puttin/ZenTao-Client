@@ -3,10 +3,13 @@
 //  ZenTao Client
 //
 //  Created by Puttin Wong on 13-4-19.
-//  Copyright (c) 2013年 Puttin Wong. All rights reserved.
+//  Copyright (c) 2013 Puttin Wong. All rights reserved.
 //
 
 #import "ZTCListViewController.h"
+#import "EGORefreshTableHeaderView.h"
+#import "PWLoadMoreTableFooterView.h"
+#import "ZTCListDataSourceDelegate.h"
 
 @interface ZTCListViewController ()
 
