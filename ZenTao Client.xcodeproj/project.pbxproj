@@ -11,15 +11,6 @@
 		D209DF7E1721837C00C0785C /* ZTCListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D209DF7D1721837C00C0785C /* ZTCListViewController.m */; };
 		D209DF81172183C200C0785C /* ZTCListDataSourceDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D209DF80172183C200C0785C /* ZTCListDataSourceDelegate.m */; };
 		D21AAA3416FB31F1006B0BDE /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D21AAA3316FB31F1006B0BDE /* Settings.bundle */; };
-		D2370026170729DE0034A80D /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = D2370025170729DE0034A80D /* EGORefreshTableHeaderView.m */; };
-		D237002F17072A490034A80D /* blackArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = D237002717072A490034A80D /* blackArrow.png */; };
-		D237003017072A490034A80D /* blackArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D237002817072A490034A80D /* blackArrow@2x.png */; };
-		D237003117072A490034A80D /* blueArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = D237002917072A490034A80D /* blueArrow.png */; };
-		D237003217072A490034A80D /* blueArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D237002A17072A490034A80D /* blueArrow@2x.png */; };
-		D237003317072A490034A80D /* grayArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = D237002B17072A490034A80D /* grayArrow.png */; };
-		D237003417072A490034A80D /* grayArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D237002C17072A490034A80D /* grayArrow@2x.png */; };
-		D237003517072A490034A80D /* whiteArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = D237002D17072A490034A80D /* whiteArrow.png */; };
-		D237003617072A490034A80D /* whiteArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D237002E17072A490034A80D /* whiteArrow@2x.png */; };
 		D258AF4F171BF31100B22F2A /* demo.plist in Resources */ = {isa = PBXBuildFile; fileRef = D258AF4E171BF31100B22F2A /* demo.plist */; };
 		D272539B16F97805009B8508 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D272539D16F97805009B8508 /* Localizable.strings */; };
 		D27253A216F97B99009B8508 /* ZTCTaskViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D27253A116F97B99009B8508 /* ZTCTaskViewController.m */; };
@@ -46,16 +37,6 @@
 		D209DF7F172183C200C0785C /* ZTCListDataSourceDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZTCListDataSourceDelegate.h; sourceTree = "<group>"; };
 		D209DF80172183C200C0785C /* ZTCListDataSourceDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZTCListDataSourceDelegate.m; sourceTree = "<group>"; };
 		D21AAA3316FB31F1006B0BDE /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
-		D2370024170729DE0034A80D /* EGORefreshTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGORefreshTableHeaderView.h; sourceTree = "<group>"; };
-		D2370025170729DE0034A80D /* EGORefreshTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EGORefreshTableHeaderView.m; sourceTree = "<group>"; };
-		D237002717072A490034A80D /* blackArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blackArrow.png; sourceTree = "<group>"; };
-		D237002817072A490034A80D /* blackArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blackArrow@2x.png"; sourceTree = "<group>"; };
-		D237002917072A490034A80D /* blueArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blueArrow.png; sourceTree = "<group>"; };
-		D237002A17072A490034A80D /* blueArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blueArrow@2x.png"; sourceTree = "<group>"; };
-		D237002B17072A490034A80D /* grayArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grayArrow.png; sourceTree = "<group>"; };
-		D237002C17072A490034A80D /* grayArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "grayArrow@2x.png"; sourceTree = "<group>"; };
-		D237002D17072A490034A80D /* whiteArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteArrow.png; sourceTree = "<group>"; };
-		D237002E17072A490034A80D /* whiteArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "whiteArrow@2x.png"; sourceTree = "<group>"; };
 		D258AF4E171BF31100B22F2A /* demo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = demo.plist; sourceTree = "<group>"; };
 		D272539C16F97805009B8508 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D272539E16F9785B009B8508 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -103,20 +84,9 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		D2370023170729820034A80D /* PullToRefresh */ = {
-			isa = PBXGroup;
-			children = (
-				D2D7F24117110FB10044D3F7 /* Images */,
-				D2370024170729DE0034A80D /* EGORefreshTableHeaderView.h */,
-				D2370025170729DE0034A80D /* EGORefreshTableHeaderView.m */,
-			);
-			path = PullToRefresh;
-			sourceTree = "<group>";
-		};
 		D29D2AAB16F5B20200BB556F = {
 			isa = PBXGroup;
 			children = (
-				D2370023170729820034A80D /* PullToRefresh */,
 				D29D2AC016F5B20200BB556F /* ZenTao Client */,
 				D29D2AB916F5B20200BB556F /* Frameworks */,
 				D29D2AB716F5B20200BB556F /* Products */,
@@ -184,21 +154,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		D2D7F24117110FB10044D3F7 /* Images */ = {
-			isa = PBXGroup;
-			children = (
-				D237002717072A490034A80D /* blackArrow.png */,
-				D237002817072A490034A80D /* blackArrow@2x.png */,
-				D237002917072A490034A80D /* blueArrow.png */,
-				D237002A17072A490034A80D /* blueArrow@2x.png */,
-				D237002B17072A490034A80D /* grayArrow.png */,
-				D237002C17072A490034A80D /* grayArrow@2x.png */,
-				D237002D17072A490034A80D /* whiteArrow.png */,
-				D237002E17072A490034A80D /* whiteArrow@2x.png */,
-			);
-			path = Images;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -256,14 +211,6 @@
 				D29D2AC516F5B20200BB556F /* InfoPlist.strings in Resources */,
 				D272539B16F97805009B8508 /* Localizable.strings in Resources */,
 				D21AAA3416FB31F1006B0BDE /* Settings.bundle in Resources */,
-				D237002F17072A490034A80D /* blackArrow.png in Resources */,
-				D237003017072A490034A80D /* blackArrow@2x.png in Resources */,
-				D237003117072A490034A80D /* blueArrow.png in Resources */,
-				D237003217072A490034A80D /* blueArrow@2x.png in Resources */,
-				D237003317072A490034A80D /* grayArrow.png in Resources */,
-				D237003417072A490034A80D /* grayArrow@2x.png in Resources */,
-				D237003517072A490034A80D /* whiteArrow.png in Resources */,
-				D237003617072A490034A80D /* whiteArrow@2x.png in Resources */,
 				D258AF4F171BF31100B22F2A /* demo.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -311,7 +258,6 @@
 				D27253A216F97B99009B8508 /* ZTCTaskViewController.m in Sources */,
 				D28B102316FCA66600CB6794 /* ZTCUserSettingsViewController.m in Sources */,
 				D2C6A08A17032C5200BF2244 /* ZTCNotice.m in Sources */,
-				D2370026170729DE0034A80D /* EGORefreshTableHeaderView.m in Sources */,
 				D209DF7E1721837C00C0785C /* ZTCListViewController.m in Sources */,
 				D209DF81172183C200C0785C /* ZTCListDataSourceDelegate.m in Sources */,
 				D2A3E969172398F9009340AD /* ZTCBugViewController.m in Sources */,

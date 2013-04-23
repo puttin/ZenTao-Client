@@ -107,7 +107,7 @@ enum {
     [api getPath:[ZTCAPIClient getUrlWithType:[ZTCAPIClient getRequestType],@"m=bug",@"f=view",[NSString stringWithFormat:@"id=%u",bugID],nil] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSMutableDictionary *dict = [ZTCAPIClient dealWithZTStrangeJSON:JSON];
-            DLog(@"%@",dict);
+            //DLog(@"%@",dict);
             productsDict = [[dict objectForKey:@"data"] objectForKey:@"products"];
             bugDict = [[dict objectForKey:@"data"] objectForKey:@"bug"];
             usersDict = [[dict objectForKey:@"data"] objectForKey:@"users"];
