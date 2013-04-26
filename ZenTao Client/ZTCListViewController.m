@@ -15,13 +15,29 @@
 
 @end
 
-@implementation ZTCListViewController
+@implementation ZTCListViewController {
+    NSUInteger listType;
+}
 
 @synthesize refreshHeaderView = _refreshHeaderView;
 @synthesize loadMoreFooterView = _loadMoreFooterView;
 
 @synthesize tableView = _tableView;
 @synthesize dataSourceDelegate = _dataSourceDelegate;
+
+- (id)init {
+    //Init with default type
+    NSLog(@"WARNING: SHOULD NOT invoke 'init' to init listViewController, use 'initWithType'");
+    return [self initWithType:ListTypeMyTask];
+}
+
+- (id)initWithType:(NSUInteger)type {
+    self = [super init];
+    if (self) {
+        listType = type;
+    }
+    return self;
+}
 
 - (void)viewDidLoad
 {
@@ -33,7 +49,7 @@
     
     //dataSourceDelegate and delegate
     self.dataSourceDelegate = [[ZTCListDataSourceDelegate alloc] init];
-    [self.dataSourceDelegate setType:listTypeMyBug];
+    [self.dataSourceDelegate setType:listType];
     
     //refreshHeaderView init
     if (_refreshHeaderView == nil) {

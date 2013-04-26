@@ -11,11 +11,6 @@
 #import "PWLoadMoreTableFooterView.h"
 
 enum {
-    ListTypeMyTask = 0,
-    listTypeMyBug,
-} ListType;
-
-enum {
     ItemLoadIndex,
     ItemRefreshIndex,
     ItemAppendIndex,
@@ -46,6 +41,5 @@ enum {
 @property(nonatomic,assign) NSUInteger recPerPage;
 @property(nonatomic,assign) NSUInteger pageID;
 
-- (id)init;
 
 @end

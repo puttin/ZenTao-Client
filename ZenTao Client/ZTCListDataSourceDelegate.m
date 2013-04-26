@@ -66,6 +66,9 @@
         default:
             break;
     }
+    if (_listViewDelegate) {
+        [self refreshTable];
+    }
 }
 
 #pragma mark -
@@ -278,7 +281,7 @@
                       ofObject:(id)object
                         change:(NSDictionary *)change
                        context:(void *)context {
-    DLog(@"observeValueForKeyPath");
+//    DLog(@"observeValueForKeyPath");
     if ([keyPath isEqual:@"listViewDelegate"]) {
         [self refreshTable];
     }
