@@ -15,6 +15,8 @@
 #import "ZTCNotice.h"
 #import "PDKeychainBindings.h"
 
+#import "IIViewDeckController.h"
+
 #define TEST_MODE 0
 #define kHasKeychain          @"Keychain"
 #define kDemoAPIBaseURLString @"http://demo.zentao.net"
@@ -298,9 +300,40 @@ static NSString * tmpUrl = nil;
 
 + (void) showMainView {
     dispatch_async(dispatch_get_main_queue(), ^{
+        //center
         UIViewController *viewController = [[ZTCListViewController alloc] init];
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
-        [[[[UIApplication sharedApplication] delegate] window] setRootViewController:nav];
+        //mainMenu
+        Class menuViewControllerClass = NSClassFromString(@"ZTCMenuViewController");
+        UIViewController *mainMenu = [[menuViewControllerClass alloc] init];
+        UINavigationController *mainMenuNav = [[UINavigationController alloc] initWithRootViewController:mainMenu];
+        //subMenu
+        UIViewController *subMenu = [[menuViewControllerClass alloc] init];
+        UINavigationController *subMenuNav = [[UINavigationController alloc] initWithRootViewController:subMenu];
+        
+        IIViewDeckController* menuDeckController =  [[IIViewDeckController alloc] initWithCenterViewController:subMenuNav
+                                                                                              leftViewController:mainMenuNav];
+        if (IS_IPAD) {
+            menuDeckController.leftSize = 600;
+        } else {
+            menuDeckController.leftSize = 160;
+        }
+        menuDeckController.delegateMode = IIViewDeckDelegateAndSubControllers;
+        menuDeckController.panningMode = IIViewDeckNoPanning;
+        menuDeckController.sizeMode = IIViewDeckViewSizeMode;
+        
+        IIViewDeckController* deckController =  [[IIViewDeckController alloc] initWithCenterViewController:nav
+                                                                                        leftViewController:menuDeckController];
+        if (IS_IPAD) {
+            deckController.leftSize = 500;
+        } else {
+            deckController.leftSize = 44;
+        }
+        deckController.delegateMode = IIViewDeckDelegateAndSubControllers;
+        deckController.panningMode = IIViewDeckNavigationBarOrOpenCenterPanning;
+        deckController.sizeMode = IIViewDeckViewSizeMode;
+        
+        [[[[UIApplication sharedApplication] delegate] window] setRootViewController:deckController];
     });
 }
 

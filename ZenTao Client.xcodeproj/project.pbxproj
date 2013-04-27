@@ -27,6 +27,7 @@
 		D2A3E969172398F9009340AD /* ZTCBugViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D2A3E968172398F9009340AD /* ZTCBugViewController.m */; };
 		D2A3FE9D16F8020B00BBBFB3 /* ZTCAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = D2A3FE9C16F8020B00BBBFB3 /* ZTCAPIClient.m */; };
 		D2C6A08A17032C5200BF2244 /* ZTCNotice.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C6A08917032C5200BF2244 /* ZTCNotice.m */; };
+		D2D1F630172C0BB000D34BD0 /* ZTCMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D2D1F62F172C0BB000D34BD0 /* ZTCMenuViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +65,8 @@
 		D2A3FE9C16F8020B00BBBFB3 /* ZTCAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZTCAPIClient.m; sourceTree = "<group>"; };
 		D2C6A08817032C5200BF2244 /* ZTCNotice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZTCNotice.h; sourceTree = "<group>"; };
 		D2C6A08917032C5200BF2244 /* ZTCNotice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZTCNotice.m; sourceTree = "<group>"; };
+		D2D1F62E172C0BB000D34BD0 /* ZTCMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZTCMenuViewController.h; sourceTree = "<group>"; };
+		D2D1F62F172C0BB000D34BD0 /* ZTCMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZTCMenuViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,10 +134,9 @@
 				D209DF7D1721837C00C0785C /* ZTCListViewController.m */,
 				D209DF7F172183C200C0785C /* ZTCListDataSourceDelegate.h */,
 				D209DF80172183C200C0785C /* ZTCListDataSourceDelegate.m */,
-				D27253A016F97B99009B8508 /* ZTCTaskViewController.h */,
-				D27253A116F97B99009B8508 /* ZTCTaskViewController.m */,
-				D2A3E967172398F9009340AD /* ZTCBugViewController.h */,
-				D2A3E968172398F9009340AD /* ZTCBugViewController.m */,
+				D2D1F62E172C0BB000D34BD0 /* ZTCMenuViewController.h */,
+				D2D1F62F172C0BB000D34BD0 /* ZTCMenuViewController.m */,
+				D2D1F62D172C0B7300D34BD0 /* DetailView */,
 				D29D2AC116F5B20200BB556F /* Supporting Files */,
 			);
 			path = "ZenTao Client";
@@ -152,6 +154,17 @@
 				D258AF4E171BF31100B22F2A /* demo.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D2D1F62D172C0B7300D34BD0 /* DetailView */ = {
+			isa = PBXGroup;
+			children = (
+				D27253A016F97B99009B8508 /* ZTCTaskViewController.h */,
+				D27253A116F97B99009B8508 /* ZTCTaskViewController.m */,
+				D2A3E967172398F9009340AD /* ZTCBugViewController.h */,
+				D2A3E968172398F9009340AD /* ZTCBugViewController.m */,
+			);
+			name = DetailView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -261,6 +274,7 @@
 				D209DF7E1721837C00C0785C /* ZTCListViewController.m in Sources */,
 				D209DF81172183C200C0785C /* ZTCListDataSourceDelegate.m in Sources */,
 				D2A3E969172398F9009340AD /* ZTCBugViewController.m in Sources */,
+				D2D1F630172C0BB000D34BD0 /* ZTCMenuViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

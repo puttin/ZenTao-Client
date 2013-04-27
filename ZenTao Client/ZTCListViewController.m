@@ -10,8 +10,9 @@
 #import "EGORefreshTableHeaderView.h"
 #import "PWLoadMoreTableFooterView.h"
 #import "ZTCListDataSourceDelegate.h"
+#import "IIViewDeckController.h"
 
-@interface ZTCListViewController ()
+@interface ZTCListViewController () <IIViewDeckControllerDelegate>
 
 @end
 
@@ -43,6 +44,9 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    
+    //viewDeck
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:self action:@selector(showMenu)];
     
     self.tableView = [[UITableView alloc] init];
     self.view = self.tableView;
@@ -122,6 +126,20 @@
     if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortraitUpsideDown])
         mask |= UIInterfaceOrientationMaskPortraitUpsideDown;
     return mask;
+}
+
+#pragma mark - ViewDeck & its delegate
+
+- (void)viewDeckController:(IIViewDeckController *)viewDeckController willOpenViewSide:(IIViewDeckSide)viewDeckSide animated:(BOOL)animated {
+    [(IIViewDeckController*)self.viewDeckController.leftController openLeftView];
+}
+
+- (void)viewDeckController:(IIViewDeckController*)viewDeckController willCloseViewSide:(IIViewDeckSide)viewDeckSide animated:(BOOL)animated {
+    [(IIViewDeckController*)self.viewDeckController.leftController closeLeftView];
+}
+
+- (void) showMenu {
+    [self.viewDeckController toggleLeftView];
 }
 
 @end
