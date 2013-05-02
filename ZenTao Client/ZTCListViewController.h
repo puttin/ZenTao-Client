@@ -8,11 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-enum {
-    ListTypeMyTask = 0,
-    listTypeMyBug,
-} ListType;
-
 @class EGORefreshTableHeaderView;
 @class PWLoadMoreTableFooterView;
 @class ZTCListDataSourceDelegate;
@@ -22,5 +17,4 @@ enum {
 @property(nonatomic,strong) UITableView *tableView;
 @property(nonatomic,strong) ZTCListDataSourceDelegate *dataSourceDelegate;
 
-- (id)initWithType:(NSUInteger)type;
 @end

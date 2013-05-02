@@ -17,7 +17,6 @@
 @end
 
 @implementation ZTCListViewController {
-    NSUInteger listType;
 }
 
 @synthesize refreshHeaderView = _refreshHeaderView;
@@ -27,15 +26,8 @@
 @synthesize dataSourceDelegate = _dataSourceDelegate;
 
 - (id)init {
-    //Init with default type
-    NSLog(@"WARNING: SHOULD NOT invoke 'init' to init listViewController, use 'initWithType'");
-    return [self initWithType:ListTypeMyTask];
-}
-
-- (id)initWithType:(NSUInteger)type {
     self = [super init];
     if (self) {
-        listType = type;
     }
     return self;
 }
@@ -53,7 +45,6 @@
     
     //dataSourceDelegate and delegate
     self.dataSourceDelegate = [[ZTCListDataSourceDelegate alloc] init];
-    [self.dataSourceDelegate setType:listType];
     
     //refreshHeaderView init
     if (_refreshHeaderView == nil) {

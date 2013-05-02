@@ -11,64 +11,48 @@
 #import "ZTCNotice.h"
 #import "ZTCListViewController.h"
 
-@implementation ZTCListDataSourceDelegate
-
-@synthesize listViewDelegate = _listViewDelegate;
-@synthesize updateQueue = _updateQueue;
-
-@synthesize type = _type;
-@synthesize itemArray = _itemArray;
-@synthesize itemType = _itemType;
-@synthesize orderBy = _orderBy;
-@synthesize itemName = _itemName;
-@synthesize module = _module;
-@synthesize function = _function;
-@synthesize itemsNameInJSON = _itemsNameInJSON;
-
-@synthesize recTotal = _recTotal;
-@synthesize recPerPage = _recPerPage;
-@synthesize pageID = _pageID;
+@implementation ZTCListDataSourceDelegate {
+    dispatch_queue_t updateQueue;
+    
+    NSString *itemName;
+    NSString *itemsNameInJSON;
+    NSString *itemViewController;
+    
+    NSUInteger parametersCount;
+}
 
 - (id)init {
     self = [super init];
     if (self) {
         // Custom initialization
         [self addObserver:self forKeyPath:@"listViewDelegate" options:NSKeyValueObservingOptionNew context:nil];
-        _updateQueue = dispatch_queue_create("com.puttinwong.ZenTao-Client.itemUpdateQueue", NULL);
+        updateQueue = dispatch_queue_create("com.puttinwong.ZenTao-Client.itemUpdateQueue", NULL);
+        [self initParameterArray];
     }
     return self;
 }
 
-- (void)setType:(NSUInteger)type {
-    _type = type;
-    switch (type) {
-        case ListTypeMyTask: {
-            _itemType = @"assignedTo";
-            _orderBy = @"id_desc";
-            _itemName = @"name";
-            _module = @"my";
-            _function = @"task";
-            _itemsNameInJSON = @"tasks";
-            itemViewController = @"ZTCTaskViewController";
+- (void)initParameterArray {
+    parametersCount = 0;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSUInteger currentModule = [defaults integerForKey:kCurrentModule];
+    NSUInteger currentMethod = [defaults integerForKey:kCurrentMethod];
+    NSDictionary *parameterDict = [defaults arrayForKey:@"module"][currentModule][@"method"][currentMethod];
+    NSMutableArray *parameterArray = [[NSMutableArray alloc] init];
+    itemName = parameterDict[@"itemName"];
+    itemsNameInJSON = parameterDict[@"itemsNameInJSON"];
+    itemViewController = parameterDict[@"itemViewController"];
+//    NSLog(@"%@",parameterDict[@"parameters"]);
+    [(NSArray*)parameterDict[@"parameters"] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        if ([[(NSDictionary*)obj objectForKey:@"option"] boolValue]) {
+            parameterArray[idx] = [NSString stringWithFormat:@"%@=%@",obj[@"keyword"],obj[@"option.default"]];
+        } else {
+            parameterArray[idx] = [NSString stringWithFormat:@"%@=%@",obj[@"keyword"],obj[@"value"]];
         }
-            break;
-        case listTypeMyBug: {
-            _itemType = @"assigntome";
-            _orderBy = @"id_desc";
-            _itemName = @"title";
-            _module = @"my";
-            _function = @"bug";
-            _itemsNameInJSON = @"bugs";
-            itemViewController = @"ZTCBugViewController";
-            
-        }
-            break;
-        default:
-            break;
-    }
-    if (_listViewDelegate) {
-        [self refreshTable];
-    }
+        parametersCount++;
+    }];
+    self.parameterArray = parameterArray;
+//    NSLog(@"%@",parameterArray);
 }
 
 #pragma mark -
@@ -127,7 +111,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     // Configure the cell...
-    cell.textLabel.text = [[_itemArray objectAtIndex:indexPath.row] objectForKey:_itemName];
+    cell.textLabel.text = [[_itemArray objectAtIndex:indexPath.row] objectForKey:itemName];
     //cell.textLabel.font= [UIFont fontWithName:@"STHeitiSC-Medium" size:[UIFont systemFontSize]];
     
     return cell;
@@ -159,17 +143,7 @@
 #pragma mark PWLoadMoreTableFooterDelegate Methods
 
 - (void)pwLoadMore {
-    switch (self.type) {
-        case ListTypeMyTask:
-        case listTypeMyBug:{
-            [self getItemListWithType:ItemAppendIndex,[NSString stringWithFormat:@"m=%@",_module],[NSString stringWithFormat:@"f=%@",_function],[NSString stringWithFormat:@"type=%@",_itemType],[NSString stringWithFormat:@"orderBy=%@",_orderBy],[NSString stringWithFormat:@"recTotal=%u",_recTotal],[NSString stringWithFormat:@"recPerPage=%u",_recPerPage],[NSString stringWithFormat:@"pageID=%u",_pageID+1],nil];
-        }
-            break;
-            
-        default:
-            NSLog(@"ERROR: No match list type");
-            break;
-    }
+    [self getItemListWithType:ItemAppendIndex withParameters:self.parameterArray];
 }
 
 
@@ -184,76 +158,79 @@
 #pragma mark Data Source Loading / Reloading Methods
 
 - (void)refreshTable {
-    [self getItemListWithType:ItemRefreshIndex,[NSString stringWithFormat:@"m=%@",_module],[NSString stringWithFormat:@"f=%@",_function],nil];
+    [self getItemListWithType:ItemRefreshIndex withParameters:[self.parameterArray subarrayWithRange:NSMakeRange(0, parametersCount)]];
 }
 
-- (void)getItemListWithType:(NSUInteger)type,... {
-	_dataSourceIsLoading = YES;
-    ZTCAPIClient* api = [ZTCAPIClient sharedClient];
-    va_list args;
-    va_start(args, type);
-    [api getPath:[ZTCAPIClient getUrlWithType:[ZTCAPIClient getRequestType] withParameters:args] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
-        dispatch_async(_updateQueue, ^{
-            NSMutableDictionary *dict = [ZTCAPIClient dealWithZTStrangeJSON:JSON];
-            NSDictionary *pager = [[dict objectForKey:@"data"] objectForKey:@"pager"];
-            _recTotal = [[pager objectForKey:@"recTotal"] intValue];
-            _recPerPage = [[pager objectForKey:@"recPerPage"] intValue];
-            _pageID = [[pager objectForKey:@"pageID"] intValue];
-            //DLog(@"pager:%@",pager);
-            if (_pageID >= [[pager objectForKey:@"pageTotal"] intValue]) {
-                _loadMoreAllLoaded = YES;
-            } else
-                _loadMoreAllLoaded = NO;
-            //DLog(@"%@",dict);
-            switch (type) {
-                case ItemLoadIndex:{
-                    _itemArray = [[dict objectForKey:@"data"] objectForKey:_itemsNameInJSON];
-                    break;
+- (void)getItemListWithType:(NSUInteger)type withParameters:(NSArray *)parameters {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        _dataSourceIsLoading = YES;
+        ZTCAPIClient* api = [ZTCAPIClient sharedClient];
+        [api getPath:[ZTCAPIClient getUrlWithType:[ZTCAPIClient getRequestType] withParameters:parameters] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
+            dispatch_async(updateQueue, ^{
+                NSMutableDictionary *dict = [ZTCAPIClient dealWithZTStrangeJSON:JSON];
+                NSDictionary *pagerDict = [[dict objectForKey:@"data"] objectForKey:@"pager"];
+                if (pagerDict) {
+                    if ([self.parameterArray count] == (parametersCount+3)) {
+                        [self.parameterArray removeObjectsInRange:NSMakeRange(parametersCount, 3)];
+                    }
+                    [self.parameterArray addObject:[NSString stringWithFormat:@"recTotal=%u",[[pagerDict objectForKey:@"recTotal"] intValue]]];
+                    [self.parameterArray addObject:[NSString stringWithFormat:@"recPerPage=%u",[[pagerDict objectForKey:@"recPerPage"] intValue]]];
+                    [self.parameterArray addObject:[NSString stringWithFormat:@"pageID=%u",[[pagerDict objectForKey:@"pageID"] intValue]+1]];
+                    if ([[pagerDict objectForKey:@"pageID"] intValue] >= [[pagerDict objectForKey:@"pageTotal"] intValue]) {
+                        _loadMoreAllLoaded = YES;
+                    } else
+                        _loadMoreAllLoaded = NO;
                 }
-                case ItemRefreshIndex:{
-                    _itemArray = [[dict objectForKey:@"data"] objectForKey:_itemsNameInJSON];
-                    break;
+                //DLog(@"%@",dict);
+                switch (type) {
+                    case ItemLoadIndex:{
+                        _itemArray = [[dict objectForKey:@"data"] objectForKey:itemsNameInJSON];
+                        break;
+                    }
+                    case ItemRefreshIndex:{
+                        _itemArray = [[dict objectForKey:@"data"] objectForKey:itemsNameInJSON];
+                        break;
+                    }
+                    case ItemAppendIndex:{
+                        [_itemArray addObjectsFromArray:[[dict objectForKey:@"data"] objectForKey:itemsNameInJSON]];
+                        break;
+                    }
+                    default:
+                        break;
                 }
-                case ItemAppendIndex:{
-                    [_itemArray addObjectsFromArray:[[dict objectForKey:@"data"] objectForKey:_itemsNameInJSON]];
-                    break;
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    [self doneLoadMoreTableViewData];
+                    [_listViewDelegate.tableView reloadData];
+                    if (type == ItemRefreshIndex) {
+                        [self doneRefreshTableViewData];
+                        [self resetLoadMore];
+                    }
+                });
+                _dataSourceIsLoading = NO;
+            });
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSLog(@"ERROR: %@",error);
+                switch (type) {
+                    case ItemLoadIndex:{
+                        break;
+                    }
+                    case ItemRefreshIndex:{
+                        [self doneRefreshTableViewData];
+                        break;
+                    }
+                    case ItemAppendIndex:{
+                        break;
+                    }
+                    default:
+                        break;
                 }
-                default:
-                    break;
-            }
-            dispatch_sync(dispatch_get_main_queue(), ^{
                 [self doneLoadMoreTableViewData];
-                [_listViewDelegate.tableView reloadData];
-                if (type == ItemRefreshIndex) {
-                    [self doneRefreshTableViewData];
-                    [self resetLoadMore];
-                }
+                [ZTCNotice showErrorNoticeInView:_listViewDelegate.tableView title:NSLocalizedString(@"error", nil) message:error.localizedDescription];
             });
             _dataSourceIsLoading = NO;
-        });
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSLog(@"ERROR: %@",error);
-            switch (type) {
-                case ItemLoadIndex:{
-                    break;
-                }
-                case ItemRefreshIndex:{
-                    [self doneRefreshTableViewData];
-                    break;
-                }
-                case ItemAppendIndex:{
-                    break;
-                }
-                default:
-                    break;
-            }
-            [self doneLoadMoreTableViewData];
-            [ZTCNotice showErrorNoticeInView:_listViewDelegate.tableView title:NSLocalizedString(@"error", nil) message:error.localizedDescription];
-        });
-        _dataSourceIsLoading = NO;
-    }];
-    va_end(args);
+        }];
+    });
 }
 
 - (void)doneRefreshTableViewData{

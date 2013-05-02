@@ -14,8 +14,9 @@
 #import "ZTCListViewController.h"
 #import "ZTCNotice.h"
 #import "PDKeychainBindings.h"
-
+//sideMenu
 #import "IIViewDeckController.h"
+#import "ZTCMenuViewController.h"
 
 #define TEST_MODE 0
 #define kHasKeychain          @"Keychain"
@@ -119,26 +120,15 @@ static NSString * tmpUrl = nil;
     return requestType?PATHINFOIndex:GETIndex;
 }
 
-+ (NSString*) getUrlWithType:(NSUInteger)type, ... {
-    va_list argumentList;
-    va_start(argumentList, type);
-    
-    NSString *str = [ZTCAPIClient getUrlWithType:type withParameters:argumentList];
-    va_end(argumentList);
-    
-    return str;
-}
-
-+ (NSString*) getUrlWithType:(NSUInteger)type withParameters:(va_list)valist  {
-    id eachObject;
++ (NSString*) getUrlWithType:(NSUInteger)type withParameters:(NSArray *)parameters  {
     switch (type) {
         case GETIndex:
         {
             NSMutableString *str = [NSMutableString stringWithString:@"index.php?"];
-            while ((eachObject = va_arg(valist, id))){
+            [parameters enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
                 [str appendString:@"&"];
-                [str appendString:(NSString *)eachObject];
-            }
+                [str appendString:(NSString *)obj];
+            }];
             [str appendString:@"&t=json"];
             [str deleteCharactersInRange:NSMakeRange(10, 1)];
             return str;
@@ -148,13 +138,13 @@ static NSString * tmpUrl = nil;
         case PATHINFOIndex:
         {
             NSMutableString *str = [[NSMutableString alloc] init];
-            while ((eachObject = va_arg(valist, id))){
+            [parameters enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
                 [str appendString:@"-"];
                 //[str appendString:(NSString *)eachObject];
-                NSUInteger location = [((NSString *)eachObject) rangeOfString:@"="].location;
-                [str appendString:[((NSString *)eachObject) substringFromIndex:location+1]];
+                NSUInteger location = [((NSString *)obj) rangeOfString:@"="].location;
+                [str appendString:[((NSString *)obj) substringFromIndex:location+1]];
                 //DLog(@"location:%u",location);
-            }
+            }];
             [str appendString:@".json"];
             [str deleteCharactersInRange:NSMakeRange(0, 1)];
             return str;
@@ -168,15 +158,15 @@ static NSString * tmpUrl = nil;
 
 #pragma mark - Register and login
 
-+ (void)registerDefaultsFromDemoPlist {
++ (void)registerDefaultsFromPlist:(NSString*)plistName {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *demoSettings = [[NSBundle mainBundle] pathForResource:@"demo" ofType:@"plist"];
-    if(!demoSettings) {
-        NSLog(@"ERROR: Could not find demo.plist");
+    NSString *settingsPlistPath = [[NSBundle mainBundle] pathForResource:plistName ofType:@"plist"];
+    if(!settingsPlistPath) {
+        NSLog(@"ERROR: Could not find %@.plist",plistName);
         return;
     }
     
-    NSMutableDictionary *settings = [NSMutableDictionary dictionaryWithContentsOfFile:demoSettings];
+    NSMutableDictionary *settings = [NSMutableDictionary dictionaryWithContentsOfFile:settingsPlistPath];
     
     [defaults registerDefaults:settings];
 }
@@ -190,7 +180,7 @@ static NSString * tmpUrl = nil;
         //DLog(@"\n*************\naccount:%@\npassword:%@\nurl:%@\n*************",account,password,url);
         if( !account || !password || !url ) {
             // load default value
-            [self registerDefaultsFromDemoPlist];
+            [self registerDefaultsFromPlist:@"demo"];
             dispatch_async(dispatch_get_main_queue(), ^{
                 ZTCUserSettingsViewController *userSettingsView = [[ZTCUserSettingsViewController alloc] init];
                 UINavigationController *usersSettingsNav = [[UINavigationController alloc] initWithRootViewController:userSettingsView];
@@ -253,7 +243,7 @@ static NSString * tmpUrl = nil;
     }
     __block BOOL sessionSuccess = NO;
     __block BOOL loginSuccess = NO;
-    [ZTCAPIClient makeRequestTo:[NSString stringWithFormat:@"%@%@",url,[ZTCAPIClient getUrlWithType:tmpRequestType,@"m=api",@"f=getsessionid",nil]] parameters:nil method:@"GET" successCallback:^(id JSON){
+    [ZTCAPIClient makeRequestTo:[NSString stringWithFormat:@"%@%@",url,[ZTCAPIClient getUrlWithType:tmpRequestType withParameters:@[@"m=api",@"f=getsessionid"]]] parameters:nil method:@"GET" successCallback:^(id JSON){
         NSMutableDictionary *dict = [self dealWithZTStrangeJSON:JSON];
         //DLog(@"%@",dict);
         if ([dict count]) {
@@ -274,7 +264,7 @@ static NSString * tmpUrl = nil;
                                 account, @"account",
                                 password, @"password",
                                 nil];
-        [ZTCAPIClient makeRequestTo:[NSString stringWithFormat:@"%@%@",url,[ZTCAPIClient getUrlWithType:tmpRequestType,@"m=user",@"f=login",nil]] parameters:params method:@"GET" successCallback:^(id JSON) {
+        [ZTCAPIClient makeRequestTo:[NSString stringWithFormat:@"%@%@",url,[ZTCAPIClient getUrlWithType:tmpRequestType withParameters:@[@"m=user",@"f=login"]]] parameters:params method:@"GET" successCallback:^(id JSON) {
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:JSON options:NSJSONReadingMutableContainers error:nil];
             //DLog(@"%@",dict);
             if ([[dict objectForKey:@"status"] isEqualToString:@"success"]) {
@@ -299,41 +289,45 @@ static NSString * tmpUrl = nil;
 }
 
 + (void) showMainView {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        //center
-        UIViewController *viewController = [[ZTCListViewController alloc] init];
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
-        //mainMenu
-        Class menuViewControllerClass = NSClassFromString(@"ZTCMenuViewController");
-        UIViewController *mainMenu = [[menuViewControllerClass alloc] init];
-        UINavigationController *mainMenuNav = [[UINavigationController alloc] initWithRootViewController:mainMenu];
-        //subMenu
-        UIViewController *subMenu = [[menuViewControllerClass alloc] init];
-        UINavigationController *subMenuNav = [[UINavigationController alloc] initWithRootViewController:subMenu];
-        
-        IIViewDeckController* menuDeckController =  [[IIViewDeckController alloc] initWithCenterViewController:subMenuNav
-                                                                                              leftViewController:mainMenuNav];
-        if (IS_IPAD) {
-            menuDeckController.leftSize = 600;
-        } else {
-            menuDeckController.leftSize = 160;
-        }
-        menuDeckController.delegateMode = IIViewDeckDelegateAndSubControllers;
-        menuDeckController.panningMode = IIViewDeckNoPanning;
-        menuDeckController.sizeMode = IIViewDeckViewSizeMode;
-        
-        IIViewDeckController* deckController =  [[IIViewDeckController alloc] initWithCenterViewController:nav
-                                                                                        leftViewController:menuDeckController];
-        if (IS_IPAD) {
-            deckController.leftSize = 500;
-        } else {
-            deckController.leftSize = 44;
-        }
-        deckController.delegateMode = IIViewDeckDelegateAndSubControllers;
-        deckController.panningMode = IIViewDeckNavigationBarOrOpenCenterPanning;
-        deckController.sizeMode = IIViewDeckViewSizeMode;
-        
-        [[[[UIApplication sharedApplication] delegate] window] setRootViewController:deckController];
+    DLog(@"showMainView");
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self registerDefaultsFromPlist:@"moduleAndMethod"];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //center
+            UIViewController *viewController = [[ZTCListViewController alloc] init];
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
+            //mainMenu
+            UIViewController *mainMenu = [[ZTCMenuViewController alloc] initWithType:MenuTypeMainMenu];
+//            UINavigationController *mainMenuNav = [[UINavigationController alloc] initWithRootViewController:mainMenu];
+            //subMenu
+            UIViewController *subMenu = [[ZTCMenuViewController alloc] initWithType:MenuTypeSubMenu];
+//            UINavigationController *subMenuNav = [[UINavigationController alloc] initWithRootViewController:subMenu];
+            
+            IIViewDeckController* menuDeckController =  [[IIViewDeckController alloc] initWithCenterViewController:subMenu
+                                                                                                leftViewController:mainMenu];
+            if (IS_IPAD) {
+                menuDeckController.leftSize = 600;
+            } else {
+                menuDeckController.leftSize = 160;
+            }
+            menuDeckController.delegateMode = IIViewDeckDelegateAndSubControllers;
+            menuDeckController.panningMode = IIViewDeckNoPanning;
+            menuDeckController.sizeMode = IIViewDeckViewSizeMode;
+            
+            IIViewDeckController* deckController =  [[IIViewDeckController alloc] initWithCenterViewController:nav
+                                                                                            leftViewController:menuDeckController];
+            if (IS_IPAD) {
+                deckController.leftSize = 500;
+            } else {
+                deckController.leftSize = 44;
+            }
+            deckController.delegateMode = IIViewDeckDelegateAndSubControllers;
+            deckController.panningMode = IIViewDeckNavigationBarOrOpenCenterPanning;
+            deckController.sizeMode = IIViewDeckViewSizeMode;
+            deckController.bounceDurationFactor = 0.7;
+            
+            [[[[UIApplication sharedApplication] delegate] window] setRootViewController:deckController];
+        });
     });
 }
 

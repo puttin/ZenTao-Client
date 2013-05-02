@@ -7,6 +7,7 @@
 //
 
 #import "ZTCMenuViewController.h"
+#import "IIViewDeckController.h"
 
 @interface ZTCMenuViewController ()
 
@@ -14,6 +15,12 @@
 
 @implementation ZTCMenuViewController {
     NSUInteger menuType;
+    NSArray *menuItems;
+}
+
+- (id)init {
+    NSLog(@"WARNING: SHOULD NOT invoke 'init' to init menuViewController, use 'initWithType'");
+    return nil;
 }
 
 - (id)initWithType:(NSUInteger)type
@@ -29,6 +36,49 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.tableView.scrollsToTop = NO;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setInteger:[defaults integerForKey:@"defaultModule"] forKey:kCurrentModule];
+    [defaults setInteger:[defaults integerForKey:@"defaultMethod"] forKey:kCurrentMethod];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    switch (menuType) {
+        case MenuTypeMainMenu: {
+            menuItems = [defaults objectForKey:@"module"];
+        }
+            break;
+        case MenuTypeSubMenu: {
+            NSUInteger currentModule = [defaults integerForKey:kCurrentModule];
+            menuItems = [defaults objectForKey:@"module"][currentModule][@"method"];
+        }
+            break;
+        default:
+            break;
+    }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    switch (menuType) {
+        case MenuTypeMainMenu: {
+            NSUInteger currentModule = [defaults integerForKey:kCurrentModule];
+            NSIndexPath *ip = [NSIndexPath indexPathForRow:currentModule inSection:0];
+            [self.tableView selectRowAtIndexPath:ip animated:NO scrollPosition:UITableViewScrollPositionNone];
+        }
+            break;
+        case MenuTypeSubMenu: {
+            NSUInteger currentMethod = [defaults integerForKey:kCurrentMethod];
+            NSIndexPath *ip = [NSIndexPath indexPathForRow:currentMethod inSection:0];
+            [self.tableView selectRowAtIndexPath:ip animated:NO scrollPosition:UITableViewScrollPositionNone];
+        }
+            break;
+        default:
+            break;
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -41,16 +91,14 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-#warning Potentially incomplete method implementation.
     // Return the number of sections.
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    return 1;
+    return [menuItems count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -61,7 +109,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     // Configure the cell...
-    cell.textLabel.text = @"TEST";
+    cell.textLabel.text = NSLocalizedString(menuItems[indexPath.row][@"name"], nil);
     
     return cell;
 }
@@ -70,13 +118,26 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    switch (menuType) {
+        case MenuTypeMainMenu: {
+            [defaults setInteger:indexPath.row forKey:kCurrentModule];
+            [defaults setInteger:0 forKey:kCurrentMethod];
+        }
+            break;
+        case MenuTypeSubMenu: {
+            [defaults setInteger:indexPath.row forKey:kCurrentMethod];
+        }
+            break;
+        default:
+            break;
+    }
+    Class ZTCListViewController = NSClassFromString(@"ZTCListViewController");
+    id list = [[ZTCListViewController alloc] init];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
+    [self.viewDeckController.viewDeckController closeLeftViewBouncing:^(IIViewDeckController *controller) {
+        [controller setCenterController:nav];
+    }];
 }
 
 @end

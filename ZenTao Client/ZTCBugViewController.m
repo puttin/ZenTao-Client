@@ -104,10 +104,10 @@ enum {
 - (void)viewDidAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     ZTCAPIClient* api = [ZTCAPIClient sharedClient];
-    [api getPath:[ZTCAPIClient getUrlWithType:[ZTCAPIClient getRequestType],@"m=bug",@"f=view",[NSString stringWithFormat:@"id=%u",bugID],nil] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
+    [api getPath:[ZTCAPIClient getUrlWithType:[ZTCAPIClient getRequestType] withParameters:@[@"m=bug",@"f=view",[NSString stringWithFormat:@"id=%u",bugID]]] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSMutableDictionary *dict = [ZTCAPIClient dealWithZTStrangeJSON:JSON];
-            //DLog(@"%@",dict);
+//            DLog(@"%@",dict);
             productsDict = [[dict objectForKey:@"data"] objectForKey:@"products"];
             bugDict = [[dict objectForKey:@"data"] objectForKey:@"bug"];
             usersDict = [[dict objectForKey:@"data"] objectForKey:@"users"];
@@ -162,8 +162,8 @@ enum {
                              [[NSBundle mainBundle] localizedStringForKey:([NSString stringWithFormat:@"bug browser %@",[bugDict objectForKey:@"browser"]]) value:@"" table:nil],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugBrowserRowIndex],
                              [bugDict objectForKey:@"keywords"],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugKeywordsRowIndex],
                              //BugCaseSectionIndex
-                             [bugDict objectForKey:@"caseTitle"],[NSString stringWithFormat:@"%u:%u",BugCaseSectionIndex,BugFromCaseRowIndex],
-                             ([[bugDict objectForKey:@"toCases"] count] == 1 ) ? [[bugDict objectForKey:@"toCases"] objectForKey: [[[bugDict objectForKey:@"toCases"] allKeys] lastObject] ] : [NSString stringWithFormat:@"%u %@",[[bugDict objectForKey:@"toCases"] count], [[NSBundle mainBundle] localizedStringForKey:@"bug toCase multi" value:@"" table:nil] ],[NSString stringWithFormat:@"%u:%u",BugCaseSectionIndex,BugToCaseRowIndex],
+                             [bugDict objectForKey:@"caseTitle"]?[bugDict objectForKey:@"caseTitle"]:@"",[NSString stringWithFormat:@"%u:%u",BugCaseSectionIndex,BugFromCaseRowIndex],
+                             ([[bugDict objectForKey:@"toCases"] count] == 1 ) ? [[bugDict objectForKey:@"toCases"] objectForKey: [[[bugDict objectForKey:@"toCases"] allKeys] lastObject] ] : ( ([[bugDict objectForKey:@"toCases"] count] == 0 ) ? @"" : [NSString stringWithFormat:@"%u %@",[[bugDict objectForKey:@"toCases"] count], [[NSBundle mainBundle] localizedStringForKey:@"bug toCase multi" value:@"" table:nil] ] ),[NSString stringWithFormat:@"%u:%u",BugCaseSectionIndex,BugToCaseRowIndex],
                              //BugLifetimeSectionIndex
                              [[bugDict objectForKey:@"openedDate"] isEqualToString:@""]?@"":[NSString stringWithFormat:@"%@ %@ %@",[usersDict objectForKey:[bugDict objectForKey:@"openedBy"]],NSLocalizedString(@"bug at", nil),[bugDict objectForKey:@"openedDate"]],[NSString stringWithFormat:@"%u:%u",BugLifetimeSectionIndex,BugOpenedByRowIndex],
                              [bugDict objectForKey:@"openedBuild"],[NSString stringWithFormat:@"%u:%u",BugLifetimeSectionIndex,BugOpenedBuildRowIndex],
@@ -178,11 +178,12 @@ enum {
                              [[bugDict objectForKey:@"task"] intValue]?[bugDict objectForKey:@"taskName"]:@"",[NSString stringWithFormat:@"%u:%u",BugPSTSectionIndex,BugTaskRowIndex],
                              //BugMiscSectionIndex
                              bugDict[@"mailto"],[NSString stringWithFormat:@"%u:%u",BugMiscSectionIndex,BugMailtoRowIndex],
-                             ([[bugDict objectForKey:@"linkBugTitles"] count] == 1 ) ? [[bugDict objectForKey:@"linkBugTitles"] objectForKey: [[[bugDict objectForKey:@"linkBugTitles"] allKeys] lastObject] ] : [NSString stringWithFormat:@"%u %@",[[bugDict objectForKey:@"linkBugTitles"] count], [[NSBundle mainBundle] localizedStringForKey:@"bug linkBug multi" value:@"" table:nil] ],[NSString stringWithFormat:@"%u:%u",BugMiscSectionIndex,BugLinkedBugRowIndex],
+                             ([[bugDict objectForKey:@"linkBugTitles"] count] == 1 ) ? [[bugDict objectForKey:@"linkBugTitles"] objectForKey: [[[bugDict objectForKey:@"linkBugTitles"] allKeys] lastObject] ] : ( ([[bugDict objectForKey:@"linkBugTitles"] count] == 0 ) ? @"" : [NSString stringWithFormat:@"%u %@",[[bugDict objectForKey:@"linkBugTitles"] count], [[NSBundle mainBundle] localizedStringForKey:@"bug linkBug multi" value:@"" table:nil] ] ),[NSString stringWithFormat:@"%u:%u",BugMiscSectionIndex,BugLinkedBugRowIndex],
                              [bugDict objectForKey:@"caseTitle"],[NSString stringWithFormat:@"%u:%u",BugMiscSectionIndex,BugCaseRowIndex],
                              [bugDict objectForKey:@"toStoryTitle"],[NSString stringWithFormat:@"%u:%u",BugMiscSectionIndex,BugToStoryRowIndex],
                              [bugDict objectForKey:@"toTaskTitle"],[NSString stringWithFormat:@"%u:%u",BugMiscSectionIndex,BugToTaskRowIndex],
                              nil];
+//            DLog(@"%@",cellValueDict);
             dispatch_sync(dispatch_get_main_queue(), ^{
                 [self.tableView reloadData];
                 self.title = [NSString stringWithFormat:@"%@ #%u",NSLocalizedString(@"bug", nil),bugID];
