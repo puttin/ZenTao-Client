@@ -10,13 +10,13 @@
 #import "EGORefreshTableHeaderView.h"
 #import "PWLoadMoreTableFooterView.h"
 #import "ZTCListDataSourceDelegate.h"
+#import "IIViewDeckController.h"
 
-@interface ZTCListViewController ()
+@interface ZTCListViewController () <IIViewDeckControllerDelegate>
 
 @end
 
 @implementation ZTCListViewController {
-    NSUInteger listType;
 }
 
 @synthesize refreshHeaderView = _refreshHeaderView;
@@ -26,15 +26,8 @@
 @synthesize dataSourceDelegate = _dataSourceDelegate;
 
 - (id)init {
-    //Init with default type
-    NSLog(@"WARNING: SHOULD NOT invoke 'init' to init listViewController, use 'initWithType'");
-    return [self initWithType:ListTypeMyTask];
-}
-
-- (id)initWithType:(NSUInteger)type {
     self = [super init];
     if (self) {
-        listType = type;
     }
     return self;
 }
@@ -44,12 +37,14 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
+    //viewDeck
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:self action:@selector(showMenu)];
+    
     self.tableView = [[UITableView alloc] init];
     self.view = self.tableView;
     
     //dataSourceDelegate and delegate
     self.dataSourceDelegate = [[ZTCListDataSourceDelegate alloc] init];
-    [self.dataSourceDelegate setType:listType];
     
     //refreshHeaderView init
     if (_refreshHeaderView == nil) {
@@ -122,6 +117,20 @@
     if ([self shouldAutorotateToInterfaceOrientation: UIInterfaceOrientationPortraitUpsideDown])
         mask |= UIInterfaceOrientationMaskPortraitUpsideDown;
     return mask;
+}
+
+#pragma mark - ViewDeck & its delegate
+
+- (void)viewDeckController:(IIViewDeckController *)viewDeckController willOpenViewSide:(IIViewDeckSide)viewDeckSide animated:(BOOL)animated {
+    [(IIViewDeckController*)self.viewDeckController.leftController openLeftView];
+}
+
+- (void)viewDeckController:(IIViewDeckController*)viewDeckController willCloseViewSide:(IIViewDeckSide)viewDeckSide animated:(BOOL)animated {
+    [(IIViewDeckController*)self.viewDeckController.leftController closeLeftView];
+}
+
+- (void) showMenu {
+    [self.viewDeckController toggleLeftView];
 }
 
 @end

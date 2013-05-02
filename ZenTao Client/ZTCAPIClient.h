@@ -28,8 +28,7 @@ enum {
 + (BOOL) loginWithAccount:(NSString *)account Password:(NSString *)password BaseURL:(NSString *)url;
 + (void) showMainView;
 
-+ (NSString*) getUrlWithType:(NSUInteger)type, ...;
-+ (NSString*) getUrlWithType:(NSUInteger)type withParameters:(va_list)valist;
++ (NSString*) getUrlWithType:(NSUInteger)type withParameters:(NSArray *)parameters;
 
 + (NSMutableDictionary *) dealWithZTStrangeJSON:(id)JSON;
 @end

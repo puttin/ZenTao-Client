@@ -21,25 +21,9 @@ enum {
 	BOOL _reloading;
 	BOOL _dataSourceIsLoading;
     bool _loadMoreAllLoaded;
-    NSString *itemViewController;
 }
 @property(nonatomic,weak) ZTCListViewController *listViewDelegate;
-
-@property(nonatomic,assign) dispatch_queue_t updateQueue;
-
 @property(nonatomic,strong) NSMutableArray *itemArray;
-@property(nonatomic,assign) NSUInteger type;
-@property(nonatomic,strong) NSString *itemType;
-@property(nonatomic,strong) NSString *orderBy;
-@property(nonatomic,strong) NSString *itemName;
-@property(nonatomic,strong) NSString *module;
-@property(nonatomic,strong) NSString *function;
-@property(nonatomic,strong) NSString *itemsNameInJSON;
-
-//pager
-@property(nonatomic,assign) NSUInteger recTotal;
-@property(nonatomic,assign) NSUInteger recPerPage;
-@property(nonatomic,assign) NSUInteger pageID;
-
+@property(nonatomic,strong) NSMutableArray *parameterArray;
 
 @end
