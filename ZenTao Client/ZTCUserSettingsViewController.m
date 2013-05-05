@@ -171,14 +171,13 @@ enum {
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     NSString *sectionName;
-    NSBundle *bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"bundle"]];
     switch (section)
     {
         case AccountSectionIndex:
-            sectionName = NSLocalizedStringFromTableInBundle(@"Basic Group", @"Root", bundle, nil);
+            sectionName = NSLocalizedString(@"login Basic Group", nil);
             break;
         case URLSectionIndex:
-            sectionName = NSLocalizedStringFromTableInBundle(@"URL Group", @"Root", bundle, nil);
+            sectionName = NSLocalizedString(@"login URL Group", nil);
             break;
         default:
             sectionName = @"";
@@ -190,14 +189,13 @@ enum {
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
     NSString *sectionFooter;
-    NSBundle *bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"bundle"]];
     switch (section)
     {
         case AccountSectionIndex:
-            sectionFooter = NSLocalizedStringFromTableInBundle(@"Basic Group Desc", @"Root", bundle, nil);
+            sectionFooter = NSLocalizedString(@"login Basic Group Desc", nil);
             break;
         case URLSectionIndex:
-            sectionFooter = NSLocalizedStringFromTableInBundle(@"URL Group Desc", @"Root", bundle, nil);
+            sectionFooter = NSLocalizedString(@"login URL Group Desc", nil);
             break;
         default:
             sectionFooter = @"";
@@ -226,7 +224,6 @@ enum {
 {
     NSString *CellIdentifier = nil;
     UITableViewCell *cell = nil;
-    NSBundle *bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"bundle"]];
     switch (indexPath.section) {
         case AccountSectionIndex:
         case URLSectionIndex:
@@ -249,13 +246,13 @@ enum {
                         case AccountRowIndex:
                         {
                             [cell.contentView addSubview:_accountTextFiled];
-                            cell.textLabel.text = NSLocalizedStringFromTableInBundle(@"Account", @"Root", bundle, nil);
+                            cell.textLabel.text = NSLocalizedString(@"login Account", nil);
                         }
                             break;
                         case PasswordRowIndex:
                         {
                             [cell.contentView addSubview:_passwordTextFiled];
-                            cell.textLabel.text = NSLocalizedStringFromTableInBundle(@"Password", @"Root", bundle, nil);
+                            cell.textLabel.text = NSLocalizedString(@"login Password", nil);
                         }
                             break;
                         default:
@@ -267,7 +264,7 @@ enum {
                         case UrlRowIndex:
                         {
                             [cell.contentView addSubview:_urlTextFiled];
-                            cell.textLabel.text = NSLocalizedStringFromTableInBundle(@"URL", @"Root", bundle, nil);
+                            cell.textLabel.text = NSLocalizedString(@"login URL", nil);
                         }
                             break;
                         default:

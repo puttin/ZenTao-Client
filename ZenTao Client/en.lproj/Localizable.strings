@@ -171,13 +171,42 @@
 "bug toTask" = "To task";
 "bug at" = "at";
 
-//Other
+//login
+"login Basic Group" = "Basic";
+"login Basic Group Desc" = "Account and passwod are used to log in";
+
+"login Account" = "Account";
+"login Password" = "Password";
+
+"login URL Group" = "Web site address";
+"login URL Group Desc" = "Your ZenTao PMS web site address\nIf your URL is something like \"http://example.com/www/my-task.html\"\nUse \"example.com/www/\"\nIf your URL is something like \"http://example.com/index.php?m=my&f=task\"\nUse \"example.com/\"";
+"login URL" = "URL";
+
+"login RequestType Group" = "Request Type";
+"login RequestType Group Desc" = "If your URL is something like \"http://example.com/my-task.html\"\nChoose \"PATH_INFO\"\nIf your URL is something like \"http://example.com/index.php?m=my&f=task\"\nChoose \"GET\"";
+"login RequestType" = "Type";
+"login RequestType GET" = "GET";
+"login RequestType PATH_INFO" = "PATH_INFO";
+
 "login" = "Log in";
 "login success title" = "Login Success";
 "login fail title" = "Login failed";
 "login fail message" = "Please check the settings";
 "login first time use title" = "First time use";
 "login first time use message" = "Please set";
+
+//menu
+"menu.group.dashboard" = "";
+"menu.group.setting" = " ";
+
+"menu.my" = "Dashboard";
+"submenu.task" = "Tasks";
+"submenu.bug" = "Bugs";
+
+"menu.setting" = "Setting";
+"submenu.setting" = "Basic";
+
+//Other
 "network not reachable title" = "Network Error";
 "network not reachable message" = "Please check your network";
 
