@@ -204,7 +204,10 @@
 "submenu.bug" = "Bugs";
 
 "menu.setting" = "Setting";
-"submenu.setting" = "Basic";
+"submenu.setting" = "Setting";
+
+//setting
+"setting" = "Settings";
 
 //Other
 "network not reachable title" = "Network Error";

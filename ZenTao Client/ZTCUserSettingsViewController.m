@@ -332,7 +332,7 @@ enum {
             [bindings setObject:_urlTextFiled.text forKey:kZTCKeychainUrl];
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.parentViewController dismissModalViewControllerAnimated:YES];
+                [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
                 [ZTCAPIClient showMainView];
                 [ZTCNotice showSuccessNoticeInView:[[[[UIApplication sharedApplication] delegate] window] rootViewController].view title:NSLocalizedString(@"login success title", nil)];
             });

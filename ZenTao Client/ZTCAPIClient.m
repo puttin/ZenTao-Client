@@ -182,10 +182,7 @@ static NSString * tmpUrl = nil;
             // load default value
             [self registerDefaultsFromPlist:@"demo"];
             dispatch_async(dispatch_get_main_queue(), ^{
-                ZTCUserSettingsViewController *userSettingsView = [[ZTCUserSettingsViewController alloc] init];
-                UINavigationController *usersSettingsNav = [[UINavigationController alloc] initWithRootViewController:userSettingsView];
-                [[[[[UIApplication sharedApplication] delegate] window] rootViewController] presentModalViewController:usersSettingsNav animated:NO];
-                [ZTCNotice showSuccessNoticeInView:userSettingsView.view title:[NSString stringWithFormat:@"%@,%@",NSLocalizedString(@"login first time use title", nil),NSLocalizedString(@"login first time use message", nil)]];//TODO
+                [ZTCNotice showSuccessNoticeInView:[self showLoginView:NO] title:[NSString stringWithFormat:@"%@,%@",NSLocalizedString(@"login first time use title", nil),NSLocalizedString(@"login first time use message", nil)]];//TODO
             });
         } else {
             if ([ZTCAPIClient loginWithAccount:account Password:password BaseURL:url]) {
@@ -199,10 +196,7 @@ static NSString * tmpUrl = nil;
                  @"url": url
                  }];
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    ZTCUserSettingsViewController *userSettingsView = [[ZTCUserSettingsViewController alloc] init];
-                    UINavigationController *usersSettingsNav = [[UINavigationController alloc] initWithRootViewController:userSettingsView];
-                    [[[[[UIApplication sharedApplication] delegate] window] rootViewController] presentModalViewController:usersSettingsNav animated:NO];
-                    [ZTCNotice showErrorNoticeInView:userSettingsView.view title:NSLocalizedString(@"login fail title", nil) message:NSLocalizedString(@"login fail message", nil)];
+                    [ZTCNotice showErrorNoticeInView:[self showLoginView:NO] title:NSLocalizedString(@"login fail title", nil) message:NSLocalizedString(@"login fail message", nil)];
                 });
             }
         }
@@ -210,7 +204,6 @@ static NSString * tmpUrl = nil;
 }
 
 + (NSUInteger) getRequestTypeOfWebsite:(NSString *)url {
-    NSBundle *bundle = [NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"bundle"]];
     __block NSUInteger type = ERRORIndex;
     NSString *configURL = [NSString stringWithFormat:@"%@index.php?mode=getconfig",url];
     //DLog(@"%@",configURL);
@@ -219,7 +212,7 @@ static NSString * tmpUrl = nil;
         //DLog(@"%@",dict);
         NSString *requestType = [dict objectForKey:@"requestType"];
         if (requestType) {
-            type = [requestType isEqualToString:NSLocalizedStringFromTableInBundle(@"RequestType PATH_INFO", @"Root", bundle, nil)]?PATHINFOIndex:GETIndex;
+            type = [requestType isEqualToString:NSLocalizedString(@"login RequestType PATH_INFO", nil)]?PATHINFOIndex:GETIndex;
         }
     } errorCallback:^(NSError *error, NSString *errorMsg) {
         NSLog(@"ERROR: Get request type error:%@",error);
@@ -288,8 +281,32 @@ static NSString * tmpUrl = nil;
     return loginSuccess;
 }
 
++ (BOOL)logout {
+    __block BOOL logoutSuccess = NO;
+    [ZTCAPIClient makeRequestTo:[NSString stringWithFormat:@"%@%@", [ZTCAPIClient sharedClient].baseURL.absoluteString ,[ZTCAPIClient getUrlWithType:requestType withParameters:@[@"m=user",@"f=logout"]]] parameters:nil method:@"GET" successCallback:^(id JSON) {
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:JSON options:NSJSONReadingMutableContainers error:nil];
+        //DLog(@"%@",dict);
+        if ([[dict objectForKey:@"status"] isEqualToString:@"success"]) {
+            logoutSuccess = YES;
+        } else {
+            logoutSuccess = NO;
+        }
+    } errorCallback:^(NSError *error, NSString *errorMsg) {
+        NSLog(@"ERROR: Log in error:%@",error);
+        logoutSuccess = NO;
+    }];
+    return logoutSuccess;
+}
+
++ (UIView*)showLoginView:(BOOL)animated {
+    ZTCUserSettingsViewController *userSettingsView = [[ZTCUserSettingsViewController alloc] init];
+    UINavigationController *usersSettingsNav = [[UINavigationController alloc] initWithRootViewController:userSettingsView];
+    [[[[[UIApplication sharedApplication] delegate] window] rootViewController] presentModalViewController:usersSettingsNav animated:animated];
+    return userSettingsView.view;
+}
+
 + (void) showMainView {
-    DLog(@"showMainView");
+    //DLog(@"showMainView");
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self registerDefaultsFromPlist:@"moduleAndMethod"];
         dispatch_async(dispatch_get_main_queue(), ^{

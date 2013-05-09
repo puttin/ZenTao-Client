@@ -204,7 +204,10 @@
 "submenu.bug" = "缺陷";
 
 "menu.setting" = "设置";
-"submenu.setting" = "基本设置";
+"submenu.setting" = "设置";
+
+//setting
+"setting" = "设置";
 
 //Other
 "network not reachable title" = "网络不可达";

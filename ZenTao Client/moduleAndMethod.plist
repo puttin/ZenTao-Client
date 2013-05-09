@@ -98,13 +98,13 @@
 									<key>option</key>
 									<true/>
 									<key>option.default</key>
-									<string>assigntome</string>
+									<string>assignedTo</string>
 									<key>keyword</key>
 									<string>type</string>
 									<key>value</key>
 									<dict>
-										<key>assigntome</key>
-										<string>option my bug type assigntome</string>
+										<key>assignedTo</key>
+										<string>option my bug type assignedTo</string>
 									</dict>
 								</dict>
 								<dict>
