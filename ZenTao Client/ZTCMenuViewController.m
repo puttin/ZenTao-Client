@@ -38,6 +38,7 @@
     [super viewDidLoad];
     self.tableView.scrollsToTop = NO;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setInteger:[defaults integerForKey:@"defaultModuleGroup"] forKey:kCurrentModuleGroup];
     [defaults setInteger:[defaults integerForKey:@"defaultModule"] forKey:kCurrentModule];
     [defaults setInteger:[defaults integerForKey:@"defaultMethod"] forKey:kCurrentMethod];
 }
@@ -47,12 +48,14 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     switch (menuType) {
         case MenuTypeMainMenu: {
-            menuItems = [defaults objectForKey:@"module"];
+            menuItems = [defaults objectForKey:@"group"];
         }
             break;
         case MenuTypeSubMenu: {
+            NSUInteger currentModuleGroup = [defaults integerForKey:kCurrentModuleGroup];
             NSUInteger currentModule = [defaults integerForKey:kCurrentModule];
-            menuItems = [defaults objectForKey:@"module"][currentModule][@"method"];
+            menuItems = [defaults objectForKey:@"group"][currentModuleGroup][@"groupModule"][currentModule][@"method"];
+            [self.tableView reloadData];
         }
             break;
         default:
@@ -65,8 +68,9 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     switch (menuType) {
         case MenuTypeMainMenu: {
+            NSUInteger currentModuleGroup = [defaults integerForKey:kCurrentModuleGroup];
             NSUInteger currentModule = [defaults integerForKey:kCurrentModule];
-            NSIndexPath *ip = [NSIndexPath indexPathForRow:currentModule inSection:0];
+            NSIndexPath *ip = [NSIndexPath indexPathForRow:currentModule inSection:currentModuleGroup];
             [self.tableView selectRowAtIndexPath:ip animated:NO scrollPosition:UITableViewScrollPositionNone];
         }
             break;
@@ -89,16 +93,58 @@
 
 #pragma mark - Table view data source
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    switch (menuType) {
+        case MenuTypeMainMenu: {
+            NSString *groupName = NSLocalizedString(menuItems[section][@"groupName"], nil);
+            groupName = (groupName && groupName.length)?groupName:nil;
+            return groupName;
+        }
+            break;
+        case MenuTypeSubMenu: {
+            return nil;
+        }
+            break;
+        default:
+            break;
+    }
+    return nil;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 1;
+    switch (menuType) {
+        case MenuTypeMainMenu: {
+            return [menuItems count];
+        }
+            break;
+        case MenuTypeSubMenu: {
+            return 1;
+        }
+            break;
+        default:
+            break;
+    }
+    return 0;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return [menuItems count];
+    switch (menuType) {
+        case MenuTypeMainMenu: {
+            return [menuItems[section][@"groupModule"] count];
+        }
+            break;
+        case MenuTypeSubMenu: {
+            return [menuItems count];
+        }
+            break;
+        default:
+            break;
+    }
+    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -109,7 +155,18 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     // Configure the cell...
-    cell.textLabel.text = NSLocalizedString(menuItems[indexPath.row][@"name"], nil);
+    switch (menuType) {
+        case MenuTypeMainMenu: {
+            cell.textLabel.text = NSLocalizedString(menuItems[indexPath.section][@"groupModule"][indexPath.row][@"name"], nil);
+        }
+            break;
+        case MenuTypeSubMenu: {
+            cell.textLabel.text = NSLocalizedString(menuItems[indexPath.row][@"name"], nil);
+        }
+            break;
+        default:
+            break;
+    }
     
     return cell;
 }
@@ -121,6 +178,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     switch (menuType) {
         case MenuTypeMainMenu: {
+            [defaults setInteger:indexPath.section forKey:kCurrentModuleGroup];
             [defaults setInteger:indexPath.row forKey:kCurrentModule];
             [defaults setInteger:0 forKey:kCurrentMethod];
         }
@@ -132,9 +190,15 @@
         default:
             break;
     }
-    Class ZTCListViewController = NSClassFromString(@"ZTCListViewController");
-    id list = [[ZTCListViewController alloc] init];
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:list];
+    
+    NSUInteger currentModuleGroup = [defaults integerForKey:kCurrentModuleGroup];
+    NSUInteger currentModule = [defaults integerForKey:kCurrentModule];
+    NSUInteger currentMethod = [defaults integerForKey:kCurrentMethod];
+    NSString *className = [defaults arrayForKey:@"group"][currentModuleGroup][@"groupModule"][currentModule][@"method"][currentMethod][@"viewController"];
+//    NSLog(@"%@",className);
+    Class ViewController = NSClassFromString(className);
+    id viewController = [[ViewController alloc] init];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:viewController];
     [self.viewDeckController.viewDeckController closeLeftViewBouncing:^(IIViewDeckController *controller) {
         [controller setCenterController:nav];
     }];

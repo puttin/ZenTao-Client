@@ -171,13 +171,45 @@
 "bug toTask" = "转任务";
 "bug at" = "在";
 
-//Other
+//login
+"login Basic Group" = "基本";
+"login Basic Group Desc" = "账号和密码用于登陆";
+
+"login Account" = "账号";
+"login Password" = "密码";
+
+"login URL Group" = "网站地址";
+"login URL Group Desc" = "你的禅道网站地址\n如果你的地址像 \"http://example.com/www/my-task.html\"\n请填 \"example.com/www/\"\n如果像 \"http://example.com/www/index.php?m=my&f=task\"\n请填 \"example.com/www/\"";
+"login URL" = "URL";
+
+"login RequestType Group" = "请求方式";
+"login RequestType Group Desc" = "如果你的地址像 \"http://example.com/my-task.html\"\n请选择 \"PATH_INFO\"\n如果像 \"http://example.com/www/index.php?m=my&f=task\"\n请选择 \"GET\"";
+"login RequestType" = "类型";
+"login RequestType GET" = "GET";
+"login RequestType PATH_INFO" = "PATH_INFO";
+
 "login" = "登陆";
 "login success title" = "登陆成功";
 "login fail title" = "登录失败";
 "login fail message" = "请检查设置";
 "login first time use title" = "初次使用";
 "login first time use message" = "请设置";
+
+//menu
+"menu.group.dashboard" = "";
+"menu.group.setting" = " ";
+
+"menu.my" = "我的";
+"submenu.task" = "任务";
+"submenu.bug" = "缺陷";
+
+"menu.setting" = "设置";
+"submenu.setting" = "设置";
+
+//setting
+"setting" = "设置";
+
+//Other
 "network not reachable title" = "网络不可达";
 "network not reachable message" = "请检查你的网络";
 

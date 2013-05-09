@@ -35,9 +35,10 @@
 - (void)initParameterArray {
     parametersCount = 0;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSUInteger currentModuleGroup = [defaults integerForKey:kCurrentModuleGroup];
     NSUInteger currentModule = [defaults integerForKey:kCurrentModule];
     NSUInteger currentMethod = [defaults integerForKey:kCurrentMethod];
-    NSDictionary *parameterDict = [defaults arrayForKey:@"module"][currentModule][@"method"][currentMethod];
+    NSDictionary *parameterDict = [defaults arrayForKey:@"group"][currentModuleGroup][@"groupModule"][currentModule][@"method"][currentMethod];
     NSMutableArray *parameterArray = [[NSMutableArray alloc] init];
     itemName = parameterDict[@"itemName"];
     itemsNameInJSON = parameterDict[@"itemsNameInJSON"];
