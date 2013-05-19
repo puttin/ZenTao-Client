@@ -6,4 +6,4 @@ pod 'PDKeychainBindingsController', '~>0.0.1'
 pod 'EGOTableViewPullRefresh', '~>0.1.0'
 pod 'ViewDeck', '~>2.2.11'
 pod 'InAppSettingsKit', '~>1.0'
-
+pod 'QuickDialog', '~>0.8'
