@@ -339,7 +339,7 @@ static NSString * tmpUrl = nil;
                 deckController.leftSize = 44;
             }
             deckController.delegateMode = IIViewDeckDelegateAndSubControllers;
-            deckController.panningMode = IIViewDeckNavigationBarOrOpenCenterPanning;
+            deckController.panningMode = IIViewDeckNoPanning;
             deckController.sizeMode = IIViewDeckViewSizeMode;
             deckController.bounceDurationFactor = 0.7;
             

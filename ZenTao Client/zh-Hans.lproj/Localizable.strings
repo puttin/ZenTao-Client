@@ -205,9 +205,56 @@
 
 "menu.setting" = "设置";
 "submenu.setting" = "设置";
+"submenu.about" = "关于";
 
 //setting
 "setting" = "设置";
+
+//about
+"About" = "关于";
+"About Blank" = "";
+"About App" = "禅道";
+"About Version" = "版本";
+"About Feedback" = "意见反馈";
+"About Feedback Mail Title" = "意见反馈";
+"About Feedback Mail App Version" = "应用版本";
+"About Feedback DO NOT MODIFY" = "请勿修改邮件标题及以上正文";
+"About Changelog" = "更新变化";
+"About Disclaimer" = "免责声明";
+"About Thank" = "感谢";
+"About Project" = "项目";
+"About License" = "协议";
+"About Official Website" = "官方网站";
+"About Author Website" = "网站";
+"About Source Code Page" = "开源地址";
+"About Author" = "作者";
+"About Weibo" = "新浪微博";
+"About Me" = "关于作者";
+
+"About Thank Lib" = "开源库";
+"About Thank Lib Footer" = "他们的贡献节省了大量开发时间";
+"About Thank AFNetworking" = "AFNetworking";
+"About Thank EGOTableViewPullRefresh" = "EGOTableViewPullRefresh";
+"About Thank InAppSettingsKit" = "InAppSettingsKit";
+"About Thank NoticeView" = "NoticeView";
+"About Thank PDKeychainBindingsController" = "PDKeychainBindingsController";
+"About Thank PWLoadMoreTableFooter" = "PWLoadMoreTableFooter";
+"About Thank QuickDialog" = "QuickDialog";
+"About Thank ViewDeck" = "ViewDeck";
+"About Thank OpenUDID" = "OpenUDID";
+
+"About Thank People" = "人们";
+"About Thank People Footer" = "他们使我的生命更精彩";
+"About Thank People My Parents" = "父母 给了我生命并教我做人";
+"About Thank People My friend" = "朋友 让我开心并支持我";
+"About Thank People My colleague" = "同事 指导我进步";
+"About Thank People Guanbo" = "管博 给了我第一份iOS工作";
+
+"About Thank Company" = "公司";
+"About Thank Company Footer" = "他们让我学到了很多";
+"About Thank Company NARI" = "南瑞 我的第一份工作";
+"About Thank Company ExtensivePro" = "泛盈 我的第一份iOS工作";
+"About Thank Company EasySoft" = "易软 创造了 禅道项目管理系统";
 
 //Other
 "network not reachable title" = "网络不可达";

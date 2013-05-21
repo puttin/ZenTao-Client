@@ -1,0 +1,498 @@
+{
+  "grouped": true,
+  "title": "About Thank",
+  "sections": [
+    {
+      "title": "About Thank Lib",
+      "footer": "About Thank Lib Footer",
+      "elements": [
+        {
+          "type": "QRootElement",
+          "grouped": true,
+          "title": "About Thank AFNetworking",
+          "sections": [
+            {
+              "title": "About Project",
+              "elements": [
+                {
+                  "type": "QWebElement",
+                  "title": "About License",
+                  "value": "MIT",
+                  "url": "https://github.com/AFNetworking/AFNetworking/raw/master/LICENSE"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Official Website",
+                  "url": "http://afnetworking.com/"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Source Code Page",
+                  "url": "https://github.com/AFNetworking/AFNetworking"
+                }
+              ]
+            },
+            {
+              "title": "About Author",
+              "elements": [
+                {
+                  "type": "QWebElement",
+                  "title": "Mattt Thompson",
+                  "value": "GitHub",
+                  "url": "http://github.com/mattt"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Blank",
+                  "value": "Twitter",
+                  "url": "https://twitter.com/mattt"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "Scott Raymond",
+                  "value": "GitHub",
+                  "url": "http://github.com/sco"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Blank",
+                  "value": "Twitter",
+                  "url": "https://twitter.com/sco"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "QRootElement",
+          "grouped": true,
+          "title": "About Thank EGOTableViewPullRefresh",
+          "sections": [
+            {
+              "title": "About Project",
+              "elements": [
+                {
+                  "type": "QWebElement",
+                  "title": "About Source Code Page",
+                  "url": "https://github.com/enormego/EGOTableViewPullRefresh/"
+                }
+              ]
+            },
+            {
+              "title": "About Author",
+              "elements": [
+                {
+                  "type": "QWebElement",
+                  "title": "enormego",
+                  "value": "GitHub",
+                  "url": "https://github.com/enormego"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Blank",
+                  "value": "Twitter",
+                  "url": "https://twitter.com/enormego"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "QRootElement",
+          "grouped": true,
+          "title": "About Thank InAppSettingsKit",
+          "sections": [
+            {
+              "title": "About Project",
+              "elements": [
+                {
+                  "type": "QWebElement",
+                  "title": "About License",
+                  "value": "BSD",
+                  "url": "https://github.com/futuretap/InAppSettingsKit/raw/master/LICENSE"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Official Website",
+                  "url": "http://www.inappsettingskit.com/"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Source Code Page",
+                  "url": "https://github.com/futuretap/InAppSettingsKit"
+                }
+              ]
+            },
+            {
+              "title": "About Author",
+              "elements": [
+                {
+                  "type": "QWebElement",
+                  "title": "Luc Vandal",
+                  "value": "GitHub",
+                  "url": "https://github.com/edovia"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Blank",
+                  "value": "About Author Website",
+                  "url": "http://www.edovia.com"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Blank",
+                  "value": "Twitter",
+                  "url": "https://twitter.com/edovia"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "FutureTap",
+                  "value": "GitHub",
+                  "url": "https://github.com/futuretap"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Blank",
+                  "value": "About Author Website",
+                  "url": "http://www.futuretap.com/"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Blank",
+                  "value": "Twitter",
+                  "url": "https://twitter.com/futuretap"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "QRootElement",
+          "grouped": true,
+          "title": "About Thank NoticeView",
+          "sections": [
+            {
+              "title": "About Project",
+              "elements": [
+                {
+                  "type": "QWebElement",
+                  "title": "About License",
+                  "value": "MIT",
+                  "url": "https://github.com/tciuro/NoticeView/raw/master/LICENSE"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Source Code Page",
+                  "url": "https://github.com/tciuro/NoticeView"
+                }
+              ]
+            },
+            {
+              "title": "About Author",
+              "elements": [
+                {
+                  "type": "QWebElement",
+                  "title": "Tito Ciuro",
+                  "value": "GitHub",
+                  "url": "https://github.com/tciuro"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "QRootElement",
+          "grouped": true,
+          "title": "About Thank PDKeychainBindingsController",
+          "sections": [
+            {
+              "title": "About Project",
+              "elements": [
+                {
+                  "type": "QWebElement",
+                  "title": "About License",
+                  "value": "MIT",
+                  "url": "https://github.com/carlbrown/PDKeychainBindingsController/raw/master/LICENSE"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Official Website",
+                  "url": "http://www.escortmissions.com/blog/2011/9/3/steal-this-code-and-protect-their-data-simplifying-keychain.html"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Source Code Page",
+                  "url": "https://github.com/carlbrown/PDKeychainBindingsController"
+                }
+              ]
+            },
+            {
+              "title": "About Author",
+              "elements": [
+                {
+                  "type": "QWebElement",
+                  "title": "Carl Brown",
+                  "value": "GitHub",
+                  "url": "https://github.com/carlbrown"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Blank",
+                  "value": "About Author Website",
+                  "url": "http://www.pdagent.com/"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Blank",
+                  "value": "Twitter",
+                  "url": "https://twitter.com/CarlBrwn"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "QRootElement",
+          "grouped": true,
+          "title": "About Thank PWLoadMoreTableFooter",
+          "sections": [
+            {
+              "title": "About Project",
+              "elements": [
+                {
+                  "type": "QWebElement",
+                  "title": "About License",
+                  "value": "MIT",
+                  "url": "https://github.com/puttin/PWLoadMoreTableFooter/raw/master/LICENSE.md"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Official Website",
+                  "url": "http://puttin.github.io/2013/03/31/pwloadmoretablefooter/"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Source Code Page",
+                  "url": "https://github.com/puttin/PWLoadMoreTableFooter"
+                }
+              ]
+            },
+            {
+              "title": "About Author",
+              "elements": [
+                {
+                  "type": "QWebElement",
+                  "title": "Puttin Wong",
+                  "value": "GitHub",
+                  "url": "https://github.com/puttin"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Blank",
+                  "value": "About Author Website",
+                  "url": "http://puttin.github.io/"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Blank",
+                  "value": "Twitter",
+                  "url": "https://twitter.com/PuttinWong"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Blank",
+                  "value": "About Weibo",
+                  "url": "http://weibo.com/godisputtin"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "QRootElement",
+          "grouped": true,
+          "title": "About Thank QuickDialog",
+          "sections": [
+            {
+              "title": "About Project",
+              "elements": [
+                {
+                  "type": "QWebElement",
+                  "title": "About License",
+                  "value": "Apache",
+                  "url": "https://github.com/escoz/QuickDialog/raw/master/LICENSE"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Official Website",
+                  "url": "http://escoz.com/open-source/quickdialog"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Source Code Page",
+                  "url": "https://github.com/escoz/QuickDialog/"
+                }
+              ]
+            },
+            {
+              "title": "About Author",
+              "elements": [
+                {
+                  "type": "QWebElement",
+                  "title": "Eduardo Scoz",
+                  "value": "GitHub",
+                  "url": "https://github.com/escoz"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Blank",
+                  "value": "About Author Website",
+                  "url": "http://escoz.com/"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Blank",
+                  "value": "Twitter",
+                  "url": "https://twitter.com/escoz"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "QRootElement",
+          "grouped": true,
+          "title": "About Thank ViewDeck",
+          "sections": [
+            {
+              "title": "About Project",
+              "elements": [
+                {
+                  "type": "QWebElement",
+                  "title": "About License",
+                  "value": "MIT",
+                  "url": "https://github.com/Inferis/ViewDeck#license"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Source Code Page",
+                  "url": "https://github.com/Inferis/ViewDeck"
+                }
+              ]
+            },
+            {
+              "title": "About Author",
+              "elements": [
+                {
+                  "type": "QWebElement",
+                  "title": "Eduardo Scoz",
+                  "value": "GitHub",
+                  "url": "https://github.com/Inferis"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Blank",
+                  "value": "About Author Website",
+                  "url": "http://inferis.org/"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Blank",
+                  "value": "Twitter",
+                  "url": "https://twitter.com/inferis"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "QRootElement",
+          "grouped": true,
+          "title": "About Thank OpenUDID",
+          "sections": [
+            {
+              "title": "About Project",
+              "elements": [
+                {
+                  "type": "QWebElement",
+                  "title": "About License",
+                  "value": "zlib",
+                  "url": "https://github.com/CocoaPods/Specs/blob/master/OpenUDID/1.0.0/OpenUDID.podspec#L11-34"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Source Code Page",
+                  "url": "https://github.com/ylechelle/OpenUDID"
+                }
+              ]
+            },
+            {
+              "title": "About Author",
+              "elements": [
+                {
+                  "type": "QWebElement",
+                  "title": "Yann Lechelle",
+                  "value": "GitHub",
+                  "url": "https://github.com/ylechelle"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Blank",
+                  "value": "About Author Website",
+                  "url": "http://ylechelle.tumblr.com/"
+                },
+                {
+                  "type": "QWebElement",
+                  "title": "About Blank",
+                  "value": "Twitter",
+                  "url": "https://twitter.com/ylechelle"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "About Thank People",
+      "footer": "About Thank People Footer",
+      "elements": [
+        {
+          "type": "QLabelElement",
+          "title": "About Thank People My Parents"
+        },
+        {
+          "type": "QLabelElement",
+          "title": "About Thank People My friend"
+        },
+        {
+          "type": "QLabelElement",
+          "title": "About Thank People My colleague"
+        },
+        {
+          "type": "QWebElement",
+          "title": "About Thank People Guanbo",
+          "url": "https://github.com/guanbo"
+        }
+      ]
+    },
+    {
+      "title": "About Thank Company",
+      "footer": "About Thank Company Footer",
+      "elements": [
+        {
+          "type": "QLabelElement",
+          "title": "About Thank Company NARI"
+        },
+        {
+          "type": "QLabelElement",
+          "title": "About Thank Company ExtensivePro"
+        },
+        {
+          "type": "QLabelElement",
+          "title": "About Thank Company EasySoft"
+        }
+      ]
+    }
+  ]
+}
