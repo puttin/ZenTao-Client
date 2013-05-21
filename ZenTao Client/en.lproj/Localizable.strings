@@ -205,9 +205,56 @@
 
 "menu.setting" = "Setting";
 "submenu.setting" = "Setting";
+"submenu.about" = "About";
 
 //setting
 "setting" = "Settings";
+
+//about
+"About" = "About";
+"About Blank" = "";
+"About App" = "ZenTao";
+"About Version" = "Version";
+"About Feedback" = "Feedback";
+"About Feedback Mail Title" = "Feedback";
+"About Feedback Mail App Version" = "App Version";
+"About Feedback DO NOT MODIFY" = "Please DO NOT modify the title and above text";
+"About Changelog" = "Changelog";
+"About Disclaimer" = "Disclaimer";
+"About Thank" = "Thank";
+"About Project" = "Project";
+"About License" = "License";
+"About Official Website" = "Official Website";
+"About Author Website" = "Website";
+"About Source Code Page" = "Source Code";
+"About Author" = "Author";
+"About Weibo" = "Weibo";
+"About Me" = "Author";
+
+"About Thank Lib" = "Open-Source Lib";
+"About Thank Lib Footer" = "They save my life to create this App";
+"About Thank AFNetworking" = "AFNetworking";
+"About Thank EGOTableViewPullRefresh" = "EGOTableViewPullRefresh";
+"About Thank InAppSettingsKit" = "InAppSettingsKit";
+"About Thank NoticeView" = "NoticeView";
+"About Thank PDKeychainBindingsController" = "PDKeychainBindingsController";
+"About Thank PWLoadMoreTableFooter" = "PWLoadMoreTableFooter";
+"About Thank QuickDialog" = "QuickDialog";
+"About Thank ViewDeck" = "ViewDeck";
+"About Thank OpenUDID" = "OpenUDID";
+
+"About Thank People" = "People";
+"About Thank People Footer" = "They have made my life more wonderful";
+"About Thank People My Parents" = "Parents, who give me life";
+"About Thank People My friend" = "Friends, who make me happy and always support me";
+"About Thank People My colleague" = "Colleagues, who guide me to improve";
+"About Thank People Guanbo" = "Guanbo, who give me my first iOS job";
+
+"About Thank Company" = "Company";
+"About Thank Company Footer" = "They let me learned a lot";
+"About Thank Company NARI" = "NARI, which give me my first job";
+"About Thank Company ExtensivePro" = "ExtensivePro, which give me my first iOS job";
+"About Thank Company EasySoft" = "EasySoft, which create ZenTao PMS";
 
 //Other
 "network not reachable title" = "Network Error";

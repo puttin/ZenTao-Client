@@ -152,6 +152,12 @@
 							<key>viewController</key>
 							<string>ZTCSettingViewController</string>
 						</dict>
+						<dict>
+							<key>name</key>
+							<string>submenu.about</string>
+							<key>viewController</key>
+							<string>ZTCAboutViewController</string>
+						</dict>
 					</array>
 				</dict>
 			</array>
