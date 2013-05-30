@@ -139,5 +139,5 @@ Podfile.lock
 # ...none. Everything is now explained.
 
 #pod install everytime
-ZenTao Client.xcworkspace
+ZenTaoClient.xcworkspace
 
