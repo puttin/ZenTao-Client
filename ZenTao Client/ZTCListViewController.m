@@ -16,14 +16,7 @@
 
 @end
 
-@implementation ZTCListViewController {
-}
-
-@synthesize refreshHeaderView = _refreshHeaderView;
-@synthesize loadMoreFooterView = _loadMoreFooterView;
-
-@synthesize tableView = _tableView;
-@synthesize dataSourceDelegate = _dataSourceDelegate;
+@implementation ZTCListViewController
 
 - (id)init {
     self = [super init];
@@ -47,35 +40,35 @@
     self.dataSourceDelegate = [[ZTCListDataSourceDelegate alloc] init];
     
     //refreshHeaderView init
-    if (_refreshHeaderView == nil) {
+    if (self.refreshHeaderView == nil) {
 		
 		EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, self.view.frame.size.width, self.tableView.bounds.size.height)];
 		view.delegate = self.dataSourceDelegate;
 		[self.tableView addSubview:view];
-		_refreshHeaderView = view;
+		self.refreshHeaderView = view;
 		
 	}
 	
 	//  update the last update date
-	[_refreshHeaderView refreshLastUpdatedDate];
+	[self.refreshHeaderView refreshLastUpdatedDate];
     
     //loadMoreFooterView init
-    if (_loadMoreFooterView == nil) {
+    if (self.loadMoreFooterView == nil) {
 		
 		PWLoadMoreTableFooterView *view = [[PWLoadMoreTableFooterView alloc] init];
 		view.delegate = self.dataSourceDelegate;
-		_loadMoreFooterView = view;
+		self.loadMoreFooterView = view;
 		
 	}
     
-    self.tableView.tableFooterView = _loadMoreFooterView;
+    self.tableView.tableFooterView = self.loadMoreFooterView;
     
     //tableView delegate and dataSourceDelegate
     self.tableView.delegate = self.dataSourceDelegate;
     self.tableView.dataSource = self.dataSourceDelegate;
     
     //let the delegate can control listView
-    self.dataSourceDelegate.listViewDelegate = self;
+    self.dataSourceDelegate.listView = self;
     
 }
 

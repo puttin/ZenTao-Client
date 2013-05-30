@@ -26,7 +26,7 @@ enum {
 + (void) registerUserInfo;
 + (NSUInteger) getRequestType;
 + (BOOL) loginWithAccount:(NSString *)account Password:(NSString *)password BaseURL:(NSString *)url;
-+ (BOOL)logout;
++ (BOOL) logout;
 + (void) showMainView;
 + (UIView*)showLoginView:(BOOL)animated;
 

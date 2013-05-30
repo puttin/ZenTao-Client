@@ -10,20 +10,7 @@
 #import "EGORefreshTableHeaderView.h"
 #import "PWLoadMoreTableFooterView.h"
 
-enum {
-    ItemLoadIndex,
-    ItemRefreshIndex,
-    ItemAppendIndex,
-} ItemUpdateIndicies;
-
 @class ZTCListViewController;
-@interface ZTCListDataSourceDelegate : NSObject <UITableViewDataSource,UITableViewDelegate,EGORefreshTableHeaderDelegate,PWLoadMoreTableFooterDelegate> {
-	BOOL _reloading;
-	BOOL _dataSourceIsLoading;
-    bool _loadMoreAllLoaded;
-}
-@property(nonatomic,weak) ZTCListViewController *listViewDelegate;
-@property(nonatomic,strong) NSMutableArray *itemArray;
-@property(nonatomic,strong) NSMutableArray *parameterArray;
-
+@interface ZTCListDataSourceDelegate : NSObject <UITableViewDataSource,UITableViewDelegate,EGORefreshTableHeaderDelegate,PWLoadMoreTableFooterDelegate>
+@property(nonatomic,weak) ZTCListViewController *listView;
 @end

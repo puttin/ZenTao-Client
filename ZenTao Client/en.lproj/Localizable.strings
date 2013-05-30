@@ -210,6 +210,10 @@
 //setting
 "setting" = "Settings";
 
+//navigation title
+"title.my-bug" = "My Bugs";
+"title.my-task" = "My Tasks";
+
 //about
 "About" = "About";
 "About Blank" = "";

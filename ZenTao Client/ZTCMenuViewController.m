@@ -10,13 +10,11 @@
 #import "IIViewDeckController.h"
 
 @interface ZTCMenuViewController ()
-
+@property (assign, nonatomic) NSUInteger menuType;
+@property (strong, nonatomic) NSArray *menuItems;
 @end
 
-@implementation ZTCMenuViewController {
-    NSUInteger menuType;
-    NSArray *menuItems;
-}
+@implementation ZTCMenuViewController
 
 - (id)init {
     NSLog(@"WARNING: SHOULD NOT invoke 'init' to init menuViewController, use 'initWithType'");
@@ -28,7 +26,7 @@
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
         // Custom initialization
-        menuType = type;
+        _menuType = type;
     }
     return self;
 }
@@ -46,15 +44,15 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    switch (menuType) {
+    switch (self.menuType) {
         case MenuTypeMainMenu: {
-            menuItems = [defaults objectForKey:@"group"];
+            self.menuItems = [defaults objectForKey:@"group"];
         }
             break;
         case MenuTypeSubMenu: {
             NSUInteger currentModuleGroup = [defaults integerForKey:kCurrentModuleGroup];
             NSUInteger currentModule = [defaults integerForKey:kCurrentModule];
-            menuItems = [defaults objectForKey:@"group"][currentModuleGroup][@"groupModule"][currentModule][@"method"];
+            self.menuItems = [defaults objectForKey:@"group"][currentModuleGroup][@"groupModule"][currentModule][@"method"];
             [self.tableView reloadData];
         }
             break;
@@ -66,7 +64,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    switch (menuType) {
+    switch (self.menuType) {
         case MenuTypeMainMenu: {
             NSUInteger currentModuleGroup = [defaults integerForKey:kCurrentModuleGroup];
             NSUInteger currentModule = [defaults integerForKey:kCurrentModule];
@@ -94,9 +92,9 @@
 #pragma mark - Table view data source
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    switch (menuType) {
+    switch (self.menuType) {
         case MenuTypeMainMenu: {
-            NSString *groupName = NSLocalizedString(menuItems[section][@"groupName"], nil);
+            NSString *groupName = NSLocalizedString(self.menuItems[section][@"groupName"], nil);
             groupName = (groupName && groupName.length)?groupName:nil;
             return groupName;
         }
@@ -114,9 +112,9 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    switch (menuType) {
+    switch (self.menuType) {
         case MenuTypeMainMenu: {
-            return [menuItems count];
+            return [self.menuItems count];
         }
             break;
         case MenuTypeSubMenu: {
@@ -132,13 +130,13 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    switch (menuType) {
+    switch (self.menuType) {
         case MenuTypeMainMenu: {
-            return [menuItems[section][@"groupModule"] count];
+            return [self.menuItems[section][@"groupModule"] count];
         }
             break;
         case MenuTypeSubMenu: {
-            return [menuItems count];
+            return [self.menuItems count];
         }
             break;
         default:
@@ -155,13 +153,13 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     // Configure the cell...
-    switch (menuType) {
+    switch (self.menuType) {
         case MenuTypeMainMenu: {
-            cell.textLabel.text = NSLocalizedString(menuItems[indexPath.section][@"groupModule"][indexPath.row][@"name"], nil);
+            cell.textLabel.text = NSLocalizedString(self.menuItems[indexPath.section][@"groupModule"][indexPath.row][@"name"], nil);
         }
             break;
         case MenuTypeSubMenu: {
-            cell.textLabel.text = NSLocalizedString(menuItems[indexPath.row][@"name"], nil);
+            cell.textLabel.text = NSLocalizedString(self.menuItems[indexPath.row][@"name"], nil);
         }
             break;
         default:
@@ -176,7 +174,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    switch (menuType) {
+    switch (self.menuType) {
         case MenuTypeMainMenu: {
             [defaults setInteger:indexPath.section forKey:kCurrentModuleGroup];
             [defaults setInteger:indexPath.row forKey:kCurrentModule];

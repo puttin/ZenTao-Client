@@ -12,7 +12,6 @@
     #import "IASKAppSettingsViewController.h"
 #endif
 
-@interface ZTCSettingViewController : IASKAppSettingsViewController <IASKSettingsDelegate> {
-}
+@interface ZTCSettingViewController : IASKAppSettingsViewController
 
 @end

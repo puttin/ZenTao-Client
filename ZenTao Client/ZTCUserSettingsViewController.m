@@ -38,14 +38,13 @@ enum {
 
 @interface ZTCUserSettingsViewController ()
 
+@property(nonatomic,strong) UITextField *accountTextFiled;
+@property(nonatomic,strong) UITextField *passwordTextFiled;
+@property(nonatomic,strong) UITextField *urlTextFiled;
+
 @end
 
-@implementation ZTCUserSettingsViewController{
-}
-
-@synthesize accountTextFiled = _accountTextFiled;
-@synthesize passwordTextFiled = _passwordTextFiled;
-@synthesize urlTextFiled = _urlTextFiled;
+@implementation ZTCUserSettingsViewController
 
 - (id)init{
     self = [super initWithStyle:UITableViewStyleGrouped];
@@ -245,13 +244,13 @@ enum {
                     switch (indexPath.row) {
                         case AccountRowIndex:
                         {
-                            [cell.contentView addSubview:_accountTextFiled];
+                            [cell.contentView addSubview:self.accountTextFiled];
                             cell.textLabel.text = NSLocalizedString(@"login Account", nil);
                         }
                             break;
                         case PasswordRowIndex:
                         {
-                            [cell.contentView addSubview:_passwordTextFiled];
+                            [cell.contentView addSubview:self.passwordTextFiled];
                             cell.textLabel.text = NSLocalizedString(@"login Password", nil);
                         }
                             break;
@@ -263,7 +262,7 @@ enum {
                     switch (indexPath.row) {
                         case UrlRowIndex:
                         {
-                            [cell.contentView addSubview:_urlTextFiled];
+                            [cell.contentView addSubview:self.urlTextFiled];
                             cell.textLabel.text = NSLocalizedString(@"login URL", nil);
                         }
                             break;
@@ -297,12 +296,12 @@ enum {
 {
     UITextField *nextField = nil;
     NSIndexPath *newPath = nil;
-    if (textField == _accountTextFiled) {
+    if (textField == self.accountTextFiled) {
         newPath = [NSIndexPath indexPathForRow:PasswordRowIndex inSection:AccountSectionIndex];
-        nextField = _passwordTextFiled;
-    } else if (textField == _passwordTextFiled) {
+        nextField = self.passwordTextFiled;
+    } else if (textField == self.passwordTextFiled) {
         newPath = [NSIndexPath indexPathForRow:UrlRowIndex inSection:URLSectionIndex];
-        nextField = _urlTextFiled;
+        nextField = self.urlTextFiled;
     } else {
         //
     }
@@ -325,11 +324,11 @@ enum {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.navigationItem.rightBarButtonItem.enabled = NO;
         });
-        if ([ZTCAPIClient loginWithAccount:_accountTextFiled.text Password:_passwordTextFiled.text BaseURL:_urlTextFiled.text]) {
+        if ([ZTCAPIClient loginWithAccount:self.accountTextFiled.text Password:self.passwordTextFiled.text BaseURL:self.urlTextFiled.text]) {
             PDKeychainBindings *bindings = [PDKeychainBindings sharedKeychainBindings];
-            [bindings setObject:_accountTextFiled.text forKey:kZTCKeychainAccount];
-            [bindings setObject:_passwordTextFiled.text forKey:kZTCKeychainPassword];
-            [bindings setObject:_urlTextFiled.text forKey:kZTCKeychainUrl];
+            [bindings setObject:self.accountTextFiled.text forKey:kZTCKeychainAccount];
+            [bindings setObject:self.passwordTextFiled.text forKey:kZTCKeychainPassword];
+            [bindings setObject:self.urlTextFiled.text forKey:kZTCKeychainUrl];
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.parentViewController dismissViewControllerAnimated:YES completion:nil];

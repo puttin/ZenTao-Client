@@ -11,38 +11,50 @@
 #import "ZTCNotice.h"
 #import "ZTCListViewController.h"
 
-@implementation ZTCListDataSourceDelegate {
-    dispatch_queue_t updateQueue;
-    
-    NSString *itemName;
-    NSString *itemsNameInJSON;
-    NSString *itemViewController;
-    
-    NSUInteger parametersCount;
-}
+enum {
+    ItemLoadIndex,
+    ItemRefreshIndex,
+    ItemAppendIndex,
+} ItemUpdateIndicies;
+
+@interface ZTCListDataSourceDelegate ()
+@property(nonatomic,strong) NSMutableArray *itemArray;
+@property(nonatomic,strong) NSMutableArray *parameterArray;
+@property (assign, nonatomic) BOOL reloading;
+@property (assign, nonatomic) BOOL dataSourceIsLoading;
+@property (assign, nonatomic) BOOL loadMoreAllLoaded;
+@property (assign, nonatomic) dispatch_queue_t updateQueue;
+@property (strong, nonatomic) NSString *itemName;
+@property (strong, nonatomic) NSString *itemsNameInJSON;;
+@property (strong, nonatomic) NSString *itemViewController;
+@property (assign, nonatomic) NSUInteger parametersCount;
+@property (strong, nonatomic) NSString *viewControllerTitle;
+@end
+
+@implementation ZTCListDataSourceDelegate
 
 - (id)init {
     self = [super init];
     if (self) {
         // Custom initialization
-        [self addObserver:self forKeyPath:@"listViewDelegate" options:NSKeyValueObservingOptionNew context:nil];
-        updateQueue = dispatch_queue_create("com.puttinwong.ZenTao-Client.itemUpdateQueue", NULL);
+        [self addObserver:self forKeyPath:@"listView" options:NSKeyValueObservingOptionNew context:nil];
+        self.updateQueue = dispatch_queue_create("com.puttinwong.ZenTao-Client.itemUpdateQueue", NULL);
         [self initParameterArray];
     }
     return self;
 }
 
 - (void)initParameterArray {
-    parametersCount = 0;
+    _parametersCount = 0;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSUInteger currentModuleGroup = [defaults integerForKey:kCurrentModuleGroup];
     NSUInteger currentModule = [defaults integerForKey:kCurrentModule];
     NSUInteger currentMethod = [defaults integerForKey:kCurrentMethod];
     NSDictionary *parameterDict = [defaults arrayForKey:@"group"][currentModuleGroup][@"groupModule"][currentModule][@"method"][currentMethod];
     NSMutableArray *parameterArray = [[NSMutableArray alloc] init];
-    itemName = parameterDict[@"itemName"];
-    itemsNameInJSON = parameterDict[@"itemsNameInJSON"];
-    itemViewController = parameterDict[@"itemViewController"];
+    _itemName = parameterDict[@"itemName"];
+    _itemsNameInJSON = parameterDict[@"itemsNameInJSON"];
+    _itemViewController = parameterDict[@"itemViewController"];
 //    NSLog(@"%@",parameterDict[@"parameters"]);
     [(NSArray*)parameterDict[@"parameters"] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         if ([[(NSDictionary*)obj objectForKey:@"option"] boolValue]) {
@@ -50,10 +62,11 @@
         } else {
             parameterArray[idx] = [NSString stringWithFormat:@"%@=%@",obj[@"keyword"],obj[@"value"]];
         }
-        parametersCount++;
+        _parametersCount++;
     }];
-    self.parameterArray = parameterArray;
+    _parameterArray = parameterArray;
 //    NSLog(@"%@",parameterArray);
+    _viewControllerTitle = parameterDict[@"title"];
 }
 
 #pragma mark -
@@ -61,13 +74,13 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     //	DLog(@"scrollViewDidScroll");
-	[_listViewDelegate.refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+	[self.listView.refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
     
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     //    DLog(@"scrollViewDidEndDragging");
-	[_listViewDelegate.refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
+	[self.listView.refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
 	
 }
 
@@ -78,15 +91,15 @@
     // Navigation logic may go here. Create and push another view controller.
     // Pass the selected object to the new view controller.
     UIViewController *detailViewController = nil;
-    Class c = NSClassFromString(itemViewController);
+    Class c = NSClassFromString(self.itemViewController);
     SEL s = NSSelectorFromString(@"initWithID:");
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-    detailViewController = [[c alloc] performSelector:s withObject:[[_listViewDelegate.dataSourceDelegate.itemArray objectAtIndex:indexPath.row] objectForKey:@"id"]];
+    detailViewController = [[c alloc] performSelector:s withObject:[[self.itemArray objectAtIndex:indexPath.row] objectForKey:@"id"]];
 #pragma clang diagnostic pop
 
     if (detailViewController) {
-        [_listViewDelegate.navigationController pushViewController:detailViewController animated:YES];
+        [self.listView.navigationController pushViewController:detailViewController animated:YES];
     }
 }
 
@@ -101,7 +114,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return [_itemArray count];
+    return [self.itemArray count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -112,7 +125,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     // Configure the cell...
-    cell.textLabel.text = [[_itemArray objectAtIndex:indexPath.row] objectForKey:itemName];
+    cell.textLabel.text = [[self.itemArray objectAtIndex:indexPath.row] objectForKey:self.itemName];
     //cell.textLabel.font= [UIFont fontWithName:@"STHeitiSC-Medium" size:[UIFont systemFontSize]];
     
     return cell;
@@ -125,13 +138,13 @@
 	//DLog(@"egoRefreshTableHeaderDidTriggerRefresh");
 	//  should be calling your tableviews data source model to reload
 	//  put here just for demo
-	_reloading = YES;
+	self.reloading = YES;
 	[self refreshTable];
 }
 
 - (BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view{
 	
-	return _reloading; // should return if data source model is reloading
+	return self.reloading; // should return if data source model is reloading
 	
 }
 
@@ -149,51 +162,51 @@
 
 
 - (BOOL)pwLoadMoreTableDataSourceIsLoading {
-    return _dataSourceIsLoading;
+    return self.dataSourceIsLoading;
 }
 - (BOOL)pwLoadMoreTableDataSourceAllLoaded {
-    return _loadMoreAllLoaded;
+    return self.loadMoreAllLoaded;
 }
 
 #pragma mark -
 #pragma mark Data Source Loading / Reloading Methods
 
 - (void)refreshTable {
-    [self getItemListWithType:ItemRefreshIndex withParameters:[self.parameterArray subarrayWithRange:NSMakeRange(0, parametersCount)]];
+    [self getItemListWithType:ItemRefreshIndex withParameters:[self.parameterArray subarrayWithRange:NSMakeRange(0, self.parametersCount)]];
 }
 
 - (void)getItemListWithType:(NSUInteger)type withParameters:(NSArray *)parameters {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        _dataSourceIsLoading = YES;
+        self.dataSourceIsLoading = YES;
         ZTCAPIClient* api = [ZTCAPIClient sharedClient];
         [api getPath:[ZTCAPIClient getUrlWithType:[ZTCAPIClient getRequestType] withParameters:parameters] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
-            dispatch_async(updateQueue, ^{
+            dispatch_async(self.updateQueue, ^{
                 NSMutableDictionary *dict = [ZTCAPIClient dealWithZTStrangeJSON:JSON];
                 NSDictionary *pagerDict = [[dict objectForKey:@"data"] objectForKey:@"pager"];
                 if (pagerDict) {
-                    if ([self.parameterArray count] == (parametersCount+3)) {
-                        [self.parameterArray removeObjectsInRange:NSMakeRange(parametersCount, 3)];
+                    if ([self.parameterArray count] == (self.parametersCount+3)) {
+                        [self.parameterArray removeObjectsInRange:NSMakeRange(self.parametersCount, 3)];
                     }
                     [self.parameterArray addObject:[NSString stringWithFormat:@"recTotal=%u",[[pagerDict objectForKey:@"recTotal"] intValue]]];
                     [self.parameterArray addObject:[NSString stringWithFormat:@"recPerPage=%u",[[pagerDict objectForKey:@"recPerPage"] intValue]]];
                     [self.parameterArray addObject:[NSString stringWithFormat:@"pageID=%u",[[pagerDict objectForKey:@"pageID"] intValue]+1]];
                     if ([[pagerDict objectForKey:@"pageID"] intValue] >= [[pagerDict objectForKey:@"pageTotal"] intValue]) {
-                        _loadMoreAllLoaded = YES;
+                        self.loadMoreAllLoaded = YES;
                     } else
-                        _loadMoreAllLoaded = NO;
+                        self.loadMoreAllLoaded = NO;
                 }
                 //DLog(@"%@",dict);
                 switch (type) {
                     case ItemLoadIndex:{
-                        _itemArray = [[dict objectForKey:@"data"] objectForKey:itemsNameInJSON];
+                        self.itemArray = [[dict objectForKey:@"data"] objectForKey:self.itemsNameInJSON];
                         break;
                     }
                     case ItemRefreshIndex:{
-                        _itemArray = [[dict objectForKey:@"data"] objectForKey:itemsNameInJSON];
+                        self.itemArray = [[dict objectForKey:@"data"] objectForKey:self.itemsNameInJSON];
                         break;
                     }
                     case ItemAppendIndex:{
-                        [_itemArray addObjectsFromArray:[[dict objectForKey:@"data"] objectForKey:itemsNameInJSON]];
+                        [self.itemArray addObjectsFromArray:[[dict objectForKey:@"data"] objectForKey:self.itemsNameInJSON]];
                         break;
                     }
                     default:
@@ -201,13 +214,13 @@
                 }
                 dispatch_sync(dispatch_get_main_queue(), ^{
                     [self doneLoadMoreTableViewData];
-                    [_listViewDelegate.tableView reloadData];
+                    [self.listView.tableView reloadData];
                     if (type == ItemRefreshIndex) {
                         [self doneRefreshTableViewData];
                         [self resetLoadMore];
                     }
                 });
-                _dataSourceIsLoading = NO;
+                self.dataSourceIsLoading = NO;
             });
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -227,9 +240,9 @@
                         break;
                 }
                 [self doneLoadMoreTableViewData];
-                [ZTCNotice showErrorNoticeInView:_listViewDelegate.tableView title:NSLocalizedString(@"error", nil) message:error.localizedDescription];
+                [ZTCNotice showErrorNoticeInView:self.listView.tableView title:NSLocalizedString(@"error", nil) message:error.localizedDescription];
             });
-            _dataSourceIsLoading = NO;
+            self.dataSourceIsLoading = NO;
         }];
     });
 }
@@ -237,20 +250,20 @@
 - (void)doneRefreshTableViewData{
 	
 	//  model should call this when its done loading
-	_reloading = NO;
+	self.reloading = NO;
     
-	[_listViewDelegate.refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:_listViewDelegate.tableView];
+	[self.listView.refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.listView.tableView];
 }
 - (void)doneLoadMoreTableViewData {
 	
 	//  model should call this when its done loading
-	[_listViewDelegate.loadMoreFooterView pwLoadMoreTableDataSourceDidFinishedLoading];
+	[self.listView.loadMoreFooterView pwLoadMoreTableDataSourceDidFinishedLoading];
 	
 }
 
 - (void)resetLoadMore {
     //data source should call this when it can load more
-    [_listViewDelegate.loadMoreFooterView resetLoadMore];
+    [self.listView.loadMoreFooterView resetLoadMore];
 }
 
 #pragma mark - KVO
@@ -260,7 +273,8 @@
                         change:(NSDictionary *)change
                        context:(void *)context {
 //    DLog(@"observeValueForKeyPath");
-    if ([keyPath isEqual:@"listViewDelegate"]) {
+    if ([keyPath isEqual:@"listView"]) {
+        self.listView.title = NSLocalizedString(self.viewControllerTitle, nil);
         [self refreshTable];
     }
     /*
@@ -276,7 +290,7 @@
 #pragma mark - dealloc
 
 - (void)dealloc {
-    [self removeObserver:self forKeyPath:@"listViewDelegate" context:nil];
+    [self removeObserver:self forKeyPath:@"listView" context:nil];
 }
 
 @end

@@ -72,6 +72,8 @@
 							<string>name</string>
 							<key>itemsNameInJSON</key>
 							<string>tasks</string>
+							<key>title</key>
+							<string>title.my-task</string>
 						</dict>
 						<dict>
 							<key>name</key>
@@ -129,6 +131,8 @@
 							<string>title</string>
 							<key>itemsNameInJSON</key>
 							<string>bugs</string>
+							<key>title</key>
+							<string>title.my-bug</string>
 						</dict>
 					</array>
 				</dict>

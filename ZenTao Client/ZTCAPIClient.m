@@ -18,61 +18,39 @@
 #import "IIViewDeckController.h"
 #import "ZTCMenuViewController.h"
 
-#define TEST_MODE 0
-#define kHasKeychain          @"Keychain"
-#define kDemoAPIBaseURLString @"http://demo.zentao.net"
-#define kCookieURLString      @"demo.zentao.net";
 static BOOL urlChanged = NO;
 static NSUInteger requestType = ERRORIndex;
-static NSString * tmpUrl = nil;
+static NSString * baseUrl = nil;
 
-@implementation ZTCAPIClient {
-    
-}
+@implementation ZTCAPIClient
 
 #pragma mark -
 
 + (ZTCAPIClient *)sharedClient {
     static ZTCAPIClient *_sharedClient = nil;
-    if (TEST_MODE) {
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            _sharedClient = [[ZTCAPIClient alloc] initWithBaseURL:[NSURL URLWithString:kDemoAPIBaseURLString]];
-            [_sharedClient setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-                if (status == AFNetworkReachabilityStatusNotReachable) {
-                    // Not reachable
-                    [ZTCNotice showErrorNoticeInView:[((UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController]) visibleViewController].view title:NSLocalizedString(@"network not reachable title", nil) message:NSLocalizedString(@"network not reachable message", nil)];
-                } else {
-                    // Reachable
-                }
-            }];
-        });
-        return _sharedClient;
-    } else {
-        if (!tmpUrl) {
-            return nil;
-        }
-        if (urlChanged) {
-            NSURL *myURL;
-            if ([tmpUrl hasPrefix:@"http://"]) {
-                myURL = [NSURL URLWithString:tmpUrl];
-            } else {
-                myURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@",tmpUrl]];
-            }
-            //DLog(@"%@",myURL);
-            _sharedClient = [[ZTCAPIClient alloc] initWithBaseURL:myURL];
-            [_sharedClient setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-                if (status == AFNetworkReachabilityStatusNotReachable) {
-                    // Not reachable
-                    [ZTCNotice showErrorNoticeInView:[((UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController]) visibleViewController].view title:NSLocalizedString(@"network not reachable title", nil) message:NSLocalizedString(@"network not reachable message", nil)];
-                } else {
-                    // Reachable
-                }
-            }];
-            urlChanged = NO;
-        }
-        return _sharedClient;
+    if (!baseUrl) {
+        return nil;
     }
+    if (urlChanged) {
+        NSURL *myURL;
+        if ([baseUrl hasPrefix:@"http://"]) {
+            myURL = [NSURL URLWithString:baseUrl];
+        } else {
+            myURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@",baseUrl]];
+        }
+        //DLog(@"%@",myURL);
+        _sharedClient = [[ZTCAPIClient alloc] initWithBaseURL:myURL];
+        [_sharedClient setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+            if (status == AFNetworkReachabilityStatusNotReachable) {
+                // Not reachable
+                [ZTCNotice showErrorNoticeInView:[((UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController]) visibleViewController].view title:NSLocalizedString(@"network not reachable title", nil) message:NSLocalizedString(@"network not reachable message", nil)];
+            } else {
+                // Reachable
+            }
+        }];
+        urlChanged = NO;
+    }
+    return _sharedClient;
 }
 
 - (id)initWithBaseURL:(NSURL *)url {
@@ -106,7 +84,6 @@ static NSString * tmpUrl = nil;
             [request setURL:url];
         }
     }
-    //DLog(@"%@",url);
     NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
     
     if(error) {
@@ -275,9 +252,9 @@ static NSString * tmpUrl = nil;
     //DLog(@"login last code %u",loginSuccess);
     if (loginSuccess) {
         requestType = tmpRequestType;
+        baseUrl = url;
+        urlChanged = YES;
     }
-    tmpUrl = url;
-    urlChanged = YES;
     return loginSuccess;
 }
 

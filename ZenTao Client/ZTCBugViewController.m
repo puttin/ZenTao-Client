@@ -78,25 +78,22 @@ enum {
 } MiscSectionRowIndicies;
 
 @interface ZTCBugViewController ()
-
+@property (assign, nonatomic) NSUInteger bugID;
+@property (strong, nonatomic) NSDictionary *bugDict;
+@property (strong, nonatomic) NSDictionary *productsDict;
+@property (strong, nonatomic) NSDictionary *usersDict;
+@property (strong, nonatomic) NSDictionary *cellKeyDict;
+@property (strong, nonatomic) NSDictionary *cellValueDict;
 @end
 
-@implementation ZTCBugViewController {
-    @private
-    NSUInteger bugID;
-    NSDictionary *bugDict;
-    NSDictionary *productsDict;
-    NSDictionary *usersDict;
-    NSDictionary *cellKeyDict;
-    NSDictionary *cellValueDict;
-}
+@implementation ZTCBugViewController
 
 - (id)initWithID:(id) ID
 {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         // Custom initialization
-        bugID = [ID intValue];
+        _bugID = [ID intValue];
     }
     return self;
 }
@@ -104,14 +101,14 @@ enum {
 - (void)viewDidAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     ZTCAPIClient* api = [ZTCAPIClient sharedClient];
-    [api getPath:[ZTCAPIClient getUrlWithType:[ZTCAPIClient getRequestType] withParameters:@[@"m=bug",@"f=view",[NSString stringWithFormat:@"id=%u",bugID]]] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
+    [api getPath:[ZTCAPIClient getUrlWithType:[ZTCAPIClient getRequestType] withParameters:@[@"m=bug",@"f=view",[NSString stringWithFormat:@"id=%u",self.bugID]]] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSMutableDictionary *dict = [ZTCAPIClient dealWithZTStrangeJSON:JSON];
 //            DLog(@"%@",dict);
-            productsDict = [[dict objectForKey:@"data"] objectForKey:@"products"];
-            bugDict = [[dict objectForKey:@"data"] objectForKey:@"bug"];
-            usersDict = [[dict objectForKey:@"data"] objectForKey:@"users"];
-            cellKeyDict = [NSDictionary dictionaryWithObjectsAndKeys:
+            self.productsDict = [[dict objectForKey:@"data"] objectForKey:@"products"];
+            self.bugDict = [[dict objectForKey:@"data"] objectForKey:@"bug"];
+            self.usersDict = [[dict objectForKey:@"data"] objectForKey:@"users"];
+            self.cellKeyDict = [NSDictionary dictionaryWithObjectsAndKeys:
                            //BugBasicSectionIndex
                            NSLocalizedString(@"bug product", nil),[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugProductRowIndex],
                            NSLocalizedString(@"bug module", nil),[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugModuleRowIndex],
@@ -147,46 +144,46 @@ enum {
                            NSLocalizedString(@"bug toStory", nil),[NSString stringWithFormat:@"%u:%u",BugMiscSectionIndex,BugToStoryRowIndex],
                            NSLocalizedString(@"bug toTask", nil),[NSString stringWithFormat:@"%u:%u",BugMiscSectionIndex,BugToTaskRowIndex],
                            nil];
-            cellValueDict = [NSDictionary dictionaryWithObjectsAndKeys:
+            self.cellValueDict = [NSDictionary dictionaryWithObjectsAndKeys:
                              //BugBasicSectionIndex
-                             [productsDict objectForKey:[bugDict objectForKey:@"product"]],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugProductRowIndex],
-                             [bugDict objectForKey:@"module"],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugModuleRowIndex],
-                             [[NSBundle mainBundle] localizedStringForKey:([NSString stringWithFormat:@"bug type %@",[bugDict objectForKey:@"type"]]) value:@"" table:nil],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugTypeRowIndex],
-                             [[NSBundle mainBundle] localizedStringForKey:([NSString stringWithFormat:@"bug severity %@",[bugDict objectForKey:@"severity"]]) value:@"" table:nil],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugSeverityRowIndex],
-                             [[NSBundle mainBundle] localizedStringForKey:([NSString stringWithFormat:@"bug pri %@",[bugDict objectForKey:@"pri"]]) value:@"" table:nil],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugPriorityRowIndex],
-                             [[NSBundle mainBundle] localizedStringForKey:([NSString stringWithFormat:@"bug status %@",[bugDict objectForKey:@"status"]]) value:@"" table:nil],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugStatusRowIndex],
-                             [bugDict objectForKey:@"activatedCount"],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugActivatedCountRowIndex],
-                             [[NSBundle mainBundle] localizedStringForKey:([NSString stringWithFormat:@"bug confirmed %@",[bugDict objectForKey:@"confirmed"]]) value:@"" table:nil],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugConfirmedRowIndex],
-                             [NSString stringWithFormat:@"%@ %@ %@",[usersDict objectForKey:[bugDict objectForKey:@"assignedTo"]],NSLocalizedString(@"task at", nil),[bugDict objectForKey:@"assignedDate"]],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugAssignedToRowIndex],
-                             [[NSBundle mainBundle] localizedStringForKey:([NSString stringWithFormat:@"bug os %@",[bugDict objectForKey:@"os"]]) value:@"" table:nil],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugOSRowIndex],
-                             [[NSBundle mainBundle] localizedStringForKey:([NSString stringWithFormat:@"bug browser %@",[bugDict objectForKey:@"browser"]]) value:@"" table:nil],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugBrowserRowIndex],
-                             [bugDict objectForKey:@"keywords"],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugKeywordsRowIndex],
+                             [self.productsDict objectForKey:[self.bugDict objectForKey:@"product"]],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugProductRowIndex],
+                             [self.bugDict objectForKey:@"module"],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugModuleRowIndex],
+                             [[NSBundle mainBundle] localizedStringForKey:([NSString stringWithFormat:@"bug type %@",[self.bugDict objectForKey:@"type"]]) value:@"" table:nil],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugTypeRowIndex],
+                             [[NSBundle mainBundle] localizedStringForKey:([NSString stringWithFormat:@"bug severity %@",[self.bugDict objectForKey:@"severity"]]) value:@"" table:nil],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugSeverityRowIndex],
+                             [[NSBundle mainBundle] localizedStringForKey:([NSString stringWithFormat:@"bug pri %@",[self.bugDict objectForKey:@"pri"]]) value:@"" table:nil],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugPriorityRowIndex],
+                             [[NSBundle mainBundle] localizedStringForKey:([NSString stringWithFormat:@"bug status %@",[self.bugDict objectForKey:@"status"]]) value:@"" table:nil],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugStatusRowIndex],
+                             [self.bugDict objectForKey:@"activatedCount"],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugActivatedCountRowIndex],
+                             [[NSBundle mainBundle] localizedStringForKey:([NSString stringWithFormat:@"bug confirmed %@",[self.bugDict objectForKey:@"confirmed"]]) value:@"" table:nil],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugConfirmedRowIndex],
+                             [NSString stringWithFormat:@"%@ %@ %@",[self.usersDict objectForKey:[self.bugDict objectForKey:@"assignedTo"]],NSLocalizedString(@"task at", nil),[self.bugDict objectForKey:@"assignedDate"]],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugAssignedToRowIndex],
+                             [[NSBundle mainBundle] localizedStringForKey:([NSString stringWithFormat:@"bug os %@",[self.bugDict objectForKey:@"os"]]) value:@"" table:nil],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugOSRowIndex],
+                             [[NSBundle mainBundle] localizedStringForKey:([NSString stringWithFormat:@"bug browser %@",[self.bugDict objectForKey:@"browser"]]) value:@"" table:nil],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugBrowserRowIndex],
+                             [self.bugDict objectForKey:@"keywords"],[NSString stringWithFormat:@"%u:%u",BugBasicSectionIndex,BugKeywordsRowIndex],
                              //BugCaseSectionIndex
-                             [bugDict objectForKey:@"caseTitle"]?[bugDict objectForKey:@"caseTitle"]:@"",[NSString stringWithFormat:@"%u:%u",BugCaseSectionIndex,BugFromCaseRowIndex],
-                             ([[bugDict objectForKey:@"toCases"] count] == 1 ) ? [[bugDict objectForKey:@"toCases"] objectForKey: [[[bugDict objectForKey:@"toCases"] allKeys] lastObject] ] : ( ([[bugDict objectForKey:@"toCases"] count] == 0 ) ? @"" : [NSString stringWithFormat:@"%u %@",[[bugDict objectForKey:@"toCases"] count], [[NSBundle mainBundle] localizedStringForKey:@"bug toCase multi" value:@"" table:nil] ] ),[NSString stringWithFormat:@"%u:%u",BugCaseSectionIndex,BugToCaseRowIndex],
+                             [self.bugDict objectForKey:@"caseTitle"]?[self.bugDict objectForKey:@"caseTitle"]:@"",[NSString stringWithFormat:@"%u:%u",BugCaseSectionIndex,BugFromCaseRowIndex],
+                             ([[self.bugDict objectForKey:@"toCases"] count] == 1 ) ? [[self.bugDict objectForKey:@"toCases"] objectForKey: [[[self.bugDict objectForKey:@"toCases"] allKeys] lastObject] ] : ( ([[self.bugDict objectForKey:@"toCases"] count] == 0 ) ? @"" : [NSString stringWithFormat:@"%u %@",[[self.bugDict objectForKey:@"toCases"] count], [[NSBundle mainBundle] localizedStringForKey:@"bug toCase multi" value:@"" table:nil] ] ),[NSString stringWithFormat:@"%u:%u",BugCaseSectionIndex,BugToCaseRowIndex],
                              //BugLifetimeSectionIndex
-                             [[bugDict objectForKey:@"openedDate"] isEqualToString:@""]?@"":[NSString stringWithFormat:@"%@ %@ %@",[usersDict objectForKey:[bugDict objectForKey:@"openedBy"]],NSLocalizedString(@"bug at", nil),[bugDict objectForKey:@"openedDate"]],[NSString stringWithFormat:@"%u:%u",BugLifetimeSectionIndex,BugOpenedByRowIndex],
-                             [bugDict objectForKey:@"openedBuild"],[NSString stringWithFormat:@"%u:%u",BugLifetimeSectionIndex,BugOpenedBuildRowIndex],
-                             [[bugDict objectForKey:@"resolvedDate"] isEqualToString:@""]?@"":[NSString stringWithFormat:@"%@ %@ %@",[usersDict objectForKey:[bugDict objectForKey:@"resolvedBy"]],NSLocalizedString(@"bug at", nil),[bugDict objectForKey:@"resolvedDate"]],[NSString stringWithFormat:@"%u:%u",BugLifetimeSectionIndex,BugResolvedRowIndex],
-                             [bugDict objectForKey:@"resolvedBuild"],[NSString stringWithFormat:@"%u:%u",BugLifetimeSectionIndex,BugResolvedBuildRowIndex],
-                             [NSString stringWithFormat:@"%@%@",[[NSBundle mainBundle] localizedStringForKey:([NSString stringWithFormat:@"bug resolution %@",[bugDict objectForKey:@"resolution"]]) value:@"" table:nil],[bugDict objectForKey:@"duplicateBugTitle"]?[NSString stringWithFormat:@" #%@ %@",[bugDict objectForKey:@"duplicateBug"],[bugDict objectForKey:@"duplicateBugTitle"]]:@""],[NSString stringWithFormat:@"%u:%u",BugLifetimeSectionIndex,BugResolutionRowIndex],
-                             [[bugDict objectForKey:@"closedDate"] isEqualToString:@""]?@"":[NSString stringWithFormat:@"%@ %@ %@",[usersDict objectForKey:[bugDict objectForKey:@"closedBy"]],NSLocalizedString(@"bug at", nil),[bugDict objectForKey:@"closedDate"]],[NSString stringWithFormat:@"%u:%u",BugLifetimeSectionIndex,BugClosedByRowIndex],
-                             [[bugDict objectForKey:@"lastEditedDate"] isEqualToString:@""]?@"":[NSString stringWithFormat:@"%@ %@ %@",[usersDict objectForKey:[bugDict objectForKey:@"lastEditedBy"]],NSLocalizedString(@"bug at", nil),[bugDict objectForKey:@"lastEditedDate"]],[NSString stringWithFormat:@"%u:%u",BugLifetimeSectionIndex,BugLastEditedByRowIndex],
+                             [[self.bugDict objectForKey:@"openedDate"] isEqualToString:@""]?@"":[NSString stringWithFormat:@"%@ %@ %@",[self.usersDict objectForKey:[self.bugDict objectForKey:@"openedBy"]],NSLocalizedString(@"bug at", nil),[self.bugDict objectForKey:@"openedDate"]],[NSString stringWithFormat:@"%u:%u",BugLifetimeSectionIndex,BugOpenedByRowIndex],
+                             [self.bugDict objectForKey:@"openedBuild"],[NSString stringWithFormat:@"%u:%u",BugLifetimeSectionIndex,BugOpenedBuildRowIndex],
+                             [[self.bugDict objectForKey:@"resolvedDate"] isEqualToString:@""]?@"":[NSString stringWithFormat:@"%@ %@ %@",[self.usersDict objectForKey:[self.bugDict objectForKey:@"resolvedBy"]],NSLocalizedString(@"bug at", nil),[self.bugDict objectForKey:@"resolvedDate"]],[NSString stringWithFormat:@"%u:%u",BugLifetimeSectionIndex,BugResolvedRowIndex],
+                             [self.bugDict objectForKey:@"resolvedBuild"],[NSString stringWithFormat:@"%u:%u",BugLifetimeSectionIndex,BugResolvedBuildRowIndex],
+                             [NSString stringWithFormat:@"%@%@",[[NSBundle mainBundle] localizedStringForKey:([NSString stringWithFormat:@"bug resolution %@",[self.bugDict objectForKey:@"resolution"]]) value:@"" table:nil],[self.bugDict objectForKey:@"duplicateBugTitle"]?[NSString stringWithFormat:@" #%@ %@",[self.bugDict objectForKey:@"duplicateBug"],[self.bugDict objectForKey:@"duplicateBugTitle"]]:@""],[NSString stringWithFormat:@"%u:%u",BugLifetimeSectionIndex,BugResolutionRowIndex],
+                             [[self.bugDict objectForKey:@"closedDate"] isEqualToString:@""]?@"":[NSString stringWithFormat:@"%@ %@ %@",[self.usersDict objectForKey:[self.bugDict objectForKey:@"closedBy"]],NSLocalizedString(@"bug at", nil),[self.bugDict objectForKey:@"closedDate"]],[NSString stringWithFormat:@"%u:%u",BugLifetimeSectionIndex,BugClosedByRowIndex],
+                             [[self.bugDict objectForKey:@"lastEditedDate"] isEqualToString:@""]?@"":[NSString stringWithFormat:@"%@ %@ %@",[self.usersDict objectForKey:[self.bugDict objectForKey:@"lastEditedBy"]],NSLocalizedString(@"bug at", nil),[self.bugDict objectForKey:@"lastEditedDate"]],[NSString stringWithFormat:@"%u:%u",BugLifetimeSectionIndex,BugLastEditedByRowIndex],
                              //BugPSTSectionIndex
-                             [[bugDict objectForKey:@"project"] intValue]?[bugDict objectForKey:@"projectName"]:@"",[NSString stringWithFormat:@"%u:%u",BugPSTSectionIndex,BugProjectRowIndex],
-                             [[bugDict objectForKey:@"story"] intValue]?[bugDict objectForKey:@"storyTitle"]:@"",[NSString stringWithFormat:@"%u:%u",BugPSTSectionIndex,BugStoryRowIndex],
-                             [[bugDict objectForKey:@"task"] intValue]?[bugDict objectForKey:@"taskName"]:@"",[NSString stringWithFormat:@"%u:%u",BugPSTSectionIndex,BugTaskRowIndex],
+                             [[self.bugDict objectForKey:@"project"] intValue]?[self.bugDict objectForKey:@"projectName"]:@"",[NSString stringWithFormat:@"%u:%u",BugPSTSectionIndex,BugProjectRowIndex],
+                             [[self.bugDict objectForKey:@"story"] intValue]?[self.bugDict objectForKey:@"storyTitle"]:@"",[NSString stringWithFormat:@"%u:%u",BugPSTSectionIndex,BugStoryRowIndex],
+                             [[self.bugDict objectForKey:@"task"] intValue]?[self.bugDict objectForKey:@"taskName"]:@"",[NSString stringWithFormat:@"%u:%u",BugPSTSectionIndex,BugTaskRowIndex],
                              //BugMiscSectionIndex
-                             bugDict[@"mailto"],[NSString stringWithFormat:@"%u:%u",BugMiscSectionIndex,BugMailtoRowIndex],
-                             ([[bugDict objectForKey:@"linkBugTitles"] count] == 1 ) ? [[bugDict objectForKey:@"linkBugTitles"] objectForKey: [[[bugDict objectForKey:@"linkBugTitles"] allKeys] lastObject] ] : ( ([[bugDict objectForKey:@"linkBugTitles"] count] == 0 ) ? @"" : [NSString stringWithFormat:@"%u %@",[[bugDict objectForKey:@"linkBugTitles"] count], [[NSBundle mainBundle] localizedStringForKey:@"bug linkBug multi" value:@"" table:nil] ] ),[NSString stringWithFormat:@"%u:%u",BugMiscSectionIndex,BugLinkedBugRowIndex],
-                             [bugDict objectForKey:@"caseTitle"],[NSString stringWithFormat:@"%u:%u",BugMiscSectionIndex,BugCaseRowIndex],
-                             [bugDict objectForKey:@"toStoryTitle"],[NSString stringWithFormat:@"%u:%u",BugMiscSectionIndex,BugToStoryRowIndex],
-                             [bugDict objectForKey:@"toTaskTitle"],[NSString stringWithFormat:@"%u:%u",BugMiscSectionIndex,BugToTaskRowIndex],
+                             self.bugDict[@"mailto"],[NSString stringWithFormat:@"%u:%u",BugMiscSectionIndex,BugMailtoRowIndex],
+                             ([[self.bugDict objectForKey:@"linkBugTitles"] count] == 1 ) ? [[self.bugDict objectForKey:@"linkBugTitles"] objectForKey: [[[self.bugDict objectForKey:@"linkBugTitles"] allKeys] lastObject] ] : ( ([[self.bugDict objectForKey:@"linkBugTitles"] count] == 0 ) ? @"" : [NSString stringWithFormat:@"%u %@",[[self.bugDict objectForKey:@"linkBugTitles"] count], [[NSBundle mainBundle] localizedStringForKey:@"bug linkBug multi" value:@"" table:nil] ] ),[NSString stringWithFormat:@"%u:%u",BugMiscSectionIndex,BugLinkedBugRowIndex],
+                             [self.bugDict objectForKey:@"caseTitle"],[NSString stringWithFormat:@"%u:%u",BugMiscSectionIndex,BugCaseRowIndex],
+                             [self.bugDict objectForKey:@"toStoryTitle"],[NSString stringWithFormat:@"%u:%u",BugMiscSectionIndex,BugToStoryRowIndex],
+                             [self.bugDict objectForKey:@"toTaskTitle"],[NSString stringWithFormat:@"%u:%u",BugMiscSectionIndex,BugToTaskRowIndex],
                              nil];
 //            DLog(@"%@",cellValueDict);
             dispatch_sync(dispatch_get_main_queue(), ^{
                 [self.tableView reloadData];
-                self.title = [NSString stringWithFormat:@"%@ #%u",NSLocalizedString(@"bug", nil),bugID];
+                self.title = [NSString stringWithFormat:@"%@ #%u",NSLocalizedString(@"bug", nil),self.bugID];
             });
         });
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -244,7 +241,7 @@ enum {
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    if (!bugDict) {
+    if (!self.bugDict) {
         return 0;
     }
     return SectionsCount;
@@ -253,7 +250,7 @@ enum {
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    if (bugDict) {
+    if (self.bugDict) {
         switch (section) {
             case BugSectionIndex:
                 return InfoRowsCount;
@@ -287,7 +284,7 @@ enum {
     switch (section)
     {
         case BugSectionIndex:
-            sectionName = [bugDict objectForKey:@"title"];
+            sectionName = [self.bugDict objectForKey:@"title"];
             break;
         case BugBasicSectionIndex:
             sectionName = NSLocalizedString(@"bug basic info", nil);
@@ -318,7 +315,7 @@ enum {
         case BugSectionIndex:
             switch (indexPath.row) {
                 case BugStepsRowIndex:{
-                    NSString *desc = [bugDict objectForKey:@"steps"];
+                    NSString *desc = [self.bugDict objectForKey:@"steps"];
                     CGSize constraint = CGSizeMake(tableView.frame.size.width - (CELL_CONTENT_MARGIN * 2), 20000.0f);
                     
                     CGSize descSize = [desc sizeWithFont:[UIFont systemFontOfSize:SMALL_FONT_SIZE] constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
@@ -351,7 +348,7 @@ enum {
                         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"BugStepsCell"];
                     }
                     
-                    NSString *desc = [bugDict objectForKey:@"steps"];
+                    NSString *desc = [self.bugDict objectForKey:@"steps"];
                     
                     [cell.textLabel setLineBreakMode:UILineBreakModeWordWrap];
                     [cell.textLabel setNumberOfLines:0];
@@ -377,8 +374,8 @@ enum {
             if (!cell) {
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"BugCell"];
             }
-            cell.textLabel.text = [cellKeyDict objectForKey:[NSString stringWithFormat:@"%u:%u",indexPath.section,indexPath.row]];
-            cell.detailTextLabel.text = [cellValueDict objectForKey:[NSString stringWithFormat:@"%u:%u",indexPath.section,indexPath.row]];
+            cell.textLabel.text = [self.cellKeyDict objectForKey:[NSString stringWithFormat:@"%u:%u",indexPath.section,indexPath.row]];
+            cell.detailTextLabel.text = [self.cellValueDict objectForKey:[NSString stringWithFormat:@"%u:%u",indexPath.section,indexPath.row]];
             cell.textLabel.adjustsFontSizeToFitWidth = YES;
             cell.detailTextLabel.adjustsFontSizeToFitWidth = YES;
         }

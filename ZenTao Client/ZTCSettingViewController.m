@@ -18,7 +18,7 @@
 #import "IIViewDeckController.h"
 #import "ZTCAPIClient.h"
 
-@interface ZTCSettingViewController () <IIViewDeckControllerDelegate>
+@interface ZTCSettingViewController () <IIViewDeckControllerDelegate,IASKSettingsDelegate>
 
 @end
 

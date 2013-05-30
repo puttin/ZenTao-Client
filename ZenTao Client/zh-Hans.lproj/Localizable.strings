@@ -210,6 +210,10 @@
 //setting
 "setting" = "设置";
 
+//navigation title
+"title.my-bug" = "我的Bug";
+"title.my-task" = "我的任务";
+
 //about
 "About" = "关于";
 "About Blank" = "";
