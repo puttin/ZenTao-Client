@@ -38,7 +38,7 @@ enum {
     if (self) {
         // Custom initialization
         [self addObserver:self forKeyPath:@"listView" options:NSKeyValueObservingOptionNew context:nil];
-        self.updateQueue = dispatch_queue_create("com.puttinwong.ZenTao-Client.itemUpdateQueue", NULL);
+        _updateQueue = dispatch_queue_create("com.puttinwong.ZenTao-Client.itemUpdateQueue", NULL);
         [self initParameterArray];
     }
     return self;
@@ -291,6 +291,7 @@ enum {
 
 - (void)dealloc {
     [self removeObserver:self forKeyPath:@"listView" context:nil];
+    dispatch_release(_updateQueue);
 }
 
 @end
