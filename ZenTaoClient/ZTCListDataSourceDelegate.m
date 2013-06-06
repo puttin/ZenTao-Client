@@ -11,11 +11,11 @@
 #import "ZTCNotice.h"
 #import "ZTCListViewController.h"
 
-enum {
-    ItemLoadIndex,
-    ItemRefreshIndex,
-    ItemAppendIndex,
-} ItemUpdateIndicies;
+typedef NS_ENUM(NSUInteger, ItemUpdateMode) {
+    ItemUpdateLoadMode,
+    ItemUpdateRefreshMode,
+    ItemUpdateAppendMode,
+};
 
 @interface ZTCListDataSourceDelegate ()
 @property(nonatomic,strong) NSMutableArray *itemArray;
@@ -57,7 +57,7 @@ enum {
     _itemViewController = parameterDict[@"itemViewController"];
 //    NSLog(@"%@",parameterDict[@"parameters"]);
     [(NSArray*)parameterDict[@"parameters"] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        if ([[(NSDictionary*)obj objectForKey:@"option"] boolValue]) {
+        if ([((NSDictionary*)obj)[@"option"] boolValue]) {
             parameterArray[idx] = [NSString stringWithFormat:@"%@=%@",obj[@"keyword"],obj[@"option.default"]];
         } else {
             parameterArray[idx] = [NSString stringWithFormat:@"%@=%@",obj[@"keyword"],obj[@"value"]];
@@ -90,12 +90,12 @@ enum {
 {
     // Navigation logic may go here. Create and push another view controller.
     // Pass the selected object to the new view controller.
-    UIViewController *detailViewController = nil;
+    UIViewController *detailViewController;
     Class c = NSClassFromString(self.itemViewController);
     SEL s = NSSelectorFromString(@"initWithID:");
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-    detailViewController = [[c alloc] performSelector:s withObject:[[self.itemArray objectAtIndex:indexPath.row] objectForKey:@"id"]];
+    detailViewController = [[c alloc] performSelector:s withObject:(self.itemArray)[indexPath.row][@"id"]];
 #pragma clang diagnostic pop
 
     if (detailViewController) {
@@ -125,7 +125,7 @@ enum {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     // Configure the cell...
-    cell.textLabel.text = [[self.itemArray objectAtIndex:indexPath.row] objectForKey:self.itemName];
+    cell.textLabel.text = (self.itemArray)[indexPath.row][self.itemName];
     //cell.textLabel.font= [UIFont fontWithName:@"STHeitiSC-Medium" size:[UIFont systemFontSize]];
     
     return cell;
@@ -157,7 +157,7 @@ enum {
 #pragma mark PWLoadMoreTableFooterDelegate Methods
 
 - (void)pwLoadMore {
-    [self getItemListWithType:ItemAppendIndex withParameters:self.parameterArray];
+    [self getItemListWithType:ItemUpdateAppendMode withParameters:self.parameterArray];
 }
 
 
@@ -172,41 +172,41 @@ enum {
 #pragma mark Data Source Loading / Reloading Methods
 
 - (void)refreshTable {
-    [self getItemListWithType:ItemRefreshIndex withParameters:[self.parameterArray subarrayWithRange:NSMakeRange(0, self.parametersCount)]];
+    [self getItemListWithType:ItemUpdateRefreshMode withParameters:[self.parameterArray subarrayWithRange:NSMakeRange(0, self.parametersCount)]];
 }
 
-- (void)getItemListWithType:(NSUInteger)type withParameters:(NSArray *)parameters {
+- (void)getItemListWithType:(ItemUpdateMode)type withParameters:(NSArray *)parameters {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         self.dataSourceIsLoading = YES;
         ZTCAPIClient* api = [ZTCAPIClient sharedClient];
         [api getPath:[ZTCAPIClient getUrlWithType:[ZTCAPIClient getRequestType] withParameters:parameters] parameters:nil success:^(AFHTTPRequestOperation *operation, id JSON) {
             dispatch_async(self.updateQueue, ^{
                 NSMutableDictionary *dict = [ZTCAPIClient dealWithZTStrangeJSON:JSON];
-                NSDictionary *pagerDict = [[dict objectForKey:@"data"] objectForKey:@"pager"];
+                NSDictionary *pagerDict = dict[@"data"][@"pager"];
                 if (pagerDict) {
                     if ([self.parameterArray count] == (self.parametersCount+3)) {
                         [self.parameterArray removeObjectsInRange:NSMakeRange(self.parametersCount, 3)];
                     }
-                    [self.parameterArray addObject:[NSString stringWithFormat:@"recTotal=%u",[[pagerDict objectForKey:@"recTotal"] intValue]]];
-                    [self.parameterArray addObject:[NSString stringWithFormat:@"recPerPage=%u",[[pagerDict objectForKey:@"recPerPage"] intValue]]];
-                    [self.parameterArray addObject:[NSString stringWithFormat:@"pageID=%u",[[pagerDict objectForKey:@"pageID"] intValue]+1]];
-                    if ([[pagerDict objectForKey:@"pageID"] intValue] >= [[pagerDict objectForKey:@"pageTotal"] intValue]) {
+                    [self.parameterArray addObject:[NSString stringWithFormat:@"recTotal=%u",[pagerDict[@"recTotal"] intValue]]];
+                    [self.parameterArray addObject:[NSString stringWithFormat:@"recPerPage=%u",[pagerDict[@"recPerPage"] intValue]]];
+                    [self.parameterArray addObject:[NSString stringWithFormat:@"pageID=%u",[pagerDict[@"pageID"] intValue]+1]];
+                    if ([pagerDict[@"pageID"] intValue] >= [pagerDict[@"pageTotal"] intValue]) {
                         self.loadMoreAllLoaded = YES;
                     } else
                         self.loadMoreAllLoaded = NO;
                 }
                 //DLog(@"%@",dict);
                 switch (type) {
-                    case ItemLoadIndex:{
-                        self.itemArray = [[dict objectForKey:@"data"] objectForKey:self.itemsNameInJSON];
+                    case ItemUpdateLoadMode:{
+                        self.itemArray = dict[@"data"][self.itemsNameInJSON];
                         break;
                     }
-                    case ItemRefreshIndex:{
-                        self.itemArray = [[dict objectForKey:@"data"] objectForKey:self.itemsNameInJSON];
+                    case ItemUpdateRefreshMode:{
+                        self.itemArray = dict[@"data"][self.itemsNameInJSON];
                         break;
                     }
-                    case ItemAppendIndex:{
-                        [self.itemArray addObjectsFromArray:[[dict objectForKey:@"data"] objectForKey:self.itemsNameInJSON]];
+                    case ItemUpdateAppendMode:{
+                        [self.itemArray addObjectsFromArray:dict[@"data"][self.itemsNameInJSON]];
                         break;
                     }
                     default:
@@ -215,7 +215,7 @@ enum {
                 dispatch_sync(dispatch_get_main_queue(), ^{
                     [self doneLoadMoreTableViewData];
                     [self.listView.tableView reloadData];
-                    if (type == ItemRefreshIndex) {
+                    if (type == ItemUpdateRefreshMode) {
                         [self doneRefreshTableViewData];
                         [self resetLoadMore];
                     }
@@ -226,14 +226,14 @@ enum {
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSLog(@"ERROR: %@",error);
                 switch (type) {
-                    case ItemLoadIndex:{
+                    case ItemUpdateLoadMode:{
                         break;
                     }
-                    case ItemRefreshIndex:{
+                    case ItemUpdateRefreshMode:{
                         [self doneRefreshTableViewData];
                         break;
                     }
-                    case ItemAppendIndex:{
+                    case ItemUpdateAppendMode:{
                         break;
                     }
                     default:

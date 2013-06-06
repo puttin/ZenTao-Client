@@ -40,7 +40,7 @@
     self.dataSourceDelegate = [[ZTCListDataSourceDelegate alloc] init];
     
     //refreshHeaderView init
-    if (self.refreshHeaderView == nil) {
+    if (!self.refreshHeaderView) {
 		
 		EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, self.view.frame.size.width, self.tableView.bounds.size.height)];
 		view.delegate = self.dataSourceDelegate;
@@ -53,7 +53,7 @@
 	[self.refreshHeaderView refreshLastUpdatedDate];
     
     //loadMoreFooterView init
-    if (self.loadMoreFooterView == nil) {
+    if (!self.loadMoreFooterView) {
 		
 		PWLoadMoreTableFooterView *view = [[PWLoadMoreTableFooterView alloc] init];
 		view.delegate = self.dataSourceDelegate;

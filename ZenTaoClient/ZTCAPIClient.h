@@ -13,24 +13,25 @@
 #define kZTCKeychainAccount  @"ZTCAccount"
 #define kZTCKeychainPassword @"ZTCPassword"
 #define kZTCKeychainUrl      @"ZTCUrl"
-enum {
-	GETIndex = 0,
-    PATHINFOIndex = 1,
-    ERRORIndex = 100,
-} RequestTypeIndicies;
+
+typedef NS_ENUM(NSUInteger, RequestType) {
+	RequestTypeGET = 0,
+    RequestTypePATHINFO = 1,
+    RequestTypeERROR = 100,
+};
 
 @interface ZTCAPIClient : AFHTTPClient
 
 + (ZTCAPIClient *)sharedClient;
 
 + (void) registerUserInfo;
-+ (NSUInteger) getRequestType;
++ (RequestType) getRequestType;
 + (BOOL) loginWithAccount:(NSString *)account Password:(NSString *)password BaseURL:(NSString *)url;
 + (BOOL) logout;
 + (void) showMainView;
 + (UIView*)showLoginView:(BOOL)animated;
 
-+ (NSString*) getUrlWithType:(NSUInteger)type withParameters:(NSArray *)parameters;
++ (NSString*) getUrlWithType:(RequestType)type withParameters:(NSArray *)parameters;
 
 + (NSMutableDictionary *) dealWithZTStrangeJSON:(id)JSON;
 @end

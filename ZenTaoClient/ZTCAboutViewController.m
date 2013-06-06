@@ -85,7 +85,7 @@
         MFMailComposeViewController *mailComposer = [[MFMailComposeViewController alloc] init];
         mailComposer.mailComposeDelegate = self;
         [mailComposer setSubject:[NSString stringWithFormat:@"%@ - %@ - #feedback",NSLocalizedString(@"About Feedback Mail Title", "About Feedback Mail Title"),[OpenUDID value]]];
-        [mailComposer setToRecipients:[NSArray arrayWithObject:@"zentao.client@gmail.com"]];
+        [mailComposer setToRecipients:@[@"zentao.client@gmail.com"]];
 //        // Attach log file
 //        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
 //                                                             NSUserDomainMask, YES);

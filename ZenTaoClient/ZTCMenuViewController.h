@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-enum {
+typedef NS_ENUM(NSUInteger, MenuType) {
     MenuTypeMainMenu = 0,
     MenuTypeSubMenu,
-} MenuType;
+};
 
 @interface ZTCMenuViewController : UITableViewController
-- (id)initWithType:(NSUInteger)type;
+- (id)initWithType:(MenuType)type;
 @end

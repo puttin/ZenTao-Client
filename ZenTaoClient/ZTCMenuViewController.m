@@ -10,7 +10,7 @@
 #import "IIViewDeckController.h"
 
 @interface ZTCMenuViewController ()
-@property (assign, nonatomic) NSUInteger menuType;
+@property (assign, nonatomic) MenuType menuType;
 @property (strong, nonatomic) NSArray *menuItems;
 @end
 
@@ -21,7 +21,7 @@
     return nil;
 }
 
-- (id)initWithType:(NSUInteger)type
+- (id)initWithType:(MenuType)type
 {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {

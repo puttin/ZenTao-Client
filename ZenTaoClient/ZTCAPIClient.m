@@ -19,15 +19,15 @@
 #import "ZTCMenuViewController.h"
 
 static BOOL urlChanged = NO;
-static NSUInteger requestType = ERRORIndex;
-static NSString * baseUrl = nil;
+static RequestType requestType = RequestTypeERROR;
+static NSString * baseUrl;
 
 @implementation ZTCAPIClient
 
 #pragma mark -
 
 + (ZTCAPIClient *)sharedClient {
-    static ZTCAPIClient *_sharedClient = nil;
+    static ZTCAPIClient *_sharedClient;
     if (!baseUrl) {
         return nil;
     }
@@ -73,8 +73,8 @@ static NSString * baseUrl = nil;
        successCallback:(void (^)(id jsonResponse)) successCallback
          errorCallback:(void (^)(NSError * error, NSString *errorMsg)) errorCallback {
     
-    NSURLResponse *response = nil;
-    NSError *error = nil;
+    NSURLResponse *response;
+    NSError *error;
     NSURL *url = [NSURL URLWithString:urlStr];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:method];
@@ -93,13 +93,13 @@ static NSString * baseUrl = nil;
     }
 }
 
-+ (NSUInteger) getRequestType {
-    return requestType?PATHINFOIndex:GETIndex;
++ (RequestType) getRequestType {
+    return requestType?RequestTypePATHINFO:RequestTypeGET;
 }
 
-+ (NSString*) getUrlWithType:(NSUInteger)type withParameters:(NSArray *)parameters  {
++ (NSString*) getUrlWithType:(RequestType)type withParameters:(NSArray *)parameters  {
     switch (type) {
-        case GETIndex:
+        case RequestTypeGET:
         {
             NSMutableString *str = [NSMutableString stringWithString:@"index.php?"];
             [parameters enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -112,7 +112,7 @@ static NSString * baseUrl = nil;
         }
             break;
             
-        case PATHINFOIndex:
+        case RequestTypePATHINFO:
         {
             NSMutableString *str = [[NSMutableString alloc] init];
             [parameters enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -180,16 +180,16 @@ static NSString * baseUrl = nil;
     });
 }
 
-+ (NSUInteger) getRequestTypeOfWebsite:(NSString *)url {
-    __block NSUInteger type = ERRORIndex;
++ (RequestType) getRequestTypeOfWebsite:(NSString *)url {
+    __block RequestType type = RequestTypeERROR;
     NSString *configURL = [NSString stringWithFormat:@"%@index.php?mode=getconfig",url];
     //DLog(@"%@",configURL);
     [ZTCAPIClient makeRequestTo:configURL parameters:nil method:@"GET" successCallback:^(id JSON){
         NSMutableDictionary *dict = [NSJSONSerialization JSONObjectWithData:JSON options:NSJSONReadingMutableContainers error:nil];
         //DLog(@"%@",dict);
-        NSString *requestType = [dict objectForKey:@"requestType"];
+        NSString *requestType = dict[@"requestType"];
         if (requestType) {
-            type = [requestType isEqualToString:NSLocalizedString(@"login RequestType PATH_INFO", nil)]?PATHINFOIndex:GETIndex;
+            type = [requestType isEqualToString:NSLocalizedString(@"login RequestType PATH_INFO", nil)]?RequestTypePATHINFO:RequestTypeGET;
         }
     } errorCallback:^(NSError *error, NSString *errorMsg) {
         NSLog(@"ERROR: Get request type error:%@",error);
@@ -207,8 +207,8 @@ static NSString * baseUrl = nil;
     if (![url hasPrefix:@"http://"]) {
         url = [NSString stringWithFormat:@"http://%@",url];
     }
-    NSUInteger tmpRequestType = [ZTCAPIClient getRequestTypeOfWebsite:url];
-    if (tmpRequestType == ERRORIndex) {
+    RequestType tmpRequestType = [ZTCAPIClient getRequestTypeOfWebsite:url];
+    if (tmpRequestType == RequestTypeERROR) {
         return NO;
     }
     __block BOOL sessionSuccess = NO;
@@ -230,14 +230,12 @@ static NSString * baseUrl = nil;
     //DLog(@"login mid code %u",sessionSuccess);
     if (sessionSuccess) {
         //Login
-        NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-                                account, @"account",
-                                password, @"password",
-                                nil];
+        NSDictionary *params = @{@"account": account,
+                                @"password": password};
         [ZTCAPIClient makeRequestTo:[NSString stringWithFormat:@"%@%@",url,[ZTCAPIClient getUrlWithType:tmpRequestType withParameters:@[@"m=user",@"f=login"]]] parameters:params method:@"GET" successCallback:^(id JSON) {
             NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:JSON options:NSJSONReadingMutableContainers error:nil];
             //DLog(@"%@",dict);
-            if ([[dict objectForKey:@"status"] isEqualToString:@"success"]) {
+            if ([dict[@"status"] isEqualToString:@"success"]) {
                 loginSuccess = YES;
             } else {
                 loginSuccess = NO;
@@ -263,7 +261,7 @@ static NSString * baseUrl = nil;
     [ZTCAPIClient makeRequestTo:[NSString stringWithFormat:@"%@%@", [ZTCAPIClient sharedClient].baseURL.absoluteString ,[ZTCAPIClient getUrlWithType:requestType withParameters:@[@"m=user",@"f=logout"]]] parameters:nil method:@"GET" successCallback:^(id JSON) {
         NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:JSON options:NSJSONReadingMutableContainers error:nil];
         //DLog(@"%@",dict);
-        if ([[dict objectForKey:@"status"] isEqualToString:@"success"]) {
+        if ([dict[@"status"] isEqualToString:@"success"]) {
             logoutSuccess = YES;
         } else {
             logoutSuccess = NO;
@@ -330,13 +328,13 @@ static NSString * baseUrl = nil;
 //ZenTao PMS always return a JSON with escape-character
 //This method can remove the superfluous characters.
 + (NSMutableDictionary *) dealWithZTStrangeJSON:(id)JSON {
-    NSMutableDictionary *dict = [NSDictionary dictionary];
+    NSMutableDictionary *dict;
     if (JSON) {
         dict = [NSJSONSerialization JSONObjectWithData:JSON options:NSJSONReadingMutableContainers error:nil];
-        if ([[dict objectForKey:@"status"] isEqualToString:@"success"]) {
-            NSData *nestedJsonData = [[dict objectForKey:@"data"] dataUsingEncoding:NSUTF8StringEncoding];
+        if ([dict[@"status"] isEqualToString:@"success"]) {
+            NSData *nestedJsonData = [dict[@"data"] dataUsingEncoding:NSUTF8StringEncoding];
             NSDictionary *nestedDict = [NSJSONSerialization JSONObjectWithData:nestedJsonData options:NSJSONReadingMutableContainers error:nil];
-            [dict setObject:nestedDict forKey:@"data"];
+            dict[@"data"] = nestedDict;
         } else {
             NSLog(@"Called failed or transfered not complete!");
         }
@@ -353,7 +351,7 @@ static NSString * baseUrl = nil;
     CC_MD5(str, strlen(str), result);
     NSMutableString *ret = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH*2];//
     
-    for(int i = 0; i<CC_MD5_DIGEST_LENGTH; i++) {
+    for (int i = 0; i<CC_MD5_DIGEST_LENGTH; i++) {
         [ret appendFormat:@"%02x",result[i]];
     }
     return ret;
@@ -363,33 +361,32 @@ static NSString * baseUrl = nil;
 
 + (void) addCookieWithName:(id) name WithValue:(id) value ForURL:(NSString *) url {
     NSMutableDictionary *cookieProperties = [NSMutableDictionary dictionary];
-    [cookieProperties setObject:name forKey:NSHTTPCookieName];
-    [cookieProperties setObject:value forKey:NSHTTPCookieValue];
-    [cookieProperties setObject:url forKey:NSHTTPCookieDomain];
+    cookieProperties[NSHTTPCookieName] = name;
+    cookieProperties[NSHTTPCookieValue] = value;
+    cookieProperties[NSHTTPCookieDomain] = url;
     //[cookieProperties setObject:url forKey:NSHTTPCookieOriginURL];
-    [cookieProperties setObject:@"/" forKey:NSHTTPCookiePath];
-    [cookieProperties setObject:[[NSDate date] dateByAddingTimeInterval:2629743] forKey:NSHTTPCookieExpires];
-    [cookieProperties setObject:@"0" forKey:NSHTTPCookieVersion];
+    cookieProperties[NSHTTPCookiePath] = @"/";
+    cookieProperties[NSHTTPCookieExpires] = [[NSDate date] dateByAddingTimeInterval:2629743];
+    cookieProperties[NSHTTPCookieVersion] = @"0";
     
     NSHTTPCookie *cookie = [NSHTTPCookie cookieWithProperties:cookieProperties];
     
     //DLog(@"%@", cookie);
-    [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookies:[NSArray arrayWithObject:cookie] forURL:[NSURL URLWithString:url] mainDocumentURL:nil];
+    [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookies:@[cookie] forURL:[NSURL URLWithString:url] mainDocumentURL:nil];
 }
 
 + (void) showAllCookie {
     NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    for (NSHTTPCookie *cookie in [cookieJar cookies]) {
+    [[cookieJar cookies] enumerateObjectsUsingBlock:^(id cookie, NSUInteger idx, BOOL *stop) {
         DLog(@"%@", cookie);
-    }
+    }];
 }
 
 + (void) clearCookieForURL:(NSURL *)url {
     NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL: url];
-    for (NSHTTPCookie *cookie in cookies)
-    {
+    [cookies enumerateObjectsUsingBlock:^(id cookie, NSUInteger idx, BOOL *stop) {
         [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
-    }
+    }];
 }
 
 @end

@@ -221,8 +221,8 @@ enum {
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *CellIdentifier = nil;
-    UITableViewCell *cell = nil;
+    NSString *CellIdentifier;
+    UITableViewCell *cell;
     switch (indexPath.section) {
         case AccountSectionIndex:
         case URLSectionIndex:
@@ -234,11 +234,11 @@ enum {
                 cell.accessoryType = UITableViewCellAccessoryNone;
                 
             }
-            for(UIView *subview in [cell subviews]) {
-                if([subview isKindOfClass:[UITextField class]]) {
-                    [subview removeFromSuperview];
+            [[cell subviews] enumerateObjectsUsingBlock:^(id subView, NSUInteger idx, BOOL *stop) {
+                if([subView isKindOfClass:[UITextField class]]) {
+                    [subView removeFromSuperview];
                 }
-            }
+            }];
             switch (indexPath.section) {
                 case AccountSectionIndex:
                     switch (indexPath.row) {
@@ -294,8 +294,8 @@ enum {
 
 - (void)textFieldDone:(UITextField*)textField
 {
-    UITextField *nextField = nil;
-    NSIndexPath *newPath = nil;
+    UITextField *nextField;
+    NSIndexPath *newPath;
     if (textField == self.accountTextFiled) {
         newPath = [NSIndexPath indexPathForRow:PasswordRowIndex inSection:AccountSectionIndex];
         nextField = self.passwordTextFiled;
