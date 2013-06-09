@@ -14,6 +14,7 @@
 		D21AAA3416FB31F1006B0BDE /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D21AAA3316FB31F1006B0BDE /* Settings.bundle */; };
 		D21E0CF017491B73001C2459 /* aboutThanks.json in Resources */ = {isa = PBXBuildFile; fileRef = D21E0CEF17491B73001C2459 /* aboutThanks.json */; };
 		D258AF4F171BF31100B22F2A /* demo.plist in Resources */ = {isa = PBXBuildFile; fileRef = D258AF4E171BF31100B22F2A /* demo.plist */; };
+		D26AA98617648672003991D7 /* taskDetail.json in Resources */ = {isa = PBXBuildFile; fileRef = D26AA98517648672003991D7 /* taskDetail.json */; };
 		D272539B16F97805009B8508 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D272539D16F97805009B8508 /* Localizable.strings */; };
 		D27253A216F97B99009B8508 /* ZTCTaskViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D27253A116F97B99009B8508 /* ZTCTaskViewController.m */; };
 		D27253B916F9F926009B8508 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D27253B816F9F926009B8508 /* QuartzCore.framework */; };
@@ -45,6 +46,7 @@
 		D21AAA3316FB31F1006B0BDE /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		D21E0CEF17491B73001C2459 /* aboutThanks.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = aboutThanks.json; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
 		D258AF4E171BF31100B22F2A /* demo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = demo.plist; sourceTree = "<group>"; };
+		D26AA98517648672003991D7 /* taskDetail.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = taskDetail.json; sourceTree = "<group>"; };
 		D272539C16F97805009B8508 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D272539E16F9785B009B8508 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		D272539F16F9785B009B8508 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 			isa = PBXGroup;
 			children = (
 				D21E0CEF17491B73001C2459 /* aboutThanks.json */,
+				D26AA98517648672003991D7 /* taskDetail.json */,
 			);
 			name = "QuickDialog JSON";
 			sourceTree = "<group>";
@@ -250,7 +253,7 @@
 			dependencies = (
 			);
 			name = ZenTaoClient;
-			productName = "ZenTaoClient";
+			productName = ZenTaoClient;
 			productReference = D29D2AB616F5B20200BB556F /* ZenTaoClient.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -292,6 +295,7 @@
 				D258AF4F171BF31100B22F2A /* demo.plist in Resources */,
 				D214B93A172D5960001CCA6D /* moduleAndMethod.plist in Resources */,
 				D21E0CF017491B73001C2459 /* aboutThanks.json in Resources */,
+				D26AA98617648672003991D7 /* taskDetail.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -6,8 +6,8 @@
 //  Copyright (c) 2013 Puttin Wong. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "QuickDialogController.h"
 
-@interface ZTCTaskViewController : UITableViewController
+@interface ZTCTaskViewController : QuickDialogController
 - (id)initWithID:(id) ID;
 @end

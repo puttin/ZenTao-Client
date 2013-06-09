@@ -1,0 +1,131 @@
+{
+    "grouped": true,
+    "sections": [
+                 {
+                 "title": "",
+                 "bind": "title:name",
+                 "elements": [
+                              {
+                              "type": "QTextElement",
+                              "text": "",
+                              "bind": "text:desc"
+                              }
+                              ]
+                 },
+                 {
+                 "title": "task basic info",
+                 "elements": [
+                              {
+                              "type": "QLabelElement",
+                              "title": "task project",
+                              "bind": "value:project"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "task module",
+                              "bind": "value:module"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "task story",
+                              "bind": "value:story"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "task assignedto",
+                              "bind": "value:assignedTo"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "task type",
+                              "bind": "value:type"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "task status",
+                              "bind": "value:status"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "task pri",
+                              "bind": "value:pri"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "task mailto",
+                              "bind": "value:mailto"
+                              }
+                              ]
+                 },
+                 {
+                 "title": "task effort",
+                 "elements": [
+                              {
+                              "type": "QLabelElement",
+                              "title": "task estimatestart",
+                              "bind": "value:estimateStart"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "task real",
+                              "bind": "value:realStarted"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "task deadline",
+                              "bind": "value:deadline"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "task estimate",
+                              "bind": "value:estimate"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "task consumed",
+                              "bind": "value:consumed"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "task left",
+                              "bind": "value:left"
+                              }
+                              ]
+                 },
+                 {
+                 "title": "task lifetime",
+                 "elements": [
+                              {
+                              "type": "QLabelElement",
+                              "title": "task opened",
+                              "bind": "value:opened"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "task finished",
+                              "bind": "value:finished"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "task canceled",
+                              "bind": "value:canceled"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "task closed",
+                              "bind": "value:closed"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "task closedreason",
+                              "bind": "value:closedReason"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "task edited",
+                              "bind": "value:edited"
+                              }
+                              ]
+                 }
+                 ]
+}
