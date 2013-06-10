@@ -33,6 +33,7 @@
 		D2BD9E2F174A43C200924BCD /* ZTCAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D2BD9E2E174A43C200924BCD /* ZTCAboutViewController.m */; };
 		D2C6A08A17032C5200BF2244 /* ZTCNotice.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C6A08917032C5200BF2244 /* ZTCNotice.m */; };
 		D2D1F630172C0BB000D34BD0 /* ZTCMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D2D1F62F172C0BB000D34BD0 /* ZTCMenuViewController.m */; };
+		D2EF837617661532000702B1 /* bugDetail.json in Resources */ = {isa = PBXBuildFile; fileRef = D2EF837517661532000702B1 /* bugDetail.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -79,6 +80,7 @@
 		D2C6A08917032C5200BF2244 /* ZTCNotice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZTCNotice.m; sourceTree = "<group>"; };
 		D2D1F62E172C0BB000D34BD0 /* ZTCMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZTCMenuViewController.h; sourceTree = "<group>"; };
 		D2D1F62F172C0BB000D34BD0 /* ZTCMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZTCMenuViewController.m; sourceTree = "<group>"; };
+		D2EF837517661532000702B1 /* bugDetail.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = bugDetail.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +163,7 @@
 			children = (
 				D21E0CEF17491B73001C2459 /* aboutThanks.json */,
 				D26AA98517648672003991D7 /* taskDetail.json */,
+				D2EF837517661532000702B1 /* bugDetail.json */,
 			);
 			name = "QuickDialog JSON";
 			sourceTree = "<group>";
@@ -296,6 +299,7 @@
 				D214B93A172D5960001CCA6D /* moduleAndMethod.plist in Resources */,
 				D21E0CF017491B73001C2459 /* aboutThanks.json in Resources */,
 				D26AA98617648672003991D7 /* taskDetail.json in Resources */,
+				D2EF837617661532000702B1 /* bugDetail.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
