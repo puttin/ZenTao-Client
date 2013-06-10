@@ -1,0 +1,186 @@
+{
+    "grouped": true,
+    "sections": [
+                 {
+                 "title": "",
+                 "bind": "title:title",
+                 "elements": [
+                              {
+                              "type": "QTextElement",
+                              "text": "",
+                              "bind": "text:steps"
+                              }
+                              ]
+                 },
+                 {
+                 "title": "bug basic info",
+                 "elements": [
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug product",
+                              "bind": "value:product"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug module",
+                              "bind": "value:module"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug type",
+                              "bind": "value:type"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug severity",
+                              "bind": "value:severity"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug priority",
+                              "bind": "value:pri"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug status",
+                              "bind": "value:status"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug activatedCount",
+                              "bind": "value:activatedCount"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug confirmed",
+                              "bind": "value:confirmed"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug assignedTo",
+                              "bind": "value:assignedTo"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug os",
+                              "bind": "value:os"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug browser",
+                              "bind": "value:browser"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug keywords",
+                              "bind": "value:keywords"
+                              }
+                              ]
+                 },
+                 {
+                 "title": "bug case",
+                 "elements": [
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug fromCase",
+                              "bind": "value:caseTitle"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug toCase",
+                              "bind": "value:toCases"
+                              }
+                              ]
+                 },
+                 {
+                 "title": "bug lifetime",
+                 "elements": [
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug openedBy",
+                              "bind": "value:openedBy"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug openedBuild",
+                              "bind": "value:openedBuild"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug resolved",
+                              "bind": "value:resolvedBy"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug resolvedBuild",
+                              "bind": "value:resolvedBuild"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug resolution",
+                              "bind": "value:resolution"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug closedBy",
+                              "bind": "value:closedBy"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug lastEditedBy",
+                              "bind": "value:lastEditedBy"
+                              }
+                              ]
+                 },
+                 {
+                 "title": "bug Project&Story&Task",
+                 "elements": [
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug project",
+                              "bind": "value:project"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug story",
+                              "bind": "value:story"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug task",
+                              "bind": "value:task"
+                              }
+                              ]
+                 },
+                 {
+                 "title": "bug misc",
+                 "elements": [
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug mailto",
+                              "bind": "value:mailto"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug linkBug",
+                              "bind": "value:linkBug"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug case",
+                              "bind": "value:case"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug toStory",
+                              "bind": "value:toStory"
+                              },
+                              {
+                              "type": "QLabelElement",
+                              "title": "bug toTask",
+                              "bind": "value:toTask"
+                              }
+                              ]
+                 }
+                 ]
+}
