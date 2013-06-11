@@ -1,4 +1,4 @@
-ZenTao-Client
+ZenTao-Client [![Build Status](https://travis-ci.org/puttin/ZenTao-Client.png?branch=develop)](https://travis-ci.org/puttin/ZenTao-Client)
 =============
 
 an iOS Client connect with ZenTao PMS  
